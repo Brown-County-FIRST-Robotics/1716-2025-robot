@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -8,6 +10,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.*;
+import com.revrobotics.spark.*;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Temperature;
 import frc.robot.Constants;
 import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -17,15 +26,15 @@ public class ModuleIOSparkFX implements ModuleIO {
   private final double THRUST_DISTANCE_PER_TICK = .0254 * 4.0 * Math.PI / 6.75;
   private static final double STEER_FREE_RPM = 5676.0;
   private static final double STEER_GEAR_RATIO = 150.0 / 7.0;
-  private final CANSparkMax steer;
+  private final SparkMax steer;
   private final SparkAnalogSensor analogEncoder;
   private final RelativeEncoder relativeEncoder;
-  private final SparkPIDController pid;
+  private final SparkClosedLoopController pid;
   private final TalonFX thrust;
-  final StatusSignal<Double> velSignal;
-  final StatusSignal<Double> posSignal;
+  final StatusSignal<AngularVelocity> velSignal;
+  final StatusSignal<Angle> posSignal;
   final StatusSignal<Double> errSignal;
-  final StatusSignal<Double> tempSignal;
+  final StatusSignal<Temperature> tempSignal;
   final StatusSignal<Double> outputSignal;
   double offset;
 
@@ -91,32 +100,38 @@ public class ModuleIOSparkFX implements ModuleIO {
     outputSignal.setUpdateFrequency(50.0);
     tempSignal.setUpdateFrequency(20.0);
     thrust.optimizeBusUtilization();
-    steer = new CANSparkMax(steerID, CANSparkLowLevel.MotorType.kBrushless);
-    steer.restoreFactoryDefaults();
-    steer.setIdleMode(CANSparkBase.IdleMode.kBrake);
-    pid = steer.getPIDController();
-    analogEncoder = steer.getAnalog(SparkAnalogSensor.Mode.kAbsolute);
+    steer = new SparkMax(steerID, SparkLowLevel.MotorType.kBrushless);
+    var adfs =
+        new SparkMaxConfig()
+            .smartCurrentLimit(Constants.CurrentLimits.NEO)
+            .idleMode(SparkBaseConfig.IdleMode.kBrake);
+    var closedloopconf = adfs.closedLoop;
+    var relencoderconf = adfs.encoder.positionConversionFactor(1.0 / STEER_GEAR_RATIO);
+    var analogconf = adfs.analogSensor.positionConversionFactor(1 / 3.33).inverted(true);
+    // TEMP: FIX
+    // This probably doesn't work, but we need a more permanant solution later
+    closedloopconf =
+        closedloopconf
+            .feedbackSensor(ClosedLoopConfig.FeedbackSensor.kPrimaryEncoder)
+            .outputRange(-1, 1)
+            .pidf(steerP.get(), steerI.get(), steerD.get(), steerKV.get());
+    var smartconf = closedloopconf.maxMotion;
+    smartconf =
+        smartconf
+            .maxVelocity(STEER_FREE_RPM / STEER_GEAR_RATIO)
+            .maxAcceleration(10 * STEER_FREE_RPM / STEER_GEAR_RATIO)
+            .allowedClosedLoopError(0.002);
+    adfs = adfs.apply(relencoderconf).apply(analogconf).apply(closedloopconf.apply(smartconf));
+    steer.configure(
+        adfs, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+    pid = steer.getClosedLoopController();
+    analogEncoder = steer.getAnalog();
     relativeEncoder = steer.getEncoder();
-    relativeEncoder.setPositionConversionFactor(1.0 / STEER_GEAR_RATIO);
-    analogEncoder.setPositionConversionFactor(1 / 3.33);
-    analogEncoder.setInverted(true);
     steer.setInverted(true);
-    pid.setFeedbackDevice(relativeEncoder);
 
-    pid.setOutputRange(-1, 1);
-    pid.setSmartMotionMaxVelocity(STEER_FREE_RPM / STEER_GEAR_RATIO, 0);
-    pid.setSmartMotionMinOutputVelocity(0, 0);
-    pid.setSmartMotionMaxAccel(10 * STEER_FREE_RPM / STEER_GEAR_RATIO, 0);
-    pid.setSmartMotionAllowedClosedLoopError(0.002, 0);
-    steer.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
-
-    steerKV.attach(pid::setFF);
-    steerP.attach(pid::setP);
-    steerI.attach(pid::setI);
-    steerD.attach(pid::setD);
     BaseStatusSignal.refreshAll(velSignal, posSignal, errSignal, tempSignal, outputSignal);
 
-    steer.burnFlash();
     Logger.recordOutput("Firmware/" + name + "_Steer", steer.getFirmwareString());
     Logger.recordOutput("Firmware/" + name + "_Thrust", thrust.getVersion().getValue());
   }
@@ -128,11 +143,11 @@ public class ModuleIOSparkFX implements ModuleIO {
     inputs.absSensorOmega = analogEncoder.getVelocity();
     inputs.relativeSensorAngle = relativeEncoder.getPosition();
     inputs.relativeSensorOmega = relativeEncoder.getVelocity() / 60.0;
-    inputs.thrustVel = velSignal.getValue() * THRUST_DISTANCE_PER_TICK;
-    inputs.thrustPos = posSignal.getValue() * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustVel = velSignal.getValue().in(RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustPos = posSignal.getValue().in(Rotations) * THRUST_DISTANCE_PER_TICK;
     inputs.steerTempC = steer.getMotorTemperature();
     inputs.thrustErr = errSignal.getValue();
-    inputs.thrustTempC = tempSignal.getValue();
+    inputs.thrustTempC = tempSignal.getValue().in(Fahrenheit);
     inputs.offset = offsetTun.get();
     inputs.thrustOutput = outputSignal.getValue();
   }
@@ -140,6 +155,6 @@ public class ModuleIOSparkFX implements ModuleIO {
   @Override
   public void setCmdState(double ang, double vel) {
     thrust.setControl(new VelocityVoltage(vel / THRUST_DISTANCE_PER_TICK));
-    pid.setReference(ang, CANSparkMax.ControlType.kSmartMotion);
+    pid.setReference(ang, SparkMax.ControlType.kMAXMotionPositionControl);
   }
 }
