@@ -26,7 +26,7 @@ import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOSecondSight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.OverridePanel;
 
@@ -74,7 +74,7 @@ public class RobotContainer {
                         new Translation3d(8 * 0.0254, 11 * 0.0254, 22 * 0.0254),
                         new Rotation3d(0, -8.0 * Math.PI / 180, 0))
                   },
-                  new VisionIO[] {new VisionIOSecondSight("SS_LAPTOP", "0")},
+                  new VisionIO[] {new VisionIOPhotonVision("SS_LAPTOP", "0")},
                   overridePanel);
           break;
         default:

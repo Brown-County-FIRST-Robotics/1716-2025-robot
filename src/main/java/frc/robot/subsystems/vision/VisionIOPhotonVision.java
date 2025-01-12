@@ -10,14 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
 /** The IO layer for one SecondSight camera */
-public class VisionIOSecondSight implements VisionIO {
-  BooleanSubscriber isRecordingSub;
-  StringSubscriber recordingPathSub;
-  StringArraySubscriber idsSub;
-  double lastTime = 0.0;
-  DoubleArraySubscriber posesSub;
-  DoubleSubscriber errorSub;
-
+public class VisionIOPhotonVision implements VisionIO {
   final PhotonCamera cam = new PhotonCamera("Arducam_OV2311_USB_Camera (1)");
   final Transform3d robotToCam =
       new Transform3d(
@@ -27,18 +20,18 @@ public class VisionIOSecondSight implements VisionIO {
   // Construct PhotonPoseEstimator
   final PhotonPoseEstimator photonPoseEstimator =
       new PhotonPoseEstimator(
-          AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
+          AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), // TEMP: Fix
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           cam,
           robotToCam);
 
   /**
-   * Constructs a new <code>VisionIOSecondSight</code> from a NT path
+   * Constructs a new <code>VisionIOPhotonVision</code> from a NT path
    *
    * @param inst_name The NT path of the instance
    * @param cam_name The name of the camera
    */
-  public VisionIOSecondSight(String inst_name, String cam_name) {}
+  public VisionIOPhotonVision(String inst_name, String cam_name) {}
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
