@@ -27,7 +27,7 @@ public class ModuleIOSparkFX implements ModuleIO {
   private static final double STEER_FREE_RPM = 5676.0;
   private static final double STEER_GEAR_RATIO = 150.0 / 7.0;
   private final SparkMax steer;
-  private final SparkAnalogSensor analogEncoder;
+  private final SparkAbsoluteEncoder absoluteEncoder;
   private final RelativeEncoder relativeEncoder;
   private final SparkClosedLoopController pid;
   private final TalonFX thrust;
@@ -107,7 +107,7 @@ public class ModuleIOSparkFX implements ModuleIO {
             .idleMode(SparkBaseConfig.IdleMode.kBrake);
     var closedloopconf = adfs.closedLoop;
     var relencoderconf = adfs.encoder.positionConversionFactor(1.0 / STEER_GEAR_RATIO);
-    var analogconf = adfs.analogSensor.positionConversionFactor(1 / 3.33).inverted(true);
+    var analogconf = adfs.analogSensor.inverted(true);
     // TEMP: FIX
     // This probably doesn't work, but we need a more permanant solution later
     closedloopconf =
@@ -126,7 +126,7 @@ public class ModuleIOSparkFX implements ModuleIO {
         adfs, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     pid = steer.getClosedLoopController();
-    analogEncoder = steer.getAnalog();
+    absoluteEncoder = steer.getAbsoluteEncoder();
     relativeEncoder = steer.getEncoder();
     steer.setInverted(true);
 
@@ -139,8 +139,8 @@ public class ModuleIOSparkFX implements ModuleIO {
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     BaseStatusSignal.refreshAll(velSignal, posSignal, errSignal, tempSignal, outputSignal);
-    inputs.absSensorAngle = analogEncoder.getPosition();
-    inputs.absSensorOmega = analogEncoder.getVelocity();
+    inputs.absSensorAngle = absoluteEncoder.getPosition();
+    inputs.absSensorOmega = absoluteEncoder.getVelocity();
     inputs.relativeSensorAngle = relativeEncoder.getPosition();
     inputs.relativeSensorOmega = relativeEncoder.getVelocity() / 60.0;
     inputs.thrustVel = velSignal.getValue().in(RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
