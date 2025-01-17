@@ -12,6 +12,7 @@ java {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
 }
+build.dependsOn(spotlessApply);
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
