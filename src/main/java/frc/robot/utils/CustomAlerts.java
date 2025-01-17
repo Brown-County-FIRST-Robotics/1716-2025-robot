@@ -1,6 +1,8 @@
 package frc.robot.utils;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import edu.wpi.first.hal.CANAPIJNI;
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -151,6 +153,8 @@ public class CustomAlerts {
    * @param errUtilization The minimum utilization to trigger an alert
    */
   public static void makeCANFailAlerts(double errUtilization) {
+    var stat=new CANStatus();
+
     new CustomAlert(
         Alert.AlertType.ERROR,
         () -> errUtilization < LoggedSystemStats.getInputs().canStatus.percentBusUtilization,
