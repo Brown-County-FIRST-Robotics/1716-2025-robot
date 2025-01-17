@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import frc.robot.Constants;
 import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -51,64 +50,64 @@ public class MecanumIOSpark implements MecanumIO {
     br = new SparkMax(brID, SparkLowLevel.MotorType.kBrushless);
     brEncoder = br.getEncoder();
     brPID = br.getClosedLoopController();
-
-    fl.restoreFactoryDefaults();
-    fr.restoreFactoryDefaults();
-    bl.restoreFactoryDefaults();
-    br.restoreFactoryDefaults();
-
-    fl.setIdleMode(CANSparkBase.IdleMode.kBrake);
-    fr.setIdleMode(CANSparkBase.IdleMode.kBrake);
-    bl.setIdleMode(CANSparkBase.IdleMode.kBrake);
-    br.setIdleMode(CANSparkBase.IdleMode.kBrake);
-
-    fl.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
-    fr.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
-    bl.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
-    br.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
-
-    flPID.setFeedbackDevice(flEncoder);
-    flPID.setOutputRange(-1, 1);
-    frPID.setFeedbackDevice(frEncoder);
-    frPID.setOutputRange(-1, 1);
-    blPID.setFeedbackDevice(blEncoder);
-    blPID.setOutputRange(-1, 1);
-    brPID.setFeedbackDevice(brEncoder);
-    brPID.setOutputRange(-1, 1);
-
-    ffTuner.attach(
-        (Double v) -> {
-          flPID.setFF(v);
-          frPID.setFF(v);
-          blPID.setFF(v);
-          brPID.setFF(v);
-        });
-    pTuner.attach(
-        (Double v) -> {
-          flPID.setP(v);
-          frPID.setP(v);
-          blPID.setP(v);
-          brPID.setP(v);
-        });
-    iTuner.attach(
-        (Double v) -> {
-          flPID.setI(v);
-          frPID.setI(v);
-          blPID.setI(v);
-          brPID.setI(v);
-        });
-    dTuner.attach(
-        (Double v) -> {
-          flPID.setD(v);
-          frPID.setD(v);
-          blPID.setD(v);
-          brPID.setD(v);
-        });
-
-    fl.burnFlash();
-    fr.burnFlash();
-    bl.burnFlash();
-    br.burnFlash();
+    //
+    //    fl.restoreFactoryDefaults();
+    //    fr.restoreFactoryDefaults();
+    //    bl.restoreFactoryDefaults();
+    //    br.restoreFactoryDefaults();
+    //
+    //    fl.setIdleMode(CANSparkBase.IdleMode.kBrake);
+    //    fr.setIdleMode(CANSparkBase.IdleMode.kBrake);
+    //    bl.setIdleMode(CANSparkBase.IdleMode.kBrake);
+    //    br.setIdleMode(CANSparkBase.IdleMode.kBrake);
+    //
+    //    fl.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
+    //    fr.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
+    //    bl.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
+    //    br.setSmartCurrentLimit(Constants.CurrentLimits.NEO);
+    //
+    //    flPID.setFeedbackDevice(flEncoder);
+    //    flPID.setOutputRange(-1, 1);
+    //    frPID.setFeedbackDevice(frEncoder);
+    //    frPID.setOutputRange(-1, 1);
+    //    blPID.setFeedbackDevice(blEncoder);
+    //    blPID.setOutputRange(-1, 1);
+    //    brPID.setFeedbackDevice(brEncoder);
+    //    brPID.setOutputRange(-1, 1);
+    //
+    //    ffTuner.attach(
+    //        (Double v) -> {
+    //          flPID.setFF(v);
+    //          frPID.setFF(v);
+    //          blPID.setFF(v);
+    //          brPID.setFF(v);
+    //        });
+    //    pTuner.attach(
+    //        (Double v) -> {
+    //          flPID.setP(v);
+    //          frPID.setP(v);
+    //          blPID.setP(v);
+    //          brPID.setP(v);
+    //        });
+    //    iTuner.attach(
+    //        (Double v) -> {
+    //          flPID.setI(v);
+    //          frPID.setI(v);
+    //          blPID.setI(v);
+    //          brPID.setI(v);
+    //        });
+    //    dTuner.attach(
+    //        (Double v) -> {
+    //          flPID.setD(v);
+    //          frPID.setD(v);
+    //          blPID.setD(v);
+    //          brPID.setD(v);
+    //        });
+    //
+    //    fl.burnFlash();
+    //    fr.burnFlash();
+    //    bl.burnFlash();
+    //    br.burnFlash();
     Logger.recordOutput("Firmware/FLController", fl.getFirmwareString());
     Logger.recordOutput("Firmware/FRController", fr.getFirmwareString());
     Logger.recordOutput("Firmware/BLController", bl.getFirmwareString());
@@ -117,18 +116,19 @@ public class MecanumIOSpark implements MecanumIO {
 
   @Override
   public void setSpeeds(MecanumDriveWheelSpeeds cmd) {
-    flPID.setReference(
-        60 * cmd.frontLeftMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
-        CANSparkMax.ControlType.kVelocity);
-    frPID.setReference(
-        60 * cmd.frontRightMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
-        CANSparkMax.ControlType.kVelocity);
-    blPID.setReference(
-        60 * cmd.rearLeftMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
-        CANSparkMax.ControlType.kVelocity);
-    brPID.setReference(
-        60 * cmd.rearRightMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
-        CANSparkMax.ControlType.kVelocity);
+    // TEMP:
+    //    flPID.setReference(
+    //        60 * cmd.frontLeftMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
+    //        CANSparkMax.ControlType.kVelocity);
+    //    frPID.setReference(
+    //        60 * cmd.frontRightMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
+    //        CANSparkMax.ControlType.kVelocity);
+    //    blPID.setReference(
+    //        60 * cmd.rearLeftMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
+    //        CANSparkMax.ControlType.kVelocity);
+    //    brPID.setReference(
+    //        60 * cmd.rearRightMetersPerSecond / EFFECTIVE_WHEEL_DIAMETER,
+    //        CANSparkMax.ControlType.kVelocity);
   }
 
   @Override

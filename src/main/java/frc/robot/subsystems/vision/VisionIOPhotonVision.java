@@ -1,13 +1,10 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
-import java.util.Optional;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 
 /** The IO layer for one SecondSight camera */
 public class VisionIOPhotonVision implements VisionIO {
@@ -18,12 +15,13 @@ public class VisionIOPhotonVision implements VisionIO {
           new Rotation3d(0, -25.0 * Math.PI / 180, -4.6 * Math.PI / 180));
 
   // Construct PhotonPoseEstimator
-  final PhotonPoseEstimator photonPoseEstimator =
-      new PhotonPoseEstimator(
-          AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), // TEMP: Fix
-          PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          cam,
-          robotToCam);
+  //  final PhotonPoseEstimator photonPoseEstimator =
+  //      new PhotonPoseEstimator(
+  //          AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), // TEMP: Fix
+  //          PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+  //          cam,
+  //          robotToCam);
+  // TEMP
 
   /**
    * Constructs a new <code>VisionIOPhotonVision</code> from a NT path
@@ -35,13 +33,14 @@ public class VisionIOPhotonVision implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    var k = photonPoseEstimator.update();
-    if (k.isPresent()) {
-      inputs.pose = Optional.ofNullable(k.get().estimatedPose);
-      inputs.timestamp = Optional.of(k.get().timestampSeconds);
-    } else {
-      inputs.pose = Optional.empty();
-      inputs.timestamp = Optional.empty();
-    }
+    //    var k = photonPoseEstimator.update();
+    //    if (k.isPresent()) {
+    //      inputs.pose = Optional.ofNullable(k.get().estimatedPose);
+    //      inputs.timestamp = Optional.of(k.get().timestampSeconds);
+    //    } else {
+    //      inputs.pose = Optional.empty();
+    //      inputs.timestamp = Optional.empty();
+    //    }
+    //  } //TEMP
   }
 }
