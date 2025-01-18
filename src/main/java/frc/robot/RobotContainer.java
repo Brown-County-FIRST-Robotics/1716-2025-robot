@@ -143,12 +143,12 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Grabber control
-    driverController
-        .leftTrigger(0.2)
+    secondController
+        .rightTrigger(0.2)
         .onTrue(
             Commands.startEnd(
                 () -> manipulator.Intake(), () -> manipulator.stopGrabber(), manipulator));
-    driverController
+    driverController // Controlled by main driver as they know when the robot is properly lined up
         .rightTrigger(0.2)
         .onTrue(
             Commands.startEnd(
@@ -176,15 +176,20 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> manipulator.SetPosition(ManipulatorPosition.LEVEL4), manipulator));
     secondController
-        .leftTrigger(0.2)
+        .leftBumper()
         .onTrue(
             Commands.runOnce(
                 () -> manipulator.SetPosition(ManipulatorPosition.ALGAELOW), manipulator));
     secondController
-        .rightTrigger(0.2)
+        .rightBumper()
         .onTrue(
             Commands.runOnce(
                 () -> manipulator.SetPosition(ManipulatorPosition.ALGAEHIGH), manipulator));
+    secondController
+        .leftTrigger(0.2)
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.INTAKE), manipulator));
     secondController
         .povDown()
         .onTrue(
