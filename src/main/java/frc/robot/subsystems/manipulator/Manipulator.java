@@ -42,10 +42,10 @@ public class Manipulator extends SubsystemBase {
         gripperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-//   @Override
-//   public void periodic() {
-    
-//   }
+  //   @Override
+  //   public void periodic() {
+
+  //   }
 
   public void SetPosition(ManipulatorPosition position) {
     switch (position) { // TODO: Replace placeholder position values
@@ -82,6 +82,10 @@ public class Manipulator extends SubsystemBase {
         wrist.getClosedLoopController().setReference(8.0, ControlType.kMAXMotionPositionControl);
         break;
     }
+  }
+
+  public void stopGrabber() {
+    gripper.getClosedLoopController().setReference(0.0, ControlType.kMAXMotionVelocityControl);
   }
 
   public void Intake() {

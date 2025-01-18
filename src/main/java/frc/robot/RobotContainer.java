@@ -16,6 +16,8 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
+import frc.robot.subsystems.manipulator.Manipulator;
+import frc.robot.subsystems.manipulator.Manipulator.ManipulatorPosition;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -42,6 +44,8 @@ public class RobotContainer {
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
+  private final Manipulator manipulator = new Manipulator();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
@@ -137,7 +141,56 @@ public class RobotContainer {
     teleopDrive.isKidMode = true;
   }
 
-  private void configureCompBindings() {}
+  private void configureCompBindings() {
+    // Grabber control
+    driverController
+        .leftTrigger(0.2)
+        .onTrue(
+            Commands.startEnd(
+                () -> manipulator.Intake(), () -> manipulator.stopGrabber(), manipulator));
+    driverController
+        .rightTrigger(0.2)
+        .onTrue(
+            Commands.startEnd(
+                () -> manipulator.Deposit(), () -> manipulator.stopGrabber(), manipulator));
+
+    // Manipulator Presets
+    secondController
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.TROUGH), manipulator));
+    secondController
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL2), manipulator));
+    secondController
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL3), manipulator));
+    secondController
+        .y()
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL4), manipulator));
+    secondController
+        .leftTrigger(0.2)
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.ALGAELOW), manipulator));
+    secondController
+        .rightTrigger(0.2)
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.ALGAEHIGH), manipulator));
+    secondController
+        .povDown()
+        .onTrue(
+            Commands.runOnce(
+                () -> manipulator.SetPosition(ManipulatorPosition.PROCESSOR), manipulator));
+  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
