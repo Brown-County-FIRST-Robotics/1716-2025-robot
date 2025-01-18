@@ -1,7 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -14,6 +12,7 @@ import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Temperature;
@@ -143,11 +142,11 @@ public class ModuleIOSparkFX implements ModuleIO {
     inputs.absSensorOmega = analogEncoder.getVelocity();
     inputs.relativeSensorAngle = relativeEncoder.getPosition();
     inputs.relativeSensorOmega = relativeEncoder.getVelocity() / 60.0;
-    inputs.thrustVel = velSignal.getValue().in(RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
-    inputs.thrustPos = posSignal.getValue().in(Rotations) * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustVel = velSignal.getValue().in(Units.RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustPos = posSignal.getValue().in(Units.Rotations) * THRUST_DISTANCE_PER_TICK;
     inputs.steerTempC = steer.getMotorTemperature();
     inputs.thrustErr = errSignal.getValue();
-    inputs.thrustTempC = tempSignal.getValue().in(Fahrenheit);
+    inputs.thrustTempC = tempSignal.getValue().in(Units.Celsius);
     inputs.offset = offsetTun.get();
     inputs.thrustOutput = outputSignal.getValue();
   }
