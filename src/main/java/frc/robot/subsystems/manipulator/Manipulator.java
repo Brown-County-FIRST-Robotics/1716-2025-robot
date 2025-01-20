@@ -1,5 +1,7 @@
 package frc.robot.subsystems.manipulator;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,24 +19,44 @@ public class Manipulator extends SubsystemBase {
     wrist = new WristIOSparkFlex();
   }
 
-  // TODO: Add logging
+  @Override
+  public void periodic() {
+    elevator.updateInputs(elevatorInputs);
+    gripper.updateInputs(gripperInputs);
+    wrist.updateInputs(wristInputs);
+    Logger.processInputs("Elevator", elevatorInputs);
+    Logger.processInputs("Gripper", gripperInputs);
+    Logger.processInputs("Wrist", wristInputs);
+  }
+
   public void setElevatorReference(double reference) {
+    Logger.recordOutput("Elevator/Reference", reference);
     elevator.setPosition(reference, 0);
   }
 
   public void setWristReference(double reference) {
+    Logger.recordOutput("Wrist/Reference", reference);
     wrist.setPosition(Rotation2d.fromDegrees(reference), 0);
   }
 
-  public void stopGrabber() {
+  public void stopGripper() {
+    Logger.recordOutput("Gripper/TopReference", 0.0);
+    Logger.recordOutput("Gripper/BottomReference", 0.0);
+    Logger.recordOutput("Gripper/RearReference", 0.0);
     gripper.setVelocities(0.0, 0.0, 0.0);
   }
 
   public void intake() {
+    Logger.recordOutput("Gripper/TopReference", -0.5);
+    Logger.recordOutput("Gripper/BottomReference", -0.5);
+    Logger.recordOutput("Gripper/RearReference", -0.5);
     gripper.setVelocities(-0.5, -0.5, -0.5);
   }
 
   public void deposit() {
+    Logger.recordOutput("Gripper/TopReference", 0.5);
+    Logger.recordOutput("Gripper/BottomReference", 0.5);
+    Logger.recordOutput("Gripper/RearReference", 0.5);
     gripper.setVelocities(0.5, 0.5, 0.5);
   }
 }

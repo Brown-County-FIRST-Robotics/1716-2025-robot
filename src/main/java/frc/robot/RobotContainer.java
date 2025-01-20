@@ -149,7 +149,7 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .whileTrue(
             Commands.startEnd(
-                () -> manipulator.deposit(), () -> manipulator.stopGrabber(), manipulator));
+                () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
 
     // Manipulator Presets
     secondController.x().whileTrue(presetFactory.trough());
@@ -164,7 +164,7 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .whileTrue(
             Commands.startEnd(
-                () -> manipulator.intake(), () -> manipulator.stopGrabber(), manipulator));
+                () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
     secondController.povDown().whileTrue(presetFactory.processor());
   }
 
