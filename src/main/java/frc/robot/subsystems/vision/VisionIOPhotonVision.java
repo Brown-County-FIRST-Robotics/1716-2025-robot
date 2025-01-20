@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -20,9 +21,8 @@ public class VisionIOPhotonVision implements VisionIO {
   // Construct PhotonPoseEstimator
   final PhotonPoseEstimator photonPoseEstimator =
       new PhotonPoseEstimator(
-          AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), // TEMP: Fix
+          AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), // TEMP: Fix
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          cam,
           robotToCam);
 
   /**
@@ -35,10 +35,12 @@ public class VisionIOPhotonVision implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    var k = photonPoseEstimator.update();
-    if (k.isPresent()) {
+    var urres = cam.getAllUnreadResults();
+    if (!urres.isEmpty()) {
+      var k = photonPoseEstimator.update(urres.get(0));
       inputs.pose = Optional.ofNullable(k.get().estimatedPose);
       inputs.timestamp = Optional.of(k.get().timestampSeconds);
+
     } else {
       inputs.pose = Optional.empty();
       inputs.timestamp = Optional.empty();
