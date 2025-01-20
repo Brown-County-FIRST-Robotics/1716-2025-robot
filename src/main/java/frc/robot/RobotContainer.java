@@ -17,7 +17,6 @@ import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.manipulator.Manipulator;
-import frc.robot.subsystems.manipulator.Manipulator.ManipulatorPosition;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -45,9 +44,12 @@ public class RobotContainer {
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
   private final Manipulator manipulator = new Manipulator();
+  private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
+
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -147,54 +149,23 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .whileTrue(
             Commands.startEnd(
-                () -> manipulator.Deposit(), () -> manipulator.stopGrabber(), manipulator));
+                () -> manipulator.deposit(), () -> manipulator.stopGrabber(), manipulator));
 
     // Manipulator Presets
-    secondController
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.TROUGH), manipulator));
-    secondController
-        .a()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL2), manipulator));
-    secondController
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL3), manipulator));
-    secondController
-        .y()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.LEVEL4), manipulator));
-    secondController
-        .leftBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.ALGAELOW), manipulator));
-    secondController
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.ALGAEHIGH), manipulator));
-    secondController
-        .leftTrigger(0.2)
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.INTAKE), manipulator));
-    secondController //TODO: make this auto start when intake preset is pressed and auto end when recieved
+    secondController.x().whileTrue(presetFactory.trough());
+    secondController.a().whileTrue(presetFactory.level2());
+    secondController.b().whileTrue(presetFactory.level3());
+    secondController.y().whileTrue(presetFactory.level4());
+    secondController.leftBumper().whileTrue(presetFactory.algaeLow());
+    secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
+    secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
+    secondController // TODO: make this auto start when intake preset is pressed and auto end when
+        // recieved
         .rightTrigger(0.2)
         .whileTrue(
             Commands.startEnd(
-                () -> manipulator.Intake(), () -> manipulator.stopGrabber(), manipulator));
-    secondController
-        .povDown()
-        .onTrue(
-            Commands.runOnce(
-                () -> manipulator.SetPosition(ManipulatorPosition.PROCESSOR), manipulator));
+                () -> manipulator.intake(), () -> manipulator.stopGrabber(), manipulator));
+    secondController.povDown().whileTrue(presetFactory.processor());
   }
 
   /**
