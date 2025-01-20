@@ -143,14 +143,9 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Grabber control
-    secondController
-        .rightTrigger(0.2)
-        .onTrue(
-            Commands.startEnd(
-                () -> manipulator.Intake(), () -> manipulator.stopGrabber(), manipulator));
     driverController // Controlled by main driver as they know when the robot is properly lined up
         .rightTrigger(0.2)
-        .onTrue(
+        .whileTrue(
             Commands.startEnd(
                 () -> manipulator.Deposit(), () -> manipulator.stopGrabber(), manipulator));
 
@@ -190,6 +185,11 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> manipulator.SetPosition(ManipulatorPosition.INTAKE), manipulator));
+    secondController //TODO: make this auto start when intake preset is pressed and auto end when recieved
+        .rightTrigger(0.2)
+        .whileTrue(
+            Commands.startEnd(
+                () -> manipulator.Intake(), () -> manipulator.stopGrabber(), manipulator));
     secondController
         .povDown()
         .onTrue(
