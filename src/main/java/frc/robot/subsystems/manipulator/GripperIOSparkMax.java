@@ -48,7 +48,7 @@ public class GripperIOSparkMax implements GripperIO {
     bottom.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rear.configure(rearConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    try {
+    try {//sets the laser can specs
       laserCan.setRangingMode(LaserCan.RangingMode.SHORT);
       laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
       laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
