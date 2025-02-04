@@ -12,11 +12,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 
 public class WristIOSparkFlex implements WristIO {
-  private final SparkFlex wrist = new SparkFlex(0, MotorType.kBrushless);
-  private final SparkFlexConfig wristConfig = new SparkFlexConfig();
-  private final RelativeEncoder wristEncoder = wrist.getEncoder();
+  private final SparkFlex wrist;
+  private final SparkFlexConfig wristConfig;
+  private final RelativeEncoder wristEncoder;
 
-  public WristIOSparkFlex() {
+  public WristIOSparkFlex(int id) {
+    wrist = new SparkFlex(id, MotorType.kBrushless);
+    wristConfig = new SparkFlexConfig();
+    wristEncoder = wrist.getEncoder();
+
     wristConfig.closedLoop.maxMotion.maxAcceleration(1200); // placeholder
     wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX);
 

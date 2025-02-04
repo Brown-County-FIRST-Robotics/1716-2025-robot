@@ -12,10 +12,10 @@ public class Manipulator extends SubsystemBase {
   private final WristIO wrist;
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
-  public Manipulator() {
-    elevator = new ElevatorIOSparkMax();
-    gripper = new GripperIOSparkMax();
-    wrist = new WristIOSparkFlex();
+  public Manipulator(ElevatorIO elevator, GripperIO gripper, WristIO wrist) {
+    this.elevator = elevator;
+    this.gripper = gripper;
+    this.wrist = wrist;
   }
 
   @Override
