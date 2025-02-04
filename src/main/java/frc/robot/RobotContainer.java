@@ -16,9 +16,8 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
-import frc.robot.subsystems.mecanum.MecanumDrivetrain;
-import frc.robot.subsystems.mecanum.MecanumIO;
-import frc.robot.subsystems.mecanum.MecanumIOSpark;
+import frc.robot.subsystems.manipulator.*;
+import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.swerve.Module;
 import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
@@ -26,7 +25,7 @@ import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOSecondSight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.OverridePanel;
 
@@ -42,8 +41,15 @@ public class RobotContainer {
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
+  private final Manipulator manipulator =
+      new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
+
+  private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
+
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -61,11 +67,11 @@ public class RobotContainer {
         case SWERVEBASE:
           driveSys =
               new SwerveDrivetrain(
-                  new Module(new ModuleIOSparkFX(22, 10, "FL"), 0),
-                  new Module(new ModuleIOSparkFX(24, 12, "FR"), 1),
-                  new Module(new ModuleIOSparkFX(21, 13, "BL"), 2),
-                  new Module(new ModuleIOSparkFX(20, 11, "BR"), 3),
-                  new IMUIONavx());
+                  new Module(new ModuleIOSparkFX(23, 31, "FL"), 0),
+                  new Module(new ModuleIOSim(1), 1),
+                  new Module(new ModuleIOSim(2), 2),
+                  new Module(new ModuleIOSim(3), 3),
+                  new IMUIOSim());
           var vision =
               new Vision(
                   driveSys,
@@ -74,7 +80,7 @@ public class RobotContainer {
                         new Translation3d(8 * 0.0254, 11 * 0.0254, 22 * 0.0254),
                         new Rotation3d(0, -8.0 * Math.PI / 180, 0))
                   },
-                  new VisionIO[] {new VisionIOSecondSight("SS_LAPTOP", "0")},
+                  new VisionIO[] {new VisionIOPhotonVision("SS_LAPTOP", "0")},
                   overridePanel);
           break;
         default:
@@ -134,10 +140,33 @@ public class RobotContainer {
   }
 
   private void configureDemoBindings(TeleopDrive teleopDrive) {
-    teleopDrive.isKidMode = true;
+    teleopDrive.isKidMode = false;
   }
 
-  private void configureCompBindings() {}
+  private void configureCompBindings() {
+    // Grabber control
+    driverController // Controlled by main driver as they know when the robot is properly lined up
+        .rightTrigger(0.2)
+        .whileTrue(
+            Commands.startEnd(
+                () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
+
+    // Manipulator Presets
+    secondController.x().whileTrue(presetFactory.trough());
+    secondController.a().whileTrue(presetFactory.level2());
+    secondController.b().whileTrue(presetFactory.level3());
+    secondController.y().whileTrue(presetFactory.level4());
+    secondController.leftBumper().whileTrue(presetFactory.algaeLow());
+    secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
+    secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
+    secondController // TODO: make this auto start when intake preset is pressed and auto end when
+        // recieved
+        .rightTrigger(0.2)
+        .whileTrue(
+            Commands.startEnd(
+                () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
+    secondController.povDown().whileTrue(presetFactory.processor());
+  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

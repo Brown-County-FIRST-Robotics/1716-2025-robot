@@ -1,11 +1,11 @@
 package frc.robot.utils;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 /** Utility class for some custom alerts */
 public class CustomAlerts {
@@ -151,15 +151,17 @@ public class CustomAlerts {
    * @param errUtilization The minimum utilization to trigger an alert
    */
   public static void makeCANFailAlerts(double errUtilization) {
-    new CustomAlert(
-        Alert.AlertType.ERROR,
-        () -> errUtilization < LoggedSystemStats.getInputs().canStatus.percentBusUtilization,
-        () ->
-            "CAN Bus utilization is "
-                + LoggedSystemStats.getInputs().canStatus.percentBusUtilization
-                + "(max "
-                + errUtilization
-                + "). All mechanisms may soon cease to function. ");
+    var stat = new CANStatus();
+
+    //    new CustomAlert(
+    //        Alert.AlertType.ERROR,
+    //        () -> errUtilization < LoggedSystemStats.getInputs().canStatus.percentBusUtilization,
+    //        () ->
+    //            "CAN Bus utilization is "
+    //                + LoggedSystemStats.getInputs().canStatus.percentBusUtilization
+    //                + "(max "
+    //                + errUtilization
+    //                + "). All mechanisms may soon cease to function. ");
   }
 
   /**
