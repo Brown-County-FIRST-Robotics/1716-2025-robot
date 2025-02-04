@@ -99,8 +99,6 @@ public class Robot extends LoggedRobot {
     Logger.start();
     CustomAlerts.makeCANFailAlerts(0.9);
     robotContainer = new RobotContainer();
-    var capture = CameraServer.startAutomaticCapture(0);
-    Shuffleboard.getTab("Teleop").add(capture).withSize(6, 5).withPosition(3, 0);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
   }
