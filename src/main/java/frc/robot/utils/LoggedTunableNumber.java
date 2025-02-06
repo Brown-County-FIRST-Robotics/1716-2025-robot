@@ -2,13 +2,14 @@ package frc.robot.utils;
 
 import java.util.function.Consumer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /** A dashboard number that can be used for tunable values */
 public class LoggedTunableNumber extends PeriodicRunnable {
   private static final String tableKey = "Tuning";
   private final String key;
   private final String name;
-  private LoggedDashboardNumber dashboardNumber;
+  private LoggedNetworkNumber dashboardNumber;
   private double defaultValue;
   private boolean hasDefault;
   private double lastHasChangedValue;
@@ -55,7 +56,7 @@ public class LoggedTunableNumber extends PeriodicRunnable {
                   + defaultValue
                   + "). This could impair robot functions. ",
               Alert.AlertType.WARNING);
-      dashboardNumber = new LoggedDashboardNumber(key, defaultValue);
+      dashboardNumber = new LoggedNetworkNumber(key, defaultValue);
     }
   }
 
