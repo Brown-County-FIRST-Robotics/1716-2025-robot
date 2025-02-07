@@ -16,10 +16,8 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
-import frc.robot.subsystems.manipulator.Manipulator;
-import frc.robot.subsystems.mecanum.MecanumDrivetrain;
-import frc.robot.subsystems.mecanum.MecanumIO;
-import frc.robot.subsystems.mecanum.MecanumIOSpark;
+import frc.robot.subsystems.manipulator.*;
+import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.swerve.Module;
 import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
@@ -43,7 +41,9 @@ public class RobotContainer {
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
-  private final Manipulator manipulator = new Manipulator();
+  private final Manipulator manipulator =
+      new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
+
   private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -67,11 +67,11 @@ public class RobotContainer {
         case SWERVEBASE:
           driveSys =
               new SwerveDrivetrain(
-                  new Module(new ModuleIOSparkFX(22, 10, "FL"), 0),
-                  new Module(new ModuleIOSparkFX(24, 12, "FR"), 1),
-                  new Module(new ModuleIOSparkFX(21, 13, "BL"), 2),
-                  new Module(new ModuleIOSparkFX(20, 11, "BR"), 3),
-                  new IMUIONavx());
+                  new Module(new ModuleIOSparkFX(23, 31, "FL"), 0),
+                  new Module(new ModuleIOSim(1), 1),
+                  new Module(new ModuleIOSim(2), 2),
+                  new Module(new ModuleIOSim(3), 3),
+                  new IMUIOSim());
           var vision =
               new Vision(
                   driveSys,
@@ -140,7 +140,7 @@ public class RobotContainer {
   }
 
   private void configureDemoBindings(TeleopDrive teleopDrive) {
-    teleopDrive.isKidMode = true;
+    teleopDrive.isKidMode = false;
   }
 
   private void configureCompBindings() {

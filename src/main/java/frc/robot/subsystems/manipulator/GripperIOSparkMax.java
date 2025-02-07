@@ -10,17 +10,27 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class GripperIOSparkMax implements GripperIO {
-  private final SparkMax top = new SparkMax(0, MotorType.kBrushless);
-  private final SparkMaxConfig topConfig = new SparkMaxConfig();
-  private final RelativeEncoder topEncoder = top.getEncoder();
-  private final SparkMax bottom = new SparkMax(1, MotorType.kBrushless);
-  private final SparkMaxConfig bottomConfig = new SparkMaxConfig();
-  private final RelativeEncoder bottomEncoder = bottom.getEncoder();
-  private final SparkMax rear = new SparkMax(2, MotorType.kBrushless);
-  private final SparkMaxConfig rearConfig = new SparkMaxConfig();
-  private final RelativeEncoder rearEncoder = rear.getEncoder();
+  private final SparkMax top;
+  private final SparkMaxConfig topConfig;
+  private final RelativeEncoder topEncoder;
+  private final SparkMax bottom;
+  private final SparkMaxConfig bottomConfig;
+  private final RelativeEncoder bottomEncoder;
+  private final SparkMax rear;
+  private final SparkMaxConfig rearConfig;
+  private final RelativeEncoder rearEncoder;
 
-  public GripperIOSparkMax() {
+  public GripperIOSparkMax(int topID, int bottomID, int rearID) {
+    top = new SparkMax(topID, MotorType.kBrushless);
+    topConfig = new SparkMaxConfig();
+    topEncoder = top.getEncoder();
+    bottom = new SparkMax(bottomID, MotorType.kBrushless);
+    bottomConfig = new SparkMaxConfig();
+    bottomEncoder = bottom.getEncoder();
+    rear = new SparkMax(rearID, MotorType.kBrushless);
+    rearConfig = new SparkMaxConfig();
+    rearEncoder = rear.getEncoder();
+
     topConfig.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
     bottomConfig.closedLoop.maxMotion.maxAcceleration(12000);
     rearConfig.closedLoop.maxMotion.maxAcceleration(12000);

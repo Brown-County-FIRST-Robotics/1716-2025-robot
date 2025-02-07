@@ -12,12 +12,17 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
-  private final SparkMax elevator = new SparkMax(0, MotorType.kBrushless); // TEMP ID
-  private final SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-  private final RelativeEncoder elevatorEncoder = elevator.getEncoder();
-  private final DigitalInput limitSwitch = new DigitalInput(0);
+  private final SparkMax elevator;
+  private final SparkMaxConfig elevatorConfig;
+  private final RelativeEncoder elevatorEncoder;
+  private final DigitalInput limitSwitch;
 
-  public ElevatorIOSparkMax() {
+  public ElevatorIOSparkMax(int id, int limitSwitchID) {
+    elevator = new SparkMax(id, MotorType.kBrushless);
+    elevatorConfig = new SparkMaxConfig();
+    elevatorEncoder = elevator.getEncoder();
+    limitSwitch = new DigitalInput(limitSwitchID);
+
     elevatorConfig.closedLoop.maxMotion.maxAcceleration(1200); // placeholder
     elevatorConfig.smartCurrentLimit(Constants.CurrentLimits.NEO);
 
