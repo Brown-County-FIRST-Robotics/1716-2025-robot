@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.wpilibj.SPI;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
 
@@ -13,7 +12,7 @@ public class IMUIONavx implements IMUIO {
 
   /** Constructs a Navx that uses SPI */
   public IMUIONavx() {
-    imu = new AHRS(SPI.Port.kMXP);
+    imu = new AHRS(AHRS.NavXComType.kMXP_SPI);
     while (!imu.isConnected()) {
       imu.isConnected();
     }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.LoggedTunableNumber;
@@ -11,9 +12,9 @@ import org.littletonrobotics.junction.Logger;
 /** A wrapper class for a Swerve module */
 public class Module {
   private static final LoggedTunableNumber minNoMotionTime =
-      new LoggedTunableNumber("Min no motion time", 0.5);
+      new LoggedTunableNumber("Min no motion time", 5);
   private static final LoggedTunableNumber maxMotionAllowed =
-      new LoggedTunableNumber("Max motion", 0.05);
+      new LoggedTunableNumber("Max motion", 0.005);
   final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   final ModuleIO io;
   final int ind;
@@ -65,7 +66,7 @@ public class Module {
         || Math.abs(inputs.relativeSensorOmega) > maxMotionAllowed.get()) {
       noMotionTimer.restart();
     }
-    if (noMotionTimer.hasElapsed(minNoMotionTime.get()) && inputs.absSensorAngle < 0.5) {
+    if (noMotionTimer.hasElapsed(minNoMotionTime.get()) && DriverStation.isDisabled()) {
       reZero();
     }
   }
@@ -120,7 +121,8 @@ public class Module {
    * @param state The command state
    */
   public void setState(SwerveModuleState state) {
-    state = SwerveModuleState.optimize(state, getChassisRelativeRotation());
+    // state.optimize(getChassisRelativeRotation());
+    // state.angle=Rotation2d.fromRotations(new XboxController(0).getRightY());
     state.speedMetersPerSecond *= getChassisRelativeRotation().minus(state.angle).getCos();
     Rotation2d cmdPosForRelativeEncoder =
         state.angle.plus(chassisOffset).minus(relativeSensorZeroPosition);
@@ -130,12 +132,13 @@ public class Module {
             + cmdPosForRelativeEncoder.getRotations();
     if (Math.abs(adjustedRelCmd - inputs.relativeSensorAngle)
         > Math.abs(1.0 + adjustedRelCmd - inputs.relativeSensorAngle)) {
-      adjustedRelCmd += 1.0;
+      // adjustedRelCmd += 1.0;
     }
     if (Math.abs(adjustedRelCmd - inputs.relativeSensorAngle)
         > Math.abs(-1.0 + adjustedRelCmd - inputs.relativeSensorAngle)) {
-      adjustedRelCmd -= 1.0;
+      // adjustedRelCmd -= 1.0;
     }
-    io.setCmdState(adjustedRelCmd, state.speedMetersPerSecond);
+
+    io.setCmdState(state.angle.getRotations(), state.speedMetersPerSecond);
   }
 }
