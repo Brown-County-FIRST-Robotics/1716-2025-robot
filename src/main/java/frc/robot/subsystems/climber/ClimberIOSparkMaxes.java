@@ -39,7 +39,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
         .configure( // persist mode keeps the last data value even after the robot is shut off, in
             // case of power problems
             climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    climberRight.configure(//resets motor config & then sets to required values
+    climberRight.configure( // resets motor config & then sets to required values
         climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 

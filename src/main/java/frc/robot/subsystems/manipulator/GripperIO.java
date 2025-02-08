@@ -12,7 +12,7 @@ public interface GripperIO {
     double bottomVelocity = 0.0;
     double rearVelocity = 0.0;
     double laserDistance = 0.0;
-    boolean hasLaser = false;
+    boolean hasLaserMeasurement = false; // Whether the laser can see anything
 
     double topAppliedOutput = 0.0;
     double bottomAppliedOutput = 0.0;

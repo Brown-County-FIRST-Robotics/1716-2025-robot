@@ -1,9 +1,8 @@
 package frc.robot.subsystems.manipulator;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class Manipulator extends SubsystemBase {
@@ -40,27 +39,16 @@ public class Manipulator extends SubsystemBase {
     wrist.setPosition(Rotation2d.fromDegrees(reference), 0);
   }
 
-  public void stopGripper() {
-    Logger.recordOutput("Gripper/TopReference", 0.0);
-    Logger.recordOutput("Gripper/BottomReference", 0.0);
-    Logger.recordOutput("Gripper/RearReference", 0.0);
-    gripper.setVelocities(0.0, 0.0, 0.0);
+  public void setGripper(double top, double bottom, double rear) {
+    Logger.recordOutput("Gripper/TopReference", top);
+    Logger.recordOutput("Gripper/BottomReference", bottom);
+    Logger.recordOutput("Gripper/RearReference", rear);
+    gripper.setVelocities(top, bottom, rear);
   }
 
-  public void intake() {
-    Logger.recordOutput("Gripper/TopReference", -0.5);
-    Logger.recordOutput("Gripper/BottomReference", -0.5);
-    Logger.recordOutput("Gripper/RearReference", -0.5);
-    gripper.setVelocities(-0.5, -0.5, -0.5);
-  }
-
-  public void deposit() {
-    Logger.recordOutput("Gripper/TopReference", 0.5);
-    Logger.recordOutput("Gripper/BottomReference", 0.5);
-    Logger.recordOutput("Gripper/RearReference", 0.5);
-    gripper.setVelocities(0.5, 0.5, 0.5);
-  }
-  public Command holdAlgCommand(){
-    return Commands.none();
+  public Optional<Double> getDistanceReading() {
+    return gripperInputs.hasLaserMeasurement
+        ? Optional.of(gripperInputs.laserDistance)
+        : Optional.empty();
   }
 }

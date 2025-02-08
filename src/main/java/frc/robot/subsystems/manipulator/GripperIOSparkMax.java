@@ -1,5 +1,7 @@
 package frc.robot.subsystems.manipulator;
 
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -7,9 +9,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import au.grapplerobotics.ConfigurationFailedException;
-import au.grapplerobotics.LaserCan;
 import frc.robot.Constants;
 import frc.robot.utils.Alert;
 
@@ -24,8 +23,9 @@ public class GripperIOSparkMax implements GripperIO {
   private final SparkMaxConfig rearConfig;
   private final RelativeEncoder rearEncoder;
   private final LaserCan laserCan;
+  private LaserCan.Measurement measurement;
 
-  public GripperIOSparkMax(int topID, int bottomID, int rearID, int laserCanID) {
+  public GripperIOSparkMax(int topID, int bottomID, int rearID, int laserID) {
     top = new SparkMax(topID, MotorType.kBrushless);
     topConfig = new SparkMaxConfig();
     topEncoder = top.getEncoder();
@@ -35,7 +35,8 @@ public class GripperIOSparkMax implements GripperIO {
     rear = new SparkMax(rearID, MotorType.kBrushless);
     rearConfig = new SparkMaxConfig();
     rearEncoder = rear.getEncoder();
-    laserCan = new LaserCan(laserCanID);
+    laserCan = new LaserCan(laserID);
+    measurement = null; // set in UpdateInputs
 
     topConfig.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
     bottomConfig.closedLoop.maxMotion.maxAcceleration(12000);
@@ -48,10 +49,15 @@ public class GripperIOSparkMax implements GripperIO {
     bottom.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rear.configure(rearConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    try {//sets the laser can specs
+    // LaserCan Configuration
+    try {
       laserCan.setRangingMode(LaserCan.RangingMode.SHORT);
-      laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-      laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+      // Configures which of the sensor diodes in the 16x16 sensor array are enabled
+      laserCan.setRegionOfInterest(
+          new LaserCan.RegionOfInterest(
+              8, 8, 16, 16)); // Defines a 16x16 rectangle at (8, 8), the center
+      laserCan.setTimingBudget(
+          LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
     } catch (ConfigurationFailedException e) {
       new Alert("LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
     }
@@ -75,12 +81,13 @@ public class GripperIOSparkMax implements GripperIO {
     inputs.rearTemperature = rear.getMotorTemperature();
     inputs.rearCurrent = rear.getOutputCurrent();
 
-    LaserCan.Measurement measurement = laserCan.getMeasurement();
-    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {//checks if laser can has a valid measurment
-      inputs.hasLaser = true;//tells you that the laser can is seeing something
-      inputs.laserDistance = measurement.distance_mm * 1.0/1000.0;//shows the distance
+    measurement = laserCan.getMeasurement();
+    // check if lasercan currently has a valid measurment
+    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      inputs.hasLaserMeasurement = true;
+      inputs.laserDistance = measurement.distance_mm / 1000.0;
     } else {
-      inputs.hasLaser = false;
+      inputs.hasLaserMeasurement = false;
     }
   }
 

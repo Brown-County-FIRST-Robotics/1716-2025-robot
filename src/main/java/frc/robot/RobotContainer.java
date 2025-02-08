@@ -145,11 +145,12 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Grabber control
-    driverController // Controlled by main driver as they know when the robot is properly lined up
-        .rightTrigger(0.2)
-        .whileTrue(
-            Commands.startEnd(
-                () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
+    // driverController // Controlled by main driver as they know when the robot is properly lined
+    // up
+    //     .rightTrigger(0.2)
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
 
     // Manipulator Presets
     secondController.x().whileTrue(presetFactory.trough());
@@ -159,12 +160,13 @@ public class RobotContainer {
     secondController.leftBumper().whileTrue(presetFactory.algaeLow());
     secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
     secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
-    secondController // TODO: make this auto start when intake preset is pressed and auto end when
-        // recieved
-        .rightTrigger(0.2)
-        .whileTrue(
-            Commands.startEnd(
-                () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
+    // secondController // TODO: make this auto start when intake preset is pressed and auto end
+    // when
+    //     // recieved
+    //     .rightTrigger(0.2)
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
     secondController.povDown().whileTrue(presetFactory.processor());
   }
 
