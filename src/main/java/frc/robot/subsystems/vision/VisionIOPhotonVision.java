@@ -21,7 +21,7 @@ public class VisionIOPhotonVision implements VisionIO {
   // Construct PhotonPoseEstimator
   final PhotonPoseEstimator photonPoseEstimator =
       new PhotonPoseEstimator(
-          AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), // TEMP: Fix
+          AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), // TODO: Fix
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           robotToCam);
 

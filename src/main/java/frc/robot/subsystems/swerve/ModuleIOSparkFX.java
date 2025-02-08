@@ -115,7 +115,7 @@ public class ModuleIOSparkFX implements ModuleIO {
     var closedloopconf = adfs.closedLoop;
     var relencoderconf = adfs.encoder.positionConversionFactor(1.0 / STEER_GEAR_RATIO);
     var analogconf = adfs.analogSensor.inverted(true);
-    // TEMP: FIX
+    // TODO: FIX
     // This probably doesn't work, but we need a more permanant solution later
     closedloopconf =
         closedloopconf

@@ -61,7 +61,7 @@ public class MecanumIOSpark implements MecanumIO {
             .smartCurrentLimit(Constants.CurrentLimits.NEO)
             .idleMode(SparkBaseConfig.IdleMode.kBrake);
     var closedloopconf = adfs.closedLoop;
-    // TEMP: FIX
+    // TODO: FIX
     // This probably doesn't work, but we need a more permanant solution later
     closedloopconf =
         closedloopconf
