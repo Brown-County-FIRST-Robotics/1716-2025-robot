@@ -13,7 +13,7 @@ public final class WhoAmI {
     // TODO:add this back in after we get some appendages
   };
 
-  public static final boolean isDemoMode = true;
+  public static final boolean isDemoMode = false;
 
   /** The robot types */
   public enum RobotType {
@@ -27,7 +27,10 @@ public final class WhoAmI {
 
   /** The appendages to the robot */
   public enum Appendages {
-  // TODO:add this back in after we get some appendages
+    CLIMBER,
+    ELEVATOR,
+    WRIST,
+    GRIPPER,
   }
 
   /** The code execution mode */

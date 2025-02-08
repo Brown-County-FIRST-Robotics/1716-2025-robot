@@ -17,10 +17,8 @@ public class GripperIOSparkMax implements GripperIO {
   private final SparkMaxConfig topConfig;
   private final RelativeEncoder topEncoder;
   private final SparkMax bottom;
-  private final SparkMaxConfig bottomConfig;
   private final RelativeEncoder bottomEncoder;
   private final SparkMax rear;
-  private final SparkMaxConfig rearConfig;
   private final RelativeEncoder rearEncoder;
   private final LaserCan laserCan;
   private LaserCan.Measurement measurement;
@@ -30,24 +28,21 @@ public class GripperIOSparkMax implements GripperIO {
     topConfig = new SparkMaxConfig();
     topEncoder = top.getEncoder();
     bottom = new SparkMax(bottomID, MotorType.kBrushless);
-    bottomConfig = new SparkMaxConfig();
     bottomEncoder = bottom.getEncoder();
     rear = new SparkMax(rearID, MotorType.kBrushless);
-    rearConfig = new SparkMaxConfig();
     rearEncoder = rear.getEncoder();
     laserCan = new LaserCan(laserID);
     measurement = null; // set in UpdateInputs
 
     topConfig.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
-    bottomConfig.closedLoop.maxMotion.maxAcceleration(12000);
-    rearConfig.closedLoop.maxMotion.maxAcceleration(12000);
     topConfig.smartCurrentLimit(Constants.CurrentLimits.NEO550);
-    bottomConfig.smartCurrentLimit(Constants.CurrentLimits.NEO550);
-    rearConfig.smartCurrentLimit(Constants.CurrentLimits.NEO550);
+    topConfig.closedLoop.velocityFF(1.0 / 11000.0);
 
     top.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    bottom.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rear.configure(rearConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    bottom.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rear.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    top.setInverted(true);
 
     // LaserCan Configuration
     try {

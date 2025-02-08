@@ -41,15 +41,15 @@ public class RobotContainer {
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
-  private final Manipulator manipulator =
-      new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
+  private final Manipulator manipulator;
 
-  private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
+  private final ManipulatorPresetFactory presetFactory;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
-
+    ElevatorIO elevatorIO = null;
+    GripperIO gripperIO = null;
+    WristIO wristIO = null;
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -87,6 +87,9 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
       }
       for (var appendage : WhoAmI.appendages) {
+        if (appendage == WhoAmI.Appendages.GRIPPER) {
+          gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
+        }
         System.out.println("No appendages yet");
       }
     } else {
@@ -123,6 +126,19 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
       }
     }
+    if (gripperIO == null) {
+      gripperIO = new GripperIO() {};
+    }
+    if (wristIO == null) {
+      wristIO = new WristIO() {};
+    }
+    if (elevatorIO == null) {
+      elevatorIO = new ElevatorIO() {};
+    }
+
+    manipulator = new Manipulator(elevatorIO, gripperIO, wristIO);
+    presetFactory = new ManipulatorPresetFactory(manipulator);
+
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     if (WhoAmI.isDemoMode) {
@@ -144,6 +160,47 @@ public class RobotContainer {
   }
 
   private void configureCompBindings() {
+    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
+
+    (new Trigger(
+            () ->
+                manipulator
+                    .getDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isPresent()))
+        .onTrue(
+            Commands.runEnd(
+                    () -> manipulator.setGripper(-3500, -3500, -3500),
+                    () -> manipulator.setGripper(0, 0, 0),
+                    manipulator)
+                // .finallyDo(() -> driverController.setRumble(RumbleType.kBothRumble, 0.5))
+                .until(
+                    () ->
+                        manipulator
+                            .getDistanceReading()
+                            .filter(
+                                (Double d) -> {
+                                  return d < 0.1;
+                                })
+                            .isEmpty())
+                .andThen(
+                    Commands.runEnd(
+                            () -> manipulator.setGripper(1000, 1000, 1000),
+                            () -> manipulator.setGripper(0, 0, 0),
+                            manipulator)
+                        .until(
+                            () ->
+                                manipulator
+                                    .getDistanceReading()
+                                    .filter(
+                                        (Double d) -> {
+                                          return d < 0.1;
+                                        })
+                                    .isPresent())));
+
     // Grabber control
     // driverController // Controlled by main driver as they know when the robot is properly lined
     // up
