@@ -200,6 +200,15 @@ public class RobotContainer {
                                           return d < 0.1;
                                         })
                                     .isPresent())));
+                                    
+    // Temporary eject for the gripper
+    driverController
+        .y()
+        .whileTrue(
+            Commands.runEnd(
+                () -> manipulator.setGripper(-2000, -2000, -2000),
+                () -> manipulator.setGripper(0, 0, 0),
+                manipulator));
 
     // Grabber control
     // driverController // Controlled by main driver as they know when the robot is properly lined
