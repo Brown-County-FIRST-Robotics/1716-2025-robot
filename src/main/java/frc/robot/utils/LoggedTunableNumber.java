@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
 import java.util.function.Consumer;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /** A dashboard number that can be used for tunable values */
