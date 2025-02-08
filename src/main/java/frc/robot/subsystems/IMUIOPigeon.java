@@ -13,10 +13,10 @@ public class IMUIOPigeon implements IMUIO {
   final StatusSignal<Double> qX;
   final StatusSignal<Double> qY;
   final StatusSignal<Double> qZ;
-  StatusSignal<Double> accelX;
-  StatusSignal<Double> accelY;
-  StatusSignal<Double> accelZ;
-  StatusSignal<Double> temp;
+  final StatusSignal<Double> accelX;
+  final StatusSignal<Double> accelY;
+  final StatusSignal<Double> accelZ;
+  final StatusSignal<Double> temp;
 
   /**
    * Constructs an IMU using a CAN id
@@ -29,19 +29,18 @@ public class IMUIOPigeon implements IMUIO {
     qX = imu.getQuatX();
     qY = imu.getQuatY();
     qZ = imu.getQuatZ();
-    // TEMP
-    //    accelX = imu.getAccelerationX();
-    //    accelY = imu.getAccelerationY();
-    //    accelZ = imu.getAccelerationZ();
-    //    temp = imu.getTemperature();
+    accelX = imu.getAccelerationX();
+    accelY = imu.getAccelerationY();
+    accelZ = imu.getAccelerationZ();
+    temp = imu.getTemperature();
     qW.setUpdateFrequency(50.0);
     qX.setUpdateFrequency(50.0);
     qY.setUpdateFrequency(50.0);
     qZ.setUpdateFrequency(50.0);
-    //    accelX.setUpdateFrequency(50.0);
-    //    accelY.setUpdateFrequency(50.0);
-    //    accelZ.setUpdateFrequency(50.0);
-    //    temp.setUpdateFrequency(20.0);
+    accelX.setUpdateFrequency(50.0);
+    accelY.setUpdateFrequency(50.0);
+    accelZ.setUpdateFrequency(50.0);
+    temp.setUpdateFrequency(20.0);
     imu.optimizeBusUtilization();
   }
 
