@@ -4,9 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -68,7 +66,7 @@ public class Module {
         || Math.abs(inputs.relativeSensorOmega) > maxMotionAllowed.get()) {
       noMotionTimer.restart();
     }
-    if (noMotionTimer.hasElapsed(minNoMotionTime.get())&&DriverStation.isDisabled()) {
+    if (noMotionTimer.hasElapsed(minNoMotionTime.get()) && DriverStation.isDisabled()) {
       reZero();
     }
   }
@@ -140,8 +138,7 @@ public class Module {
         > Math.abs(-1.0 + adjustedRelCmd - inputs.relativeSensorAngle)) {
       // adjustedRelCmd -= 1.0;
     }
-    
-    io.setCmdState(
-    state.angle.getRotations(), state.speedMetersPerSecond);
+
+    io.setCmdState(state.angle.getRotations(), state.speedMetersPerSecond);
   }
 }

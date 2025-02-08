@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.Fahrenheit;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -26,12 +24,12 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Temperature;
 import frc.robot.Constants;
 import frc.robot.utils.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 /** IO layer for a SDS MK4i L2 swerve module using a Falcon 500 as thrust, and a Neo as steering */
 public class ModuleIOSparkFX implements ModuleIO {
@@ -59,12 +57,10 @@ public class ModuleIOSparkFX implements ModuleIO {
   final LoggedTunableNumber steerP = new LoggedTunableNumber("Steer P", 0);
   final LoggedTunableNumber steerI = new LoggedTunableNumber("Steer I", 0);
   final LoggedTunableNumber steerD = new LoggedTunableNumber("Steer D", 0);
-  final LoggedTunableNumber steerKV =
-      new LoggedTunableNumber("Steer KV", 1.0 / STEER_FREE_RPM);
+  final LoggedTunableNumber steerKV = new LoggedTunableNumber("Steer KV", 1.0 / STEER_FREE_RPM);
   final LoggedTunableNumber offsetTun;
   double off;
   SparkMaxConfig z = new SparkMaxConfig();
-
 
   /**
    * Makes a new instance using CAN IDs
@@ -83,7 +79,7 @@ public class ModuleIOSparkFX implements ModuleIO {
     config.MotorOutput.PeakForwardDutyCycle = 1;
     config.MotorOutput.PeakReverseDutyCycle = -1;
     config.Audio.AllowMusicDurDisable = true;
-    config.Slot0.kV = 12.0*60.0/6380.0;//thrustKV.get();
+    config.Slot0.kV = 12.0 * 60.0 / 6380.0; // thrustKV.get();
     config.Slot0.kP = thrustP.get();
     config.Slot0.kI = thrustI.get();
     config.MotorOutput.DutyCycleNeutralDeadband = 0.01;
@@ -136,7 +132,6 @@ public class ModuleIOSparkFX implements ModuleIO {
             .maxAcceleration(10 * STEER_FREE_RPM / STEER_GEAR_RATIO)
             .allowedClosedLoopError(0.002);
     adfs = adfs.apply(relencoderconf).apply(analogconf).apply(closedloopconf.apply(smartconf));
-    
 
     /*
      * Configure the encoder. For this specific example, we are using the
@@ -144,35 +139,48 @@ public class ModuleIOSparkFX implements ModuleIO {
      * needed, we can adjust values like the position or velocity conversion
      * factors.
      */
-    z.encoder
-        .positionConversionFactor(1);
-      z.absoluteEncoder.inverted(false);
+    z.encoder.positionConversionFactor(1);
+    z.absoluteEncoder.inverted(false);
 
     /*
      * Configure the closed loop controller. We want to make sure we set the
      * feedback sensor as the primary encoder.
      */
-    steerP.attach((Double p) -> {z.closedLoop.p(p);steer.configure(z,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);});
-    steerI.attach((Double p) -> {z.closedLoop.i(p);steer.configure(z,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);});
-    steerD.attach((Double p) -> {z.closedLoop.d(p);steer.configure(z,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);});
+    steerP.attach(
+        (Double p) -> {
+          z.closedLoop.p(p);
+          steer.configure(z, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        });
+    steerI.attach(
+        (Double p) -> {
+          z.closedLoop.i(p);
+          steer.configure(z, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        });
+    steerD.attach(
+        (Double p) -> {
+          z.closedLoop.d(p);
+          steer.configure(z, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        });
     z.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control. We don't need to pass a closed
         // loop slot, as it will default to slot 0.
-        .p(0)//steerP.get())
-        .i(0)//steerI.get())
-        .d(0)//steerD.get())
-        .outputRange(-12, 12).velocityFF(1.0/5676.0);
+        .p(0) // steerP.get())
+        .i(0) // steerI.get())
+        .d(0) // steerD.get())
+        .outputRange(-12, 12)
+        .velocityFF(1.0 / 5676.0);
     z.closedLoop.smartMotion.maxVelocity(1000).maxAcceleration(1000).allowedClosedLoopError(0.0025);
-    
-        z.closedLoop.maxMotion
+
+    z.closedLoop
+        .maxMotion
         // Set MAXMotion parameters for position control. We don't need to pass
         // a closed loop slot, as it will default to slot 0.
         .maxVelocity(1000)
         .maxAcceleration(1000)
         .allowedClosedLoopError(0.01);
-        z.voltageCompensation(12.0);
-        
+    z.voltageCompensation(12.0);
+
     /*
      * Apply the configuration to the SPARK MAX.
      *
@@ -185,10 +193,9 @@ public class ModuleIOSparkFX implements ModuleIO {
      */
     steer.configure(z, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    
-    
     // steer.configure(
-    //     adfs, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    //     adfs, SparkBase.ResetMode.kResetSafeParameters,
+    // SparkBase.PersistMode.kPersistParameters);
 
     pid = steer.getClosedLoopController();
     absoluteEncoder = steer.getAbsoluteEncoder();
@@ -208,7 +215,7 @@ public class ModuleIOSparkFX implements ModuleIO {
     BaseStatusSignal.refreshAll(velSignal, posSignal, errSignal, tempSignal, outputSignal);
     inputs.absSensorAngle = absoluteEncoder.getPosition();
     inputs.absSensorOmega = absoluteEncoder.getVelocity();
-    inputs.relativeSensorAngle = relativeEncoder.getPosition()*7.0/150.0;
+    inputs.relativeSensorAngle = relativeEncoder.getPosition() * 7.0 / 150.0;
     inputs.relativeSensorOmega = relativeEncoder.getVelocity() / 60.0;
     inputs.thrustVel = velSignal.getValue().in(RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
     inputs.thrustPos = posSignal.getValue().in(Rotations) * THRUST_DISTANCE_PER_TICK;
@@ -222,12 +229,12 @@ public class ModuleIOSparkFX implements ModuleIO {
   @Override
   public void setCmdState(double ang, double vel) {
     Logger.recordOutput("CMDANG", ang);
-    Logger.recordOutput("ANG", relativeEncoder.getPosition()*7.0/150.0);
+    Logger.recordOutput("ANG", relativeEncoder.getPosition() * 7.0 / 150.0);
     Logger.recordOutput("VEL", vel);
-    thrust.setControl(new VelocityVoltage(vel/THRUST_DISTANCE_PER_TICK));
-    pid.setReference(ang*150.0/7.0, ControlType.kSmartMotion,
-          ClosedLoopSlot.kSlot0);
+    thrust.setControl(new VelocityVoltage(vel / THRUST_DISTANCE_PER_TICK));
+    pid.setReference(ang * 150.0 / 7.0, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0);
     // steer.set(0.2);
-    // pid.setReference(0.5, SparkMax.ControlType.kMAXMotionPositionControl); // TODO: Use non-decrepeted version
+    // pid.setReference(0.5, SparkMax.ControlType.kMAXMotionPositionControl);
+    // TODO: Use non-decrepeted version
   }
 }

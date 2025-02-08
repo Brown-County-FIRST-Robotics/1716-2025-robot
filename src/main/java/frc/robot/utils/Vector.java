@@ -19,17 +19,15 @@ public class Vector {
 
   public Vector(double x, double y) {
     magnitude = Math.hypot(x, y);
-    if(x==0 && y==0){
-      x=0.00000001;
+    if (x == 0 && y == 0) {
+      x = 0.00000001;
     }
     if (magnitude == 0) {
       angle = new Rotation2d(0);
-    }
-    else {
+    } else {
       angle = new Rotation2d(x, y);
     }
   }
-
 
   public double getNorm() {
     return magnitude;
