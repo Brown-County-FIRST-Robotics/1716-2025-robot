@@ -16,6 +16,7 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.swerve.Module;
@@ -43,6 +44,7 @@ public class RobotContainer {
   private final Drivetrain driveSys;
   private final Manipulator manipulator =
       new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
+  private final LEDs leds = new LEDs();
 
   private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
 
