@@ -27,6 +27,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
+import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
 
 /**
@@ -40,6 +41,7 @@ public class RobotContainer {
   private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
+  private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
   private final Manipulator manipulator;
 
@@ -180,12 +182,13 @@ public class RobotContainer {
     //             () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
 
     // Manipulator Presets
-    secondController.x().whileTrue(presetFactory.trough());
-    secondController.a().whileTrue(presetFactory.level2());
-    secondController.b().whileTrue(presetFactory.level3());
-    secondController.y().whileTrue(presetFactory.level4());
-    secondController.leftBumper().whileTrue(presetFactory.algaeLow());
-    secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
+    manipulatorPanel.trough().whileTrue(presetFactory.trough());
+    manipulatorPanel.level2().whileTrue(presetFactory.level2());
+    manipulatorPanel.level3().whileTrue(presetFactory.level3());
+    manipulatorPanel.level4().whileTrue(presetFactory.level4());
+    manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
+    manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
+    
     secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
     // secondController // TODO: make this auto start when intake preset is pressed and auto end
     // when

@@ -13,14 +13,20 @@
 
 ## Driver 2
 
-|Input|Action|
+![Manipulator Button Box Module](./manipulator_module.svg)
+
+Driver 2 uses a button box module to control the manipulator.
+
+|Action|Input|
 |-|-|
-|Right Trigger Pressed|Intake Coral|
-|X|Go to Trough preset|
-|A|Go to Level 2 preset|
-|B|Go to Level 3 preset|
-|Y|Go to Level 4 preset|
-|Left Bumper|Go to Low Algae preset|
-|Right Bumper|Go to High Algae preset|
-|Left Trigger Pressed|Go to Intake preset|
-|Down on D-Pad|Go to Processor preset|
+|Coral reef trough|Bottom left button|
+|Coral reef level 2|2nd to bottom left button|
+|Coral reef level 3|3rd to bottom left button|
+|Coral reef level 4|4th to bottom left button|
+|Intake low algae|Top two left buttons at once|
+|Intake high algae|Bottom two left buttons at once|
+|Auto align to left pole|Left bottom right button|
+|Auto align to right pole|Right bottom right button|
+|Intake from coral station|Both bottom right buttons at once|
+|Processor|Both bottom right buttons at once with algae|
+|Eject coral or algae|Upper right button|
