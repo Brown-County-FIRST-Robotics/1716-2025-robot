@@ -162,44 +162,14 @@ public class RobotContainer {
   private void configureCompBindings() {
     manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
 
-    (new Trigger(
-            () ->
-                manipulator
-                    .getDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.1;
-                        })
-                    .isPresent()))
-        .onTrue(
+    // Temporary eject for the gripper
+    driverController
+        .y()
+        .whileTrue(
             Commands.runEnd(
-                    () -> manipulator.setGripper(-3500, -3500, -3500),
-                    () -> manipulator.setGripper(0, 0, 0),
-                    manipulator)
-                // .finallyDo(() -> driverController.setRumble(RumbleType.kBothRumble, 0.5))
-                .until(
-                    () ->
-                        manipulator
-                            .getDistanceReading()
-                            .filter(
-                                (Double d) -> {
-                                  return d < 0.1;
-                                })
-                            .isEmpty())
-                .andThen(
-                    Commands.runEnd(
-                            () -> manipulator.setGripper(1000, 1000, 1000),
-                            () -> manipulator.setGripper(0, 0, 0),
-                            manipulator)
-                        .until(
-                            () ->
-                                manipulator
-                                    .getDistanceReading()
-                                    .filter(
-                                        (Double d) -> {
-                                          return d < 0.1;
-                                        })
-                                    .isPresent())));
+                () -> manipulator.setGripper(-2000, -2000, -2000),
+                () -> manipulator.setGripper(0, 0, 0),
+                manipulator));
 
     // Grabber control
     // driverController // Controlled by main driver as they know when the robot is properly lined

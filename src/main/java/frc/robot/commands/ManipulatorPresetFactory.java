@@ -96,11 +96,40 @@ public class ManipulatorPresetFactory {
 
   public Command intake() {
     return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorIntake.get());
-          manipulator.setWristReference(wristIntake.get());
-        },
-        manipulator);
+            () -> {
+              manipulator.setElevatorReference(elevatorIntake.get());
+              manipulator.setWristReference(wristIntake.get());
+            },
+            manipulator)
+        .alongWith(
+            Commands.runEnd(
+                    () -> manipulator.setGripper(-3500, -3500, -3500),
+                    () -> manipulator.setGripper(0, 0, 0),
+                    manipulator)
+                // .finallyDo(() -> driverController.setRumble(RumbleType.kBothRumble, 0.5))
+                .until(
+                    () ->
+                        manipulator
+                            .getDistanceReading()
+                            .filter(
+                                (Double d) -> {
+                                  return d < 0.1;
+                                })
+                            .isEmpty())
+                .andThen(
+                    Commands.runEnd(
+                            () -> manipulator.setGripper(1000, 1000, 1000),
+                            () -> manipulator.setGripper(0, 0, 0),
+                            manipulator)
+                        .until(
+                            () ->
+                                manipulator
+                                    .getDistanceReading()
+                                    .filter(
+                                        (Double d) -> {
+                                          return d < 0.1;
+                                        })
+                                    .isPresent())));
   }
 
   public Command processor() {
