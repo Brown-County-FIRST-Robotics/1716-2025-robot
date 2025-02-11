@@ -162,26 +162,9 @@ public class RobotContainer {
   }
 
   private void configureCompBindings() {
-    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
-
-    // Temporary eject for the gripper
-    driverController
-        .y()
-        .whileTrue(
-            Commands.runEnd(
-                () -> manipulator.setGripper(-2000, -2000, -2000),
-                () -> manipulator.setGripper(0, 0, 0),
-                manipulator));
-
-    // Grabber control
-    // driverController // Controlled by main driver as they know when the robot is properly lined
-    // up
-    //     .rightTrigger(0.2)
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
-
     // Manipulator Presets
+    manipulator.setDefaultCommand(presetFactory.retracted());
+
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
     manipulatorPanel.level3().whileTrue(presetFactory.level3());
@@ -189,15 +172,19 @@ public class RobotContainer {
     manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
     manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
     
-    secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
-    // secondController // TODO: make this auto start when intake preset is pressed and auto end
-    // when
-    //     // recieved
-    //     .rightTrigger(0.2)
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
-    secondController.povDown().whileTrue(presetFactory.processor());
+    manipulatorPanel.intake().whileTrue(presetFactory.intake());
+    manipulatorPanel.processor().whileTrue(presetFactory.processor());
+
+    // Eject control on gripper, used for deposition, algae removal, and emergencies
+    // Available to either driver
+    driverController
+        .rightTrigger(0.2)
+        .or(manipulatorPanel.eject())
+        .whileTrue(
+            Commands.runEnd(
+                () -> manipulator.setGripper(-2000, -2000, -2000),
+                () -> manipulator.setGripper(0, 0, 0),
+                manipulator));
   }
 
   /**
