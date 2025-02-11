@@ -51,4 +51,10 @@ public class Manipulator extends SubsystemBase {
         ? Optional.of(gripperInputs.laserDistance)
         : Optional.empty();
   }
+
+  //Whether the arm is at the reference position (within some tolerance)
+  //TODO: implement
+  public boolean isInPosition() {
+    return true;
+  }
 }
