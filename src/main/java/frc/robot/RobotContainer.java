@@ -28,6 +28,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
+import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
 
 /**
@@ -41,6 +42,7 @@ public class RobotContainer {
   private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
+  private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
   private final Manipulator manipulator;
 
@@ -161,71 +163,29 @@ public class RobotContainer {
   }
 
   private void configureCompBindings() {
-    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
-
-    (new Trigger(
-            () ->
-                manipulator
-                    .getDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.1;
-                        })
-                    .isPresent()))
-        .onTrue(
-            Commands.runEnd(
-                    () -> manipulator.setGripper(-3500, -3500, -3500),
-                    () -> manipulator.setGripper(0, 0, 0),
-                    manipulator)
-                // .finallyDo(() -> driverController.setRumble(RumbleType.kBothRumble, 0.5))
-                .until(
-                    () ->
-                        manipulator
-                            .getDistanceReading()
-                            .filter(
-                                (Double d) -> {
-                                  return d < 0.1;
-                                })
-                            .isEmpty())
-                .andThen(
-                    Commands.runEnd(
-                            () -> manipulator.setGripper(1000, 1000, 1000),
-                            () -> manipulator.setGripper(0, 0, 0),
-                            manipulator)
-                        .until(
-                            () ->
-                                manipulator
-                                    .getDistanceReading()
-                                    .filter(
-                                        (Double d) -> {
-                                          return d < 0.1;
-                                        })
-                                    .isPresent())));
-
-    // Grabber control
-    // driverController // Controlled by main driver as they know when the robot is properly lined
-    // up
-    //     .rightTrigger(0.2)
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
-
     // Manipulator Presets
-    secondController.x().whileTrue(presetFactory.trough());
-    secondController.a().whileTrue(presetFactory.level2());
-    secondController.b().whileTrue(presetFactory.level3());
-    secondController.y().whileTrue(presetFactory.level4());
-    secondController.leftBumper().whileTrue(presetFactory.algaeLow());
-    secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
-    secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
-    // secondController // TODO: make this auto start when intake preset is pressed and auto end
-    // when
-    //     // recieved
-    //     .rightTrigger(0.2)
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
-    secondController.povDown().whileTrue(presetFactory.processor());
+    manipulator.setDefaultCommand(presetFactory.retracted());
+
+    manipulatorPanel.trough().whileTrue(presetFactory.trough());
+    manipulatorPanel.level2().whileTrue(presetFactory.level2());
+    manipulatorPanel.level3().whileTrue(presetFactory.level3());
+    manipulatorPanel.level4().whileTrue(presetFactory.level4());
+    manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
+    manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
+
+    manipulatorPanel.intake().whileTrue(presetFactory.intake());
+    manipulatorPanel.processor().whileTrue(presetFactory.processor());
+
+    // Eject control on gripper, used for deposition, algae removal, and emergencies
+    // Available to either driver
+    driverController
+        .rightTrigger(0.2)
+        .or(manipulatorPanel.eject())
+        .whileTrue(
+            Commands.runEnd(
+                () -> manipulator.setGripper(-2000, -2000, -2000),
+                () -> manipulator.setGripper(0, 0, 0),
+                manipulator));
   }
 
   /**

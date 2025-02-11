@@ -3,13 +3,18 @@ package frc.robot.utils.buttonbox;
 import edu.wpi.first.wpilibj.GenericHID;
 import java.util.ArrayList;
 import java.util.List;
+import org.littletonrobotics.junction.networktables.*;
 
 public class ButtonBox {
   List<ButtonBoxPanel> panels = new ArrayList<>();
   GenericHID wrapped;
+  List<LoggedDashboardBoolean> dash = new ArrayList<>();
 
   public ButtonBox(int index) {
     wrapped = new GenericHID(index);
+    for (int i = 0; i < 50; i++) {
+      dash.add(new LoggedDashboardBoolean("buttonbox/" + Integer.toString(i)));
+    }
   }
 
   boolean getBitFromFloat(float f, int ind) {
@@ -24,6 +29,10 @@ public class ButtonBox {
   }
 
   private boolean getButton(int ind) {
+    boolean useDash = true;
+    if (useDash) {
+      return dash.get(ind).get();
+    }
     int digital_outputs = 21;
     int pov_bits = 3;
     int analog_bits = 8;
