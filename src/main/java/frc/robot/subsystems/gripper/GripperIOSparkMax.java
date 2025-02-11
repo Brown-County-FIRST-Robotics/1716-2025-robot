@@ -20,10 +20,12 @@ public class GripperIOSparkMax implements GripperIO {
   private final RelativeEncoder bottomEncoder;
   private final SparkMax rear;
   private final RelativeEncoder rearEncoder;
-  private final LaserCan laserCan;
-  private LaserCan.Measurement measurement;
+  private final LaserCan coralLaserCan;
+  private final LaserCan algaeLaserCan;
+  private LaserCan.Measurement coralMeasurement;
+  private LaserCan.Measurement algaeMeasurement;
 
-  public GripperIOSparkMax(int topID, int bottomID, int rearID, int laserID) {
+  public GripperIOSparkMax(int topID, int bottomID, int rearID, int coralLaserID, int algaeLaserID) {
     top = new SparkMax(topID, MotorType.kBrushless);
     topConfig = new SparkMaxConfig();
     topEncoder = top.getEncoder();
@@ -31,8 +33,10 @@ public class GripperIOSparkMax implements GripperIO {
     bottomEncoder = bottom.getEncoder();
     rear = new SparkMax(rearID, MotorType.kBrushless);
     rearEncoder = rear.getEncoder();
-    laserCan = new LaserCan(laserID);
-    measurement = null; // set in UpdateInputs
+    coralLaserCan = new LaserCan(coralLaserID);
+    algaeLaserCan = new LaserCan(algaeLaserID);
+    coralMeasurement = null; // set in UpdateInputs
+    algaeMeasurement = null;
 
     topConfig.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
     topConfig.smartCurrentLimit(Constants.CurrentLimits.NEO550);
@@ -46,12 +50,24 @@ public class GripperIOSparkMax implements GripperIO {
 
     // LaserCan Configuration
     try {
-      laserCan.setRangingMode(LaserCan.RangingMode.SHORT);
+      coralLaserCan.setRangingMode(LaserCan.RangingMode.SHORT);
       // Configures which of the sensor diodes in the 16x16 sensor array are enabled
-      laserCan.setRegionOfInterest(
+      coralLaserCan.setRegionOfInterest(
           new LaserCan.RegionOfInterest(
               8, 8, 16, 16)); // Defines a 16x16 rectangle at (8, 8), the center
-      laserCan.setTimingBudget(
+      coralLaserCan.setTimingBudget(
+          LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
+    } catch (ConfigurationFailedException e) {
+      new Alert("LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
+    }
+    
+    try {
+      algaeLaserCan.setRangingMode(LaserCan.RangingMode.SHORT);
+      // Configures which of the sensor diodes in the 16x16 sensor array are enabled
+      algaeLaserCan.setRegionOfInterest(
+          new LaserCan.RegionOfInterest(
+              8, 8, 16, 16)); // Defines a 16x16 rectangle at (8, 8), the center
+      algaeLaserCan.setTimingBudget(
           LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
     } catch (ConfigurationFailedException e) {
       new Alert("LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
@@ -76,13 +92,21 @@ public class GripperIOSparkMax implements GripperIO {
     inputs.rearTemperature = rear.getMotorTemperature();
     inputs.rearCurrent = rear.getOutputCurrent();
 
-    measurement = laserCan.getMeasurement();
+    coralMeasurement = coralLaserCan.getMeasurement();
+    algaeMeasurement = algaeLaserCan.getMeasurement();
     // check if lasercan currently has a valid measurment
-    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      inputs.hasLaserMeasurement = true;
-      inputs.laserDistance = measurement.distance_mm / 1000.0;
+    if (coralMeasurement != null && coralMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      inputs.hasCoralLaserMeasurement = true;
+      inputs.coralLaserDistance = coralMeasurement.distance_mm / 1000.0;
     } else {
-      inputs.hasLaserMeasurement = false;
+      inputs.hasCoralLaserMeasurement = false;
+    }
+    
+    if (algaeLaserCan != null && algaeMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      inputs.hasAlgaeLaserMeasurement = true;
+      inputs.algaeLaserDistance = algaeMeasurement.distance_mm / 1000.0;
+    } else {
+      inputs.hasAlgaeLaserMeasurement = false;
     }
   }
 

@@ -84,8 +84,18 @@ public class ManipulatorPresetFactory {
         () -> {
           manipulator.setElevatorReference(elevatorAlgaeLow.get());
           manipulator.setWristReference(wristAlgaeLow.get());
+
+          if (manipulator.isInPosition()) {
+            gripper.setGripper(-3500, -3500, -3500);
+          } else {
+            gripper.setGripper(0, 0, 0);
+          }
         },
-        manipulator);
+        manipulator).until(() -> gripper.getAlgaeDistanceReading().filter(
+          (Double d) -> {
+            return d < 0.1;
+          })
+      .isEmpty());
   }
 
   public Command algaeHigh() {
@@ -93,6 +103,12 @@ public class ManipulatorPresetFactory {
         () -> {
           manipulator.setElevatorReference(elevatorAlgaeHigh.get());
           manipulator.setWristReference(wristAlgaeHigh.get());
+
+          if (manipulator.isInPosition()) {
+            gripper.setGripper(-3500, -3500, -3500);
+          } else {
+            gripper.setGripper(0, 0, 0);
+          }
         },
         manipulator);
   }
@@ -116,7 +132,7 @@ public class ManipulatorPresetFactory {
         .until(
             () ->
                 gripper
-                    .getDistanceReading()
+                    .getCoralDistanceReading()
                     .filter(
                         (Double d) -> {
                           return d < 0.1;
@@ -130,7 +146,7 @@ public class ManipulatorPresetFactory {
                 .until(
                     () ->
                         gripper
-                            .getDistanceReading()
+                            .getCoralDistanceReading()
                             .filter(
                                 (Double d) -> {
                                   return d < 0.1;
