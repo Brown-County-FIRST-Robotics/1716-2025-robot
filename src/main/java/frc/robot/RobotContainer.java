@@ -6,6 +6,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -259,6 +260,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return Commands.runEnd(
+            () -> driveSys.humanDrive(new ChassisSpeeds(-1, 0, 0)),
+            () -> driveSys.humanDrive(new ChassisSpeeds(0, 0, 0)),
+            driveSys)
+        .raceWith(Commands.waitSeconds(3));
   }
 }
