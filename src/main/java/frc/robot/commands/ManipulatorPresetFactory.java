@@ -94,13 +94,45 @@ public class ManipulatorPresetFactory {
         manipulator);
   }
 
+  // currently maintains control of position until the coral is properly positioned, slowing the
+  // robot down
   public Command intake() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorIntake.get());
-          manipulator.setWristReference(wristIntake.get());
-        },
-        manipulator);
+    return Commands.runEnd(
+            () -> {
+              manipulator.setElevatorReference(elevatorIntake.get());
+              manipulator.setWristReference(wristIntake.get());
+
+              if (manipulator.isInPosition()) {
+                manipulator.setGripper(-3500, -3500, -3500);
+              } else {
+                manipulator.setGripper(0, 0, 0);
+              }
+            },
+            () -> manipulator.setGripper(0, 0, 0),
+            manipulator)
+        .until(
+            () ->
+                manipulator
+                    .getDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isEmpty())
+        .andThen(
+            Commands.runEnd(
+                    () -> manipulator.setGripper(1000, 1000, 1000),
+                    () -> manipulator.setGripper(0, 0, 0),
+                    manipulator)
+                .until(
+                    () ->
+                        manipulator
+                            .getDistanceReading()
+                            .filter(
+                                (Double d) -> {
+                                  return d < 0.1;
+                                })
+                            .isPresent()));
   }
 
   public Command processor() {
