@@ -16,6 +16,7 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
+import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.swerve.Module;
@@ -44,6 +45,7 @@ public class RobotContainer {
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
   private final Manipulator manipulator;
+  private final Gripper gripper;
 
   private final ManipulatorPresetFactory presetFactory;
 
@@ -138,8 +140,9 @@ public class RobotContainer {
       elevatorIO = new ElevatorIO() {};
     }
 
-    manipulator = new Manipulator(elevatorIO, gripperIO, wristIO);
-    presetFactory = new ManipulatorPresetFactory(manipulator);
+    manipulator = new Manipulator(elevatorIO, wristIO);
+    gripper = new Gripper(gripperIO);
+    presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
@@ -182,9 +185,9 @@ public class RobotContainer {
         .or(manipulatorPanel.eject())
         .whileTrue(
             Commands.runEnd(
-                () -> manipulator.setGripper(-2000, -2000, -2000),
-                () -> manipulator.setGripper(0, 0, 0),
-                manipulator));
+                () -> gripper.setGripper(-2000, -2000, -2000),
+                () -> gripper.setGripper(0, 0, 0),
+                gripper));
   }
 
   /**

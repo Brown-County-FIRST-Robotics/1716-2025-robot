@@ -1,4 +1,4 @@
-package frc.robot.subsystems.manipulator;
+package frc.robot.subsystems.gripper;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
