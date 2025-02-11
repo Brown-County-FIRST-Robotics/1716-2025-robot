@@ -52,8 +52,8 @@ public class Manipulator extends SubsystemBase {
         : Optional.empty();
   }
 
-  //Whether the arm is at the reference position (within some tolerance)
-  //TODO: implement
+  // Whether the arm is at the reference position (within some tolerance)
+  // TODO: implement
   public boolean isInPosition() {
     return true;
   }

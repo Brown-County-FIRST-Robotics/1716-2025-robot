@@ -171,7 +171,7 @@ public class RobotContainer {
     manipulatorPanel.level4().whileTrue(presetFactory.level4());
     manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
     manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
-    
+
     manipulatorPanel.intake().whileTrue(presetFactory.intake());
     manipulatorPanel.processor().whileTrue(presetFactory.processor());
 
