@@ -44,7 +44,6 @@ public class RobotContainer {
   private final Drivetrain driveSys;
   private final Manipulator manipulator =
       new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
-  private final LEDs leds = new LEDs();
 
   private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
 
