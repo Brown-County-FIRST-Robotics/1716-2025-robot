@@ -58,7 +58,7 @@ public class GripperIOSparkMax implements GripperIO {
       coralLaserCan.setTimingBudget(
           LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
     } catch (ConfigurationFailedException e) {
-      new Alert("LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
+      new Alert(" Coral LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
     }
     
     try {
@@ -70,7 +70,7 @@ public class GripperIOSparkMax implements GripperIO {
       algaeLaserCan.setTimingBudget(
           LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
     } catch (ConfigurationFailedException e) {
-      new Alert("LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
+      new Alert(" Algae LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
     }
   }
 
