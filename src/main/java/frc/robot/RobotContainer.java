@@ -92,7 +92,7 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
+          gripperIO = new GripperIOSparkMax(31, 11, 4, 0, 1);
         }
         System.out.println("No appendages yet");
       }
@@ -142,10 +142,11 @@ public class RobotContainer {
 
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
-    presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
+    presetFactory =
+        new ManipulatorPresetFactory(manipulator, gripper, teleopDrive, driveSys, manipulatorPanel);
     if (WhoAmI.isDemoMode) {
       configureDemoBindings(teleopDrive);
     } else {

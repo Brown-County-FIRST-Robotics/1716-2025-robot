@@ -3,7 +3,6 @@ package frc.robot.subsystems.gripper;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,6 +34,7 @@ public class Gripper extends SubsystemBase {
         ? Optional.of(gripperInputs.coralLaserDistance)
         : Optional.empty();
   }
+
   public Optional<Double> getAlgaeDistanceReading() {
     return gripperInputs.hasAlgaeLaserMeasurement
         ? Optional.of(gripperInputs.algaeLaserDistance)

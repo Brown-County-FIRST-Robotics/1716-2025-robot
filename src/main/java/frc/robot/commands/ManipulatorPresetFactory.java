@@ -1,14 +1,22 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.FieldConstants;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.buttonbox.ManipulatorPanel;
+import java.util.Optional;
 
 public class ManipulatorPresetFactory {
   Manipulator manipulator;
   Gripper gripper;
+  TeleopDrive teleopDrive;
+  Drivetrain driveTrain;
+  ManipulatorPanel manipulatorPanel;
 
   LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
   LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", 0.0);
@@ -29,9 +37,27 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
   LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
 
-  public ManipulatorPresetFactory(Manipulator manipulator_, Gripper gripper_) {
+  public ManipulatorPresetFactory(
+      Manipulator manipulator_,
+      Gripper gripper_,
+      TeleopDrive teleopDrive_,
+      Drivetrain driveTrain_,
+      ManipulatorPanel manipulatorPanel_) {
     manipulator = manipulator_;
     gripper = gripper_;
+    driveTrain = driveTrain_;
+    teleopDrive = teleopDrive_;
+    manipulatorPanel = manipulatorPanel_;
+  }
+
+  public Optional<Translation2d> whereShouldIBe() {
+    var position = driveTrain.getPosition();
+    for (int i = 0; i < 6; i++) {
+      if (FieldConstants.getBox(i).intersects(position.getTranslation())) {
+        return Optional.of(FieldConstants.getPole(i, manipulatorPanel.leftPole().getAsBoolean()));
+      }
+    }
+    return Optional.empty();
   }
 
   public Command retracted() {
@@ -81,21 +107,26 @@ public class ManipulatorPresetFactory {
 
   public Command algaeLow() {
     return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeLow.get());
-          manipulator.setWristReference(wristAlgaeLow.get());
+            () -> {
+              manipulator.setElevatorReference(elevatorAlgaeLow.get());
+              manipulator.setWristReference(wristAlgaeLow.get());
 
-          if (manipulator.isInPosition()) {
-            gripper.setGripper(-3500, -3500, -3500);
-          } else {
-            gripper.setGripper(0, 0, 0);
-          }
-        },
-        manipulator).until(() -> gripper.getAlgaeDistanceReading().filter(
-          (Double d) -> {
-            return d < 0.1;
-          })
-      .isEmpty());
+              if (manipulator.isInPosition()) {
+                gripper.setGripper(-3500, -3500, -3500);
+              } else {
+                gripper.setGripper(0, 0, 0);
+              }
+            },
+            manipulator)
+        .until(
+            () ->
+                gripper
+                    .getAlgaeDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isEmpty());
   }
 
   public Command algaeHigh() {
@@ -128,7 +159,8 @@ public class ManipulatorPresetFactory {
               }
             },
             () -> gripper.setGripper(0, 0, 0),
-            manipulator, gripper)
+            manipulator,
+            gripper)
         .until(
             () ->
                 gripper
