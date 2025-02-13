@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,9 +33,6 @@ import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoFactory.AutoBindings;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -49,7 +47,7 @@ public class RobotContainer {
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
   private final LoggedDashboardChooser<Command> autoChooser;
-  private final AutoFactory autoFactory;
+  private AutoFactory autoFactory;
   private final Manipulator manipulator;
 
   private final ManipulatorPresetFactory presetFactory;
@@ -137,7 +135,14 @@ public class RobotContainer {
       }
     }
     // TODO: Fix the followTrajectory code so it takes the correct argument (Collin)
-    autoFactory = new AutoFactory(driveSys::getPosition, driveSys::setPosition, driveSys::followTrajectory, true, driveSys, new AutoBindings());
+    autoFactory =
+        new AutoFactory(
+            driveSys::getPosition,
+            driveSys::setPosition, // TODO: don't do this (ie: give fake function)
+            driveSys::followTrajectory,
+            true,
+            driveSys,
+            new AutoFactory.AutoBindings());
     autoChooser.addDefaultOption("Nothing", Commands.none());
     autoChooser.addOption(
         "Move backward 3s",
