@@ -92,7 +92,7 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
+          gripperIO = new GripperIOSparkMax(31, 11, 4, 0, 1);
         }
         System.out.println("No appendages yet");
       }

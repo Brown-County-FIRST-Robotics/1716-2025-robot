@@ -13,8 +13,8 @@ public interface GripperIO {
     double rearVelocity = 0.0;
     double coralLaserDistance = 0.0;
     double algaeLaserDistance = 0.0;
-    boolean hasCoralLaserMeasurement = false;
-    boolean hasAlgaeLaserMeasurement = false;  // Whether the laser can see anything
+    boolean hasCoralLaserMeasurement = false; // Whether the lasers can see anything
+    boolean hasAlgaeLaserMeasurement = false;
 
     double topAppliedOutput = 0.0;
     double bottomAppliedOutput = 0.0;

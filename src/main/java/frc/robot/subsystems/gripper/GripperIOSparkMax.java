@@ -25,7 +25,8 @@ public class GripperIOSparkMax implements GripperIO {
   private LaserCan.Measurement coralMeasurement;
   private LaserCan.Measurement algaeMeasurement;
 
-  public GripperIOSparkMax(int topID, int bottomID, int rearID, int coralLaserID, int algaeLaserID) {
+  public GripperIOSparkMax(
+      int topID, int bottomID, int rearID, int coralLaserID, int algaeLaserID) {
     top = new SparkMax(topID, MotorType.kBrushless);
     topConfig = new SparkMaxConfig();
     topEncoder = top.getEncoder();
@@ -60,7 +61,7 @@ public class GripperIOSparkMax implements GripperIO {
     } catch (ConfigurationFailedException e) {
       new Alert(" Coral LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
     }
-    
+
     try {
       algaeLaserCan.setRangingMode(LaserCan.RangingMode.SHORT);
       // Configures which of the sensor diodes in the 16x16 sensor array are enabled
@@ -95,14 +96,16 @@ public class GripperIOSparkMax implements GripperIO {
     coralMeasurement = coralLaserCan.getMeasurement();
     algaeMeasurement = algaeLaserCan.getMeasurement();
     // check if lasercan currently has a valid measurment
-    if (coralMeasurement != null && coralMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+    if (coralMeasurement != null
+        && coralMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
       inputs.hasCoralLaserMeasurement = true;
       inputs.coralLaserDistance = coralMeasurement.distance_mm / 1000.0;
     } else {
       inputs.hasCoralLaserMeasurement = false;
     }
-    
-    if (algaeLaserCan != null && algaeMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+
+    if (algaeLaserCan != null
+        && algaeMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
       inputs.hasAlgaeLaserMeasurement = true;
       inputs.algaeLaserDistance = algaeMeasurement.distance_mm / 1000.0;
     } else {

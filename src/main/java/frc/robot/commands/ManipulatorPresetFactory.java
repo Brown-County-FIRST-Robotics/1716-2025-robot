@@ -81,36 +81,52 @@ public class ManipulatorPresetFactory {
 
   public Command algaeLow() {
     return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeLow.get());
-          manipulator.setWristReference(wristAlgaeLow.get());
+            () -> {
+              manipulator.setElevatorReference(elevatorAlgaeLow.get());
+              manipulator.setWristReference(wristAlgaeLow.get());
 
-          if (manipulator.isInPosition()) {
-            gripper.setGripper(-3500, -3500, -3500);
-          } else {
-            gripper.setGripper(0, 0, 0);
-          }
-        },
-        manipulator).until(() -> gripper.getAlgaeDistanceReading().filter(
-          (Double d) -> {
-            return d < 0.1;
-          })
-      .isEmpty());
+              if (manipulator.isInPosition()) {
+                gripper.setGripper(1000, 1000, 1000);
+              } else {
+                gripper.setGripper(0, 0, 0);
+              }
+            },
+            manipulator)
+        .until(
+            () ->
+                gripper
+                    .getAlgaeDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isEmpty())
+        .andThen(gripper.holdAlgae());
   }
 
   public Command algaeHigh() {
     return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeHigh.get());
-          manipulator.setWristReference(wristAlgaeHigh.get());
+            () -> {
+              manipulator.setElevatorReference(elevatorAlgaeHigh.get());
+              manipulator.setWristReference(wristAlgaeHigh.get());
 
-          if (manipulator.isInPosition()) {
-            gripper.setGripper(-3500, -3500, -3500);
-          } else {
-            gripper.setGripper(0, 0, 0);
-          }
-        },
-        manipulator);
+              if (manipulator.isInPosition()) {
+                gripper.setGripper(1000, 1000, 1000);
+              } else {
+                gripper.setGripper(0, 0, 0);
+              }
+            },
+            manipulator)
+        .until(
+            () ->
+                gripper
+                    .getAlgaeDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isEmpty())
+        .andThen(gripper.holdAlgae());
   }
 
   // currently maintains control of position until the coral is properly positioned, slowing the
@@ -128,7 +144,8 @@ public class ManipulatorPresetFactory {
               }
             },
             () -> gripper.setGripper(0, 0, 0),
-            manipulator, gripper)
+            manipulator,
+            gripper)
         .until(
             () ->
                 gripper
