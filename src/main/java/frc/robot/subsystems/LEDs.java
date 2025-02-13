@@ -13,7 +13,7 @@ public class LEDs extends PeriodicRunnable {
   public LEDs() {
     super(); // Super call adds it to the registry, which calls the periodic method every tick
     leds = new AddressableLED(5);
-    ledBuff = new AddressableLEDBuffer(5); // something around 280 length for LED
+    ledBuff = new AddressableLEDBuffer(30); // something around 280 length for LED
     leds.setLength(ledBuff.getLength());
     leds.setData(ledBuff);
     leds.start();
@@ -27,13 +27,13 @@ public class LEDs extends PeriodicRunnable {
   @Override
   public void periodic() {
 
-   /*  for (var i = 0; i < ledBuff.getLength(); i++) {
+     for (var i = 0; i < ledBuff.getLength(); i++) {
       // Sets the specified LED to the HSV values for red
       ledBuff.setHSV(i, 0, 100, 100);
     }
     //leds.setData(ledBuff);
     // leds.setData(ledBuff);
-    */
+    
 
 
     LEDPattern red = LEDPattern.solid(Color.kRed);
