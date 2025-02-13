@@ -179,6 +179,8 @@ public class RobotContainer {
     manipulatorPanel.intake(gripper).whileTrue(presetFactory.intake());
     manipulatorPanel.processor(gripper).whileTrue(presetFactory.processor());
 
+    manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
+
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
     driverController

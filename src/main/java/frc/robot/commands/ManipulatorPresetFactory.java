@@ -60,6 +60,17 @@ public class ManipulatorPresetFactory {
     return Optional.empty();
   }
 
+  public Command aim() {
+    return Commands.runEnd(
+        () ->
+            teleopDrive.setCustomRotation(
+                whereShouldIBe()
+                    .map(
+                        (Translation2d translate) ->
+                            driveTrain.getPosition().getTranslation().minus(translate).getAngle())),
+        () -> teleopDrive.setCustomRotation(Optional.empty()));
+  }
+
   public Command retracted() {
     return Commands.run(
         () -> {
