@@ -10,6 +10,8 @@ import frc.robot.utils.Overrides;
 import frc.robot.utils.PoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
+import choreo.trajectory.SwerveSample;
+
 /** The swerve drivetrain subsystem */
 public class SwerveDrivetrain implements Drivetrain {
   private static final double D = 21 * 0.0254; // TODO: Rename this
@@ -163,5 +165,9 @@ public class SwerveDrivetrain implements Drivetrain {
   @Override
   public PoseEstimator getPE() {
     return poseEstimator;
+  }
+
+  public void followTrajectory( sample) {
+    // TODO: Follow trajectory in this code
   }
 }
