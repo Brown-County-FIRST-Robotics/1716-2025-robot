@@ -34,12 +34,12 @@ public class LEDs extends PeriodicRunnable {
 
   private LEDs() {
     super(); // Super call adds it to the registry, which calls the periodic method every tick
-    // leds = new AddressableLED(5);
-    // ledBuff = new AddressableLEDBuffer(100); // something around 280 length for LED
+     leds = new AddressableLED(5);
+     ledBuff = new AddressableLEDBuffer(100); // something around 280 length for LED
     leds.setLength(ledBuff.getLength());
     leds.setData(ledBuff);
     leds.start();
-    // resetLeds();
+    //resetLeds();
 
     // for (var i = 0; i != ledBuff.getLength(); i++) {
     //   raindrop[i] = random.nextInt(255);
@@ -49,29 +49,34 @@ public class LEDs extends PeriodicRunnable {
   @Override
   public void periodic() {
 
-    // time++;
-    // time = time % timespeed;
+    ledBuff.setHSV(3, 100, 255, 20); //This is just a random led to see if code will work
+    leds.setData(ledBuff); //this part too
 
-    // brightness = (a - 15) * (a - 15);
 
-    // if (time == 1) {
-    //   a++;
-    //   a = a % 30;
-    // }
 
-    // if (time == 1) {
-    //   x = x + y % ledBuff.getLength();
-    //   x2 = x2 + y2 % ledBuff.getLength();
-    // }
-    // if (x == 44) {
-    //   y = -1;
-    //   y2 = 1;
-    // }
+     time++;
+     time = time % timespeed;
 
-    // if (x == 5) {
-    //   y = 1;
-    //   y2 = -1;
-    // }
+     brightness = (a - 15) * (a - 15);
+
+     if (time == 1) {
+       a++;
+       a = a % 30;
+     }
+
+     if (time == 1) {
+       x = x + y % ledBuff.getLength();
+       x2 = x2 + y2 % ledBuff.getLength();
+     }
+     if (x == 44) {
+       y = -1;
+       y2 = 1;
+     }
+
+     if (x == 5) {
+       y = 1;
+       y2 = -1;
+     }
 
     // if (mode1) // MODE 1
     // {
