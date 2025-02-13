@@ -175,8 +175,8 @@ public class RobotContainer {
     manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
     manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
 
-    manipulatorPanel.intake().whileTrue(presetFactory.intake());
-    manipulatorPanel.processor().whileTrue(presetFactory.processor());
+    manipulatorPanel.intake(gripper).whileTrue(presetFactory.intake());
+    manipulatorPanel.processor(gripper).whileTrue(presetFactory.processor());
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver

@@ -19,7 +19,6 @@ public class Gripper extends SubsystemBase {
   public void periodic() {
     gripperIO.updateInputs(gripperInputs);
     Logger.processInputs("Gripper", gripperInputs);
-    Logger.recordOutput("Gripper/HasAlgae", hasAlgae);
   }
 
   public void setGripper(double top, double bottom, double rear) {
@@ -48,12 +47,26 @@ public class Gripper extends SubsystemBase {
         : Optional.empty();
   }
 
+  public boolean hasAlgae() {
+    return hasAlgae;
+  }
+
   public Command holdAlgae() {
     return Commands.run(
             () -> {
               setGripper(getAlgaeDistanceReading().orElse(0.0) * 1000);
             },
             this)
+        .beforeStarting(
+            () -> {
+              hasAlgae = true;
+              Logger.recordOutput("Gripper/HasAlgae", true);
+            })
+        .finallyDo(
+            () -> {
+              hasAlgae = false;
+              Logger.recordOutput("Gripper/HasAlgae", false);
+            })
         .until(() -> getAlgaeDistanceReading().isEmpty());
   }
 }
