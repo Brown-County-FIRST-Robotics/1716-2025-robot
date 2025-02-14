@@ -14,12 +14,12 @@ import frc.robot.utils.Alert;
 
 public class GripperIOSparkMax implements GripperIO {
   private final SparkMax top;
-  private final SparkMaxConfig topConfig;
   private final RelativeEncoder topEncoder;
   private final SparkMax bottom;
   private final RelativeEncoder bottomEncoder;
   private final SparkMax rear;
   private final RelativeEncoder rearEncoder;
+  private final SparkMaxConfig config;
   private final LaserCan coralLaserCan;
   private final LaserCan algaeLaserCan;
   private LaserCan.Measurement coralMeasurement;
@@ -28,24 +28,29 @@ public class GripperIOSparkMax implements GripperIO {
   public GripperIOSparkMax(
       int topID, int bottomID, int rearID, int coralLaserID, int algaeLaserID) {
     top = new SparkMax(topID, MotorType.kBrushless);
-    topConfig = new SparkMaxConfig();
     topEncoder = top.getEncoder();
     bottom = new SparkMax(bottomID, MotorType.kBrushless);
     bottomEncoder = bottom.getEncoder();
     rear = new SparkMax(rearID, MotorType.kBrushless);
     rearEncoder = rear.getEncoder();
+
+    config = new SparkMaxConfig();
+
     coralLaserCan = new LaserCan(coralLaserID);
     algaeLaserCan = new LaserCan(algaeLaserID);
     coralMeasurement = null; // set in UpdateInputs
     algaeMeasurement = null;
 
-    topConfig.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
-    topConfig.smartCurrentLimit(Constants.CurrentLimits.NEO550);
-    topConfig.closedLoop.velocityFF(1.0 / 11000.0);
+    config.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
+    config.smartCurrentLimit(Constants.CurrentLimits.NEO550);
+    config.closedLoop.p(0.0001);
+    config.closedLoop.i(0);
+    config.closedLoop.d(0);
+    config.closedLoop.velocityFF(1 / 12000);
 
-    top.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    bottom.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rear.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rear.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     top.setInverted(true);
 
@@ -116,11 +121,11 @@ public class GripperIOSparkMax implements GripperIO {
   public void setVelocities(
       double topCommandVelocity, double bottomCommandVelocity, double rearCommandVelocity) {
     top.getClosedLoopController()
-        .setReference(topCommandVelocity, ControlType.kMAXMotionVelocityControl);
+        .setReference(topCommandVelocity, ControlType.kVelocity);
     bottom
         .getClosedLoopController()
-        .setReference(bottomCommandVelocity, ControlType.kMAXMotionVelocityControl);
+        .setReference(bottomCommandVelocity, ControlType.kVelocity);
     rear.getClosedLoopController()
-        .setReference(rearCommandVelocity, ControlType.kMAXMotionVelocityControl);
+        .setReference(rearCommandVelocity, ControlType.kVelocity);
   }
 }

@@ -187,10 +187,7 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.runEnd(
-                () -> gripper.setGripper(-2000, -2000, -2000),
-                () -> gripper.setGripper(0, 0, 0),
-                gripper));
+            Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
   }
 
   /**

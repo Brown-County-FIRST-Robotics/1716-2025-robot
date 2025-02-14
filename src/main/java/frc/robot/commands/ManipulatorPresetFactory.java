@@ -123,9 +123,9 @@ public class ManipulatorPresetFactory {
               manipulator.setWristReference(wristAlgaeLow.get());
 
               if (manipulator.isInPosition()) {
-                gripper.setGripper(-3500, -3500, -3500);
+                gripper.setGripper(-3500);
               } else {
-                gripper.setGripper(0, 0, 0);
+                gripper.setGripper(0);
               }
             },
             manipulator)
@@ -148,9 +148,9 @@ public class ManipulatorPresetFactory {
               manipulator.setWristReference(wristAlgaeHigh.get());
 
               if (manipulator.isInPosition()) {
-                gripper.setGripper(1000, 1000, 1000);
+                gripper.setGripper(1000);
               } else {
-                gripper.setGripper(0, 0, 0);
+                gripper.setGripper(0);
               }
             },
             manipulator)
@@ -175,12 +175,12 @@ public class ManipulatorPresetFactory {
               manipulator.setWristReference(wristIntake.get());
 
               if (manipulator.isInPosition()) {
-                gripper.setGripper(-3500, -3500, -3500);
+                gripper.setGripper(-3500);
               } else {
-                gripper.setGripper(0, 0, 0);
+                gripper.setGripper(0);
               }
             },
-            () -> gripper.setGripper(0, 0, 0),
+            () -> gripper.setGripper(0),
             manipulator,
             gripper)
         .until(
@@ -193,10 +193,7 @@ public class ManipulatorPresetFactory {
                         })
                     .isEmpty())
         .andThen(
-            Commands.runEnd(
-                    () -> gripper.setGripper(1000, 1000, 1000),
-                    () -> gripper.setGripper(0, 0, 0),
-                    gripper)
+            Commands.runEnd(() -> gripper.setGripper(1000), () -> gripper.setGripper(0), gripper)
                 .until(
                     () ->
                         gripper

@@ -21,18 +21,18 @@ public class Gripper extends SubsystemBase {
     Logger.processInputs("Gripper", gripperInputs);
   }
 
-  public void setGripper(double top, double bottom, double rear) {
-    Logger.recordOutput("Gripper/TopReference", top);
-    Logger.recordOutput("Gripper/BottomReference", bottom);
-    Logger.recordOutput("Gripper/RearReference", rear);
-    gripperIO.setVelocities(top, bottom, rear);
-  }
-
   public void setGripper(double speed) {
     Logger.recordOutput("Gripper/TopReference", speed);
     Logger.recordOutput("Gripper/BottomReference", speed);
     Logger.recordOutput("Gripper/RearReference", speed);
     gripperIO.setVelocities(speed, speed, speed);
+  }
+
+  public void setFront(double speed) {
+    Logger.recordOutput("Gripper/TopReference", speed);
+    Logger.recordOutput("Gripper/BottomReference", speed);
+    Logger.recordOutput("Gripper/RearReference", speed);
+    gripperIO.setVelocities(speed, speed, 0);
   }
 
   public Optional<Double> getCoralDistanceReading() {
@@ -54,7 +54,15 @@ public class Gripper extends SubsystemBase {
   public Command holdAlgae() {
     return Commands.run(
             () -> {
-              setGripper(getAlgaeDistanceReading().orElse(0.0) * 1000);
+              // if (getAlgaeDistanceReading().orElse(0.15) > 0.11) {
+              //   setFront(1500);
+              // }
+              // else {
+              //   setFront(0);
+              // }
+              setFront((getAlgaeDistanceReading().orElse(0.15) - 0.11) * 50000);
+              // setFront(2000);
+              //System.out.println(getAlgaeDistanceReading().orElse(0.15));
             },
             this)
         .beforeStarting(
@@ -64,9 +72,17 @@ public class Gripper extends SubsystemBase {
             })
         .finallyDo(
             () -> {
+              setFront(0);
               hasAlgae = false;
               Logger.recordOutput("Gripper/HasAlgae", false);
             })
-        .until(() -> getAlgaeDistanceReading().isEmpty());
+        .until(
+            () ->
+                getAlgaeDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.25;
+                        })
+                    .isEmpty());
   }
 }
