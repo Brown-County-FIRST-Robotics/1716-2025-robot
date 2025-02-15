@@ -5,7 +5,9 @@
 
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +32,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,16 +47,19 @@ public class RobotContainer {
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
+  private final LoggedDashboardChooser<Command> autoChooser;
+  private AutoFactory autoFactory;
   private final Manipulator manipulator;
   private final Gripper gripper;
 
   private final ManipulatorPresetFactory presetFactory;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     ElevatorIO elevatorIO = null;
     GripperIO gripperIO = null;
     WristIO wristIO = null;
+    autoChooser = new LoggedDashboardChooser<Command>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -71,11 +77,11 @@ public class RobotContainer {
         case SWERVEBASE:
           driveSys =
               new SwerveDrivetrain(
-                  new Module(new ModuleIOSparkFX(23, 31, "FL"), 0),
-                  new Module(new ModuleIOSim(1), 1),
-                  new Module(new ModuleIOSim(2), 2),
-                  new Module(new ModuleIOSim(3), 3),
-                  new IMUIOSim());
+                  new Module(new ModuleIOSparkFX(24, 29, "FL"), 0),
+                  new Module(new ModuleIOSparkFX(23, 19, "FR"), 1),
+                  new Module(new ModuleIOSparkFX(20, 40, "BL"), 2),
+                  new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
+                  new IMUIONavx());
           var vision =
               new Vision(
                   driveSys,
@@ -130,6 +136,23 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
       }
     }
+    // TODO: Fix the followTrajectory code so it takes the correct argument (Collin)
+    autoFactory =
+        new AutoFactory(
+            driveSys::getPosition,
+            driveSys::setPosition, // TODO: don't do this (ie: give fake function)
+            driveSys::followTrajectory,
+            true,
+            driveSys,
+            new AutoFactory.AutoBindings());
+    autoChooser.addDefaultOption("Nothing", Commands.none());
+    autoChooser.addOption(
+        "Move backward 3s",
+        Commands.runEnd(
+                () -> driveSys.humanDrive(new ChassisSpeeds(-1, 0, 0)),
+                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                driveSys)
+            .raceWith(Commands.waitSeconds(3)));
     if (gripperIO == null) {
       gripperIO = new GripperIO() {};
     }
@@ -222,6 +245,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return autoChooser.get();
   }
 }

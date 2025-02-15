@@ -112,7 +112,8 @@ public class ManipulatorPresetFactory {
               }
             },
             () -> gripper.setGripper(0, 0, 0),
-            manipulator, gripper)
+            manipulator,
+            gripper)
         .until(
             () ->
                 gripper

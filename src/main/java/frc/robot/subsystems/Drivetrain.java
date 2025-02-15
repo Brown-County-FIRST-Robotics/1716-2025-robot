@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -64,4 +65,7 @@ public interface Drivetrain extends Subsystem {
    * @return The velocity
    */
   ChassisSpeeds getVelocity();
+
+  default void followTrajectory(SwerveSample sample) {}
+  ;
 }
