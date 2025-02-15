@@ -120,7 +120,7 @@ public class Module {
    * @param state The command state
    */
   public void setState(SwerveModuleState state) {
-     state.optimize(getChassisRelativeRotation());
+    state.optimize(getChassisRelativeRotation());
     // state.angle=Rotation2d.fromRotations(new XboxController(0).getRightY());
     state.speedMetersPerSecond *= getChassisRelativeRotation().minus(state.angle).getCos();
     Rotation2d cmdPosForRelativeEncoder =
@@ -131,11 +131,11 @@ public class Module {
             + cmdPosForRelativeEncoder.getRotations();
     if (Math.abs(adjustedRelCmd - inputs.relativeSensorAngle)
         > Math.abs(1.0 + adjustedRelCmd - inputs.relativeSensorAngle)) {
-       adjustedRelCmd += 1.0;
+      adjustedRelCmd += 1.0;
     }
     if (Math.abs(adjustedRelCmd - inputs.relativeSensorAngle)
         > Math.abs(-1.0 + adjustedRelCmd - inputs.relativeSensorAngle)) {
-       adjustedRelCmd -= 1.0;
+      adjustedRelCmd -= 1.0;
     }
 
     io.setCmdState(adjustedRelCmd, state.speedMetersPerSecond);

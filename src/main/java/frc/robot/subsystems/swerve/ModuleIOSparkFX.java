@@ -82,13 +82,13 @@ public class ModuleIOSparkFX implements ModuleIO {
     config.MotorOutput.DutyCycleNeutralDeadband = 0.01;
     offsetTun = new LoggedTunableNumber(name + "_offset");
     if (thrustID == 20) {
-      off = 0.284; //BL
+      off = 0.284; // BL
     } else if (thrustID == 21) {
-      off = 0.01; //SPARE, FILL IN
+      off = 0.01; // SPARE, FILL IN
     } else if (thrustID == 22) {
-      off = 0.099; //BR
+      off = 0.099; // BR
     } else if (thrustID == 23) {
-      off = 0.995; //FR
+      off = 0.995; // FR
     } else if (thrustID == 24) {
       off = 0.908; // FL
     }
@@ -167,7 +167,11 @@ public class ModuleIOSparkFX implements ModuleIO {
         .d(0) // steerD.get())
         .outputRange(-12, 12)
         .velocityFF(1.0 / 5676.0);
-    z.closedLoop.smartMotion.maxVelocity(5767).maxAcceleration(10000).allowedClosedLoopError(0.0025);
+    z.closedLoop
+        .smartMotion
+        .maxVelocity(5767)
+        .maxAcceleration(10000)
+        .allowedClosedLoopError(0.0025);
 
     z.closedLoop
         .maxMotion
