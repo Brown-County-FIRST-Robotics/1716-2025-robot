@@ -89,8 +89,7 @@ public class Module {
 
   private Rotation2d getAbsEncoderPos() {
     return Rotation2d.fromRotations(inputs.absSensorAngle)
-        .minus(Rotation2d.fromRotations(inputs.offset))
-        .unaryMinus();
+        .minus(Rotation2d.fromRotations(inputs.offset));
   }
 
   private Rotation2d getChassisRelativeRotation() {
@@ -139,6 +138,6 @@ public class Module {
       // adjustedRelCmd -= 1.0;
     }
 
-    io.setCmdState(state.angle.getRotations(), state.speedMetersPerSecond);
+    io.setCmdState(adjustedRelCmd, state.speedMetersPerSecond);
   }
 }
