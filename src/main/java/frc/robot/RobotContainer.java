@@ -149,7 +149,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Move backward 3s",
         Commands.runEnd(
-                () -> driveSys.humanDrive(new ChassisSpeeds(-0.25, 0, 0)),
+                () -> driveSys.humanDrive(new ChassisSpeeds(-1, 0, 0)),
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
