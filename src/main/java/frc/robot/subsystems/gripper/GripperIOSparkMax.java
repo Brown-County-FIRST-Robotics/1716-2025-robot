@@ -120,12 +120,8 @@ public class GripperIOSparkMax implements GripperIO {
 
   public void setVelocities(
       double topCommandVelocity, double bottomCommandVelocity, double rearCommandVelocity) {
-    top.getClosedLoopController()
-        .setReference(topCommandVelocity, ControlType.kVelocity);
-    bottom
-        .getClosedLoopController()
-        .setReference(bottomCommandVelocity, ControlType.kVelocity);
-    rear.getClosedLoopController()
-        .setReference(rearCommandVelocity, ControlType.kVelocity);
+    top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kVelocity);
+    bottom.getClosedLoopController().setReference(bottomCommandVelocity, ControlType.kVelocity);
+    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kVelocity);
   }
 }

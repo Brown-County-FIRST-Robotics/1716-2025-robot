@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.gripper.Gripper;
@@ -184,25 +185,46 @@ public class ManipulatorPresetFactory {
             manipulator,
             gripper)
         .until(
-            () ->
-                gripper
-                    .getCoralDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.1;
-                        })
-                    .isEmpty())
+            () -> {
+              return gripper
+                  .getCoralDistanceReading()
+                  .filter(
+                      (Double d) -> {
+                        return d < 0.1;
+                      })
+                  .isPresent();
+            })
         .andThen(
-            Commands.runEnd(() -> gripper.setGripper(1000), () -> gripper.setGripper(0), gripper)
-                .until(
-                    () ->
-                        gripper
-                            .getCoralDistanceReading()
-                            .filter(
-                                (Double d) -> {
-                                  return d < 0.1;
-                                })
-                            .isPresent()));
+            new ScheduleCommand(
+                Commands.runEnd(
+                        () -> {
+                          gripper.setGripper(-3500);
+                        },
+                        () -> gripper.setGripper(0),
+                        gripper)
+                    .until(
+                        () ->
+                            gripper
+                                .getCoralDistanceReading()
+                                .filter(
+                                    (Double d) -> {
+                                      return d < 0.1;
+                                    })
+                                .isEmpty())
+                    .andThen(
+                        Commands.runEnd(
+                                () -> gripper.setGripper(1000),
+                                () -> gripper.setGripper(0),
+                                gripper)
+                            .until(
+                                () ->
+                                    gripper
+                                        .getCoralDistanceReading()
+                                        .filter(
+                                            (Double d) -> {
+                                              return d < 0.1;
+                                            })
+                                        .isPresent()))));
   }
 
   public Command processor() {
