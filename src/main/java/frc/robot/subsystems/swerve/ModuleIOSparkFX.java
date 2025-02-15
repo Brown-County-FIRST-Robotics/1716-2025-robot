@@ -82,15 +82,15 @@ public class ModuleIOSparkFX implements ModuleIO {
     config.MotorOutput.DutyCycleNeutralDeadband = 0.01;
     offsetTun = new LoggedTunableNumber(name + "_offset");
     if (thrustID == 20) {
-      off = 0.812; // BR
+      off = 0.812; //
     } else if (thrustID == 21) {
-      off = 0.01; // BL
+      off = 0.01; //
     } else if (thrustID == 22) {
-      off = -0.03; // FL
+      off = -0.03; //
     } else if (thrustID == 23) {
-      off = 0.348; // FR? ID23 NEW WHEEL
+      off = 0.348; //
     } else if (thrustID == 24) {
-      off = 0.069; // FR (backup)
+      off = 0.908; // FL
     }
     offsetTun.initDefault(off);
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -225,9 +225,6 @@ public class ModuleIOSparkFX implements ModuleIO {
 
   @Override
   public void setCmdState(double ang, double vel) {
-    Logger.recordOutput("CMDANG", ang);
-    Logger.recordOutput("ANG", relativeEncoder.getPosition() * 7.0 / 150.0);
-    Logger.recordOutput("VEL", vel);
     thrust.setControl(new VelocityVoltage(vel / THRUST_DISTANCE_PER_TICK));
     pid.setReference(ang * 150.0 / 7.0, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0);
     // steer.set(0.2);
