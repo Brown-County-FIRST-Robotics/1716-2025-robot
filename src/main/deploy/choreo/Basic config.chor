@@ -1,5 +1,5 @@
 {
- "name":"ChoreoConfig",
+ "name":"Basic config",
  "version":1,
  "type":"Swerve",
  "variables":{
@@ -32,8 +32,8 @@
    "val":49.895160700000005
   },
   "inertia":{
-   "exp":"10 kg m ^ 2",
-   "val":10.0
+   "exp":"6 kg m ^ 2",
+   "val":6.0
   },
   "gearing":{
    "exp":"6.75",
@@ -48,8 +48,8 @@
    "val":668.1120376634293
   },
   "tmax":{
-   "exp":"4.69 N * m",
-   "val":4.69
+   "exp":"2.35 N * m",
+   "val":2.35
   },
   "cof":{
    "exp":"1",
