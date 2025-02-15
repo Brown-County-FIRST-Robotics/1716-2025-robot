@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
@@ -9,8 +10,6 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.Overrides;
 import frc.robot.utils.PoseEstimator;
 import org.littletonrobotics.junction.Logger;
-
-import choreo.trajectory.SwerveSample;
 
 /** The swerve drivetrain subsystem */
 public class SwerveDrivetrain implements Drivetrain {
@@ -167,7 +166,10 @@ public class SwerveDrivetrain implements Drivetrain {
     return poseEstimator;
   }
 
-  public void followTrajectory( sample) {
-    // TODO: Follow trajectory in this code
+  @Override
+  public void followTrajectory(SwerveSample sample) {
+    humanDrive(
+        new ChassisSpeeds(
+            sample.vx, sample.vy, sample.omega)); // TODO: probably use PID or something
   }
 }
