@@ -225,9 +225,7 @@ public class ModuleIOSparkFX implements ModuleIO {
 
   @Override
   public void setCmdState(double ang, double vel) {
-    Logger.recordOutput("CMDANG", ang);
-    Logger.recordOutput("ANG", relativeEncoder.getPosition() * 7.0 / 150.0);
-    Logger.recordOutput("VEL", vel);
+    vel=0.5;
     thrust.setControl(new VelocityVoltage(vel / THRUST_DISTANCE_PER_TICK));
     pid.setReference(ang * 150.0 / 7.0, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0);
     // steer.set(0.2);

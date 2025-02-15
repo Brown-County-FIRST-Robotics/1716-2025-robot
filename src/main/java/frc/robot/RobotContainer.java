@@ -75,7 +75,7 @@ public class RobotContainer {
                   new Module(new ModuleIOSparkFX(23, 19, "FR"), 0),
                   new Module(new ModuleIOSparkFX(20, 40, "BL"), 0),
                   new Module(new ModuleIOSparkFX(22, 9, "BR"), 0),
-                  new IMUIOSim());
+                  new IMUIONavx());
           var vision =
               new Vision(
                   driveSys,
