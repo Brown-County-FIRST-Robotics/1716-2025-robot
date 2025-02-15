@@ -1,7 +1,6 @@
 package frc.robot.subsystems.gripper;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
