@@ -14,6 +14,9 @@ public class Manipulator extends SubsystemBase {
     this.elevator = elevator;
     this.wrist = wrist;
   }
+  public double getPos(){
+    return elevatorInputs.height;
+  }
 
   @Override
   public void periodic() {
@@ -25,6 +28,9 @@ public class Manipulator extends SubsystemBase {
 
   public void setElevatorReference(double reference) {
     Logger.recordOutput("Elevator/Reference", reference);
+    if(reference<0){
+      reference=0;
+    }
     elevator.setPosition(reference, 0);
   }
 
