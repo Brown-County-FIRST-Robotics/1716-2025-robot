@@ -5,6 +5,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -12,18 +13,19 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
-  private final SparkMax elevator;
+  private final SparkFlex elevator;
   private final SparkMaxConfig elevatorConfig;
   private final RelativeEncoder elevatorEncoder;
   private final DigitalInput limitSwitch;
 
   public ElevatorIOSparkMax(int id, int limitSwitchID) {
-    elevator = new SparkMax(id, MotorType.kBrushless);
+    elevator = new SparkFlex(id, MotorType.kBrushless);
     elevatorConfig = new SparkMaxConfig();
     elevatorEncoder = elevator.getEncoder();
     limitSwitch = new DigitalInput(limitSwitchID);
 
-    elevatorConfig.closedLoop.maxMotion.maxAcceleration(1200); // placeholder
+    elevatorConfig.closedLoop.smartMotion.maxAcceleration(1200).maxVelocity(6700); // placeholder
+    elevatorConfig.closedLoop.velocityFF(1.0/6700.0);
     elevatorConfig.smartCurrentLimit(Constants.CurrentLimits.NEO);
 
     elevator.configure(
@@ -44,6 +46,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevator
         .getClosedLoopController()
         .setReference(
-            commandPosition, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, arbFF);
+            commandPosition, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0, arbFF);
   }
 }
