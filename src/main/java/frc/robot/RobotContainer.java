@@ -192,7 +192,7 @@ public class RobotContainer {
 
               public void run() {
                 manipulator.setElevatorReference(manipulator.getPos()
-                + 4.0*(driverController.getLeftTriggerAxis()
+                + 10.0*(driverController.getLeftTriggerAxis()
                     - driverController.getRightTriggerAxis()));
               }
             },
