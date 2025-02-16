@@ -5,7 +5,9 @@
 
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -17,6 +19,7 @@ import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.swerve.Module;
@@ -28,7 +31,9 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.buttonbox.ButtonBox;
+import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,17 +46,22 @@ public class RobotContainer {
   private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
+  private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
-  private final Manipulator manipulator =
-      new Manipulator(new ElevatorIO() {}, new GripperIO() {}, new WristIO() {});
   private final LEDs leds = new LEDs();
+  private final LoggedDashboardChooser<Command> autoChooser;
+  private AutoFactory autoFactory;
+  private final Manipulator manipulator;
+  private final Gripper gripper;
 
-  private final ManipulatorPresetFactory presetFactory = new ManipulatorPresetFactory(manipulator);
+  private final ManipulatorPresetFactory presetFactory;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
-    manipulator.setDefaultCommand(presetFactory.retracted()); // Does this need to be moved?
-
+    ElevatorIO elevatorIO = null;
+    GripperIO gripperIO = null;
+    WristIO wristIO = null;
+    autoChooser = new LoggedDashboardChooser<Command>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -69,11 +79,11 @@ public class RobotContainer {
         case SWERVEBASE:
           driveSys =
               new SwerveDrivetrain(
-                  new Module(new ModuleIOSparkFX(23, 31, "FL"), 0),
-                  new Module(new ModuleIOSim(1), 1),
-                  new Module(new ModuleIOSim(2), 2),
-                  new Module(new ModuleIOSim(3), 3),
-                  new IMUIOSim());
+                  new Module(new ModuleIOSparkFX(24, 29, "FL"), 0),
+                  new Module(new ModuleIOSparkFX(23, 19, "FR"), 1),
+                  new Module(new ModuleIOSparkFX(20, 40, "BL"), 2),
+                  new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
+                  new IMUIONavx());
           var vision =
               new Vision(
                   driveSys,
@@ -89,6 +99,9 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
       }
       for (var appendage : WhoAmI.appendages) {
+        if (appendage == WhoAmI.Appendages.GRIPPER) {
+          gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
+        }
         System.out.println("No appendages yet");
       }
     } else {
@@ -125,6 +138,38 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
       }
     }
+    // TODO: Fix the followTrajectory code so it takes the correct argument (Collin)
+    autoFactory =
+        new AutoFactory(
+            driveSys::getPosition,
+            driveSys::setPosition, // TODO: don't do this (ie: give fake function)
+            driveSys::followTrajectory,
+            true,
+            driveSys,
+            new AutoFactory.AutoBindings());
+    autoChooser.addDefaultOption("Nothing", Commands.none());
+    autoChooser.addOption(
+        "Move backward 3s",
+        Commands.runEnd(
+                () -> driveSys.humanDrive(new ChassisSpeeds(-1, 0, 0)),
+                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                driveSys)
+            .raceWith(Commands.waitSeconds(3)));
+    autoChooser.addOption("TEST CHOREO", autoFactory.trajectoryCmd("Test"));
+    if (gripperIO == null) {
+      gripperIO = new GripperIO() {};
+    }
+    if (wristIO == null) {
+      wristIO = new WristIO() {};
+    }
+    if (elevatorIO == null) {
+      elevatorIO = new ElevatorIO() {};
+    }
+
+    manipulator = new Manipulator(elevatorIO, wristIO);
+    gripper = new Gripper(gripperIO);
+    presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
+
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     if (WhoAmI.isDemoMode) {
@@ -146,28 +191,29 @@ public class RobotContainer {
   }
 
   private void configureCompBindings() {
-    // Grabber control
-    driverController // Controlled by main driver as they know when the robot is properly lined up
-        .rightTrigger(0.2)
-        .whileTrue(
-            Commands.startEnd(
-                () -> manipulator.deposit(), () -> manipulator.stopGripper(), manipulator));
-
     // Manipulator Presets
-    secondController.x().whileTrue(presetFactory.trough());
-    secondController.a().whileTrue(presetFactory.level2());
-    secondController.b().whileTrue(presetFactory.level3());
-    secondController.y().whileTrue(presetFactory.level4());
-    secondController.leftBumper().whileTrue(presetFactory.algaeLow());
-    secondController.rightBumper().whileTrue(presetFactory.algaeHigh());
-    secondController.leftTrigger(0.2).whileTrue(presetFactory.intake());
-    secondController // TODO: make this auto start when intake preset is pressed and auto end when
-        // recieved
+    manipulator.setDefaultCommand(presetFactory.retracted());
+
+    manipulatorPanel.trough().whileTrue(presetFactory.trough());
+    manipulatorPanel.level2().whileTrue(presetFactory.level2());
+    manipulatorPanel.level3().whileTrue(presetFactory.level3());
+    manipulatorPanel.level4().whileTrue(presetFactory.level4());
+    manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
+    manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
+
+    manipulatorPanel.intake().whileTrue(presetFactory.intake());
+    manipulatorPanel.processor().whileTrue(presetFactory.processor());
+
+    // Eject control on gripper, used for deposition, algae removal, and emergencies
+    // Available to either driver
+    driverController
         .rightTrigger(0.2)
+        .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.startEnd(
-                () -> manipulator.intake(), () -> manipulator.stopGripper(), manipulator));
-    secondController.povDown().whileTrue(presetFactory.processor());
+            Commands.runEnd(
+                () -> gripper.setGripper(-2000, -2000, -2000),
+                () -> gripper.setGripper(0, 0, 0),
+                gripper));
   }
 
   /**
@@ -202,6 +248,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return autoChooser.get();
   }
 }

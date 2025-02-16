@@ -1,9 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.Fahrenheit;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -24,6 +20,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Temperature;
@@ -85,15 +82,15 @@ public class ModuleIOSparkFX implements ModuleIO {
     config.MotorOutput.DutyCycleNeutralDeadband = 0.01;
     offsetTun = new LoggedTunableNumber(name + "_offset");
     if (thrustID == 20) {
-      off = 0.812; // BR
+      off = 0.284; // BL
     } else if (thrustID == 21) {
-      off = 0.01; // BL
+      off = 0.01; // SPARE, FILL IN
     } else if (thrustID == 22) {
-      off = -0.03; // FL
+      off = 0.099; // BR
     } else if (thrustID == 23) {
-      off = 0.348; // FR? ID23 NEW WHEEL
+      off = 0.995; // FR
     } else if (thrustID == 24) {
-      off = 0.069; // FR (backup)
+      off = 0.908; // FL
     }
     offsetTun.initDefault(off);
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -118,7 +115,7 @@ public class ModuleIOSparkFX implements ModuleIO {
     var closedloopconf = adfs.closedLoop;
     var relencoderconf = adfs.encoder.positionConversionFactor(1.0 / STEER_GEAR_RATIO);
     var analogconf = adfs.analogSensor.inverted(true);
-    // TEMP: FIX
+    // TODO: FIX
     // This probably doesn't work, but we need a more permanant solution later
     closedloopconf =
         closedloopconf
@@ -170,7 +167,11 @@ public class ModuleIOSparkFX implements ModuleIO {
         .d(0) // steerD.get())
         .outputRange(-12, 12)
         .velocityFF(1.0 / 5676.0);
-    z.closedLoop.smartMotion.maxVelocity(1000).maxAcceleration(1000).allowedClosedLoopError(0.0025);
+    z.closedLoop
+        .smartMotion
+        .maxVelocity(5767)
+        .maxAcceleration(10000)
+        .allowedClosedLoopError(0.0025);
 
     z.closedLoop
         .maxMotion
@@ -217,20 +218,17 @@ public class ModuleIOSparkFX implements ModuleIO {
     inputs.absSensorOmega = absoluteEncoder.getVelocity();
     inputs.relativeSensorAngle = relativeEncoder.getPosition() * 7.0 / 150.0;
     inputs.relativeSensorOmega = relativeEncoder.getVelocity() / 60.0;
-    inputs.thrustVel = velSignal.getValue().in(RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
-    inputs.thrustPos = posSignal.getValue().in(Rotations) * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustVel = velSignal.getValue().in(Units.RotationsPerSecond) * THRUST_DISTANCE_PER_TICK;
+    inputs.thrustPos = posSignal.getValue().in(Units.Rotations) * THRUST_DISTANCE_PER_TICK;
     inputs.steerTempC = steer.getMotorTemperature();
     inputs.thrustErr = errSignal.getValue();
-    inputs.thrustTempC = tempSignal.getValue().in(Fahrenheit);
+    inputs.thrustTempC = tempSignal.getValue().in(Units.Celsius);
     inputs.offset = offsetTun.get();
     inputs.thrustOutput = outputSignal.getValue();
   }
 
   @Override
   public void setCmdState(double ang, double vel) {
-    Logger.recordOutput("CMDANG", ang);
-    Logger.recordOutput("ANG", relativeEncoder.getPosition() * 7.0 / 150.0);
-    Logger.recordOutput("VEL", vel);
     thrust.setControl(new VelocityVoltage(vel / THRUST_DISTANCE_PER_TICK));
     pid.setReference(ang * 150.0 / 7.0, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0);
     // steer.set(0.2);

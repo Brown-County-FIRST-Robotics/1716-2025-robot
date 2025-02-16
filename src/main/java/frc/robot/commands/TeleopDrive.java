@@ -181,7 +181,7 @@ public class TeleopDrive extends Command {
         new Vector(frictionClampedVelocityChange, velocityChange.getAngle());
     commandedVector = currentVector.plus(cappedAcceleration);
 
-    double jeff = commandedVector.getNorm() - currentVector.getNorm(); // TODO: WTF?
+    double jeff = commandedVector.getNorm() - currentVector.getNorm();
     if (jeff > Constants.Driver.MAX_ACCELERATION / 50) {
       commandedVector.setNorm(currentVector.getNorm() + Constants.Driver.MAX_ACCELERATION / 50);
     }

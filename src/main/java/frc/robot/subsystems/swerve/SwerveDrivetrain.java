@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
@@ -73,10 +74,7 @@ public class SwerveDrivetrain implements Drivetrain {
     br.periodic();
 
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
-    Twist2d odoTwist = new Twist2d();
-    //        KINEMATICS.toTwist2d(
-    //            new SwerveDriveWheelPositions(lastPositions),
-    //            new SwerveDriveWheelPositions(getPositions())); //TEMP
+    Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());
     if (!Overrides.disableIMU.get()) {
       odoTwist =
           new Twist2d(
@@ -166,5 +164,12 @@ public class SwerveDrivetrain implements Drivetrain {
   @Override
   public PoseEstimator getPE() {
     return poseEstimator;
+  }
+
+  @Override
+  public void followTrajectory(SwerveSample sample) {
+    humanDrive(
+        new ChassisSpeeds(
+            sample.vx, sample.vy, sample.omega)); // TODO: probably use PID or something
   }
 }

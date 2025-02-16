@@ -2,11 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class ManipulatorPresetFactory {
   Manipulator manipulator;
+  Gripper gripper;
 
   LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
   LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", 0.0);
@@ -27,8 +29,9 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
   LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
 
-  public ManipulatorPresetFactory(Manipulator manipulator_) {
+  public ManipulatorPresetFactory(Manipulator manipulator_, Gripper gripper_) {
     manipulator = manipulator_;
+    gripper = gripper_;
   }
 
   public Command retracted() {
@@ -94,13 +97,46 @@ public class ManipulatorPresetFactory {
         manipulator);
   }
 
+  // currently maintains control of position until the coral is properly positioned, slowing the
+  // robot down
   public Command intake() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorIntake.get());
-          manipulator.setWristReference(wristIntake.get());
-        },
-        manipulator);
+    return Commands.runEnd(
+            () -> {
+              manipulator.setElevatorReference(elevatorIntake.get());
+              manipulator.setWristReference(wristIntake.get());
+
+              if (manipulator.isInPosition()) {
+                gripper.setGripper(-3500, -3500, -3500);
+              } else {
+                gripper.setGripper(0, 0, 0);
+              }
+            },
+            () -> gripper.setGripper(0, 0, 0),
+            manipulator,
+            gripper)
+        .until(
+            () ->
+                gripper
+                    .getDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isEmpty())
+        .andThen(
+            Commands.runEnd(
+                    () -> gripper.setGripper(1000, 1000, 1000),
+                    () -> gripper.setGripper(0, 0, 0),
+                    gripper)
+                .until(
+                    () ->
+                        gripper
+                            .getDistanceReading()
+                            .filter(
+                                (Double d) -> {
+                                  return d < 0.1;
+                                })
+                            .isPresent()));
   }
 
   public Command processor() {

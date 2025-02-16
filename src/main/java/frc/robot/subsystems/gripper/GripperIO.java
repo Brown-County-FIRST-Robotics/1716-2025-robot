@@ -1,4 +1,4 @@
-package frc.robot.subsystems.manipulator;
+package frc.robot.subsystems.gripper;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -11,6 +11,8 @@ public interface GripperIO {
     double topVelocity = 0.0;
     double bottomVelocity = 0.0;
     double rearVelocity = 0.0;
+    double laserDistance = 0.0;
+    boolean hasLaserMeasurement = false; // Whether the laser can see anything
 
     double topAppliedOutput = 0.0;
     double bottomAppliedOutput = 0.0;

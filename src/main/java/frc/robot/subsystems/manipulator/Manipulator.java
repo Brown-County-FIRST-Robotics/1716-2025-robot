@@ -7,24 +7,19 @@ import org.littletonrobotics.junction.Logger;
 public class Manipulator extends SubsystemBase {
   private final ElevatorIO elevator;
   private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
-  private final GripperIO gripper;
-  private final GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final WristIO wrist;
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
-  public Manipulator(ElevatorIO elevator, GripperIO gripper, WristIO wrist) {
+  public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
-    this.gripper = gripper;
     this.wrist = wrist;
   }
 
   @Override
   public void periodic() {
     elevator.updateInputs(elevatorInputs);
-    gripper.updateInputs(gripperInputs);
     wrist.updateInputs(wristInputs);
     Logger.processInputs("Elevator", elevatorInputs);
-    Logger.processInputs("Gripper", gripperInputs);
     Logger.processInputs("Wrist", wristInputs);
   }
 
@@ -38,24 +33,9 @@ public class Manipulator extends SubsystemBase {
     wrist.setPosition(Rotation2d.fromDegrees(reference), 0);
   }
 
-  public void stopGripper() {
-    Logger.recordOutput("Gripper/TopReference", 0.0);
-    Logger.recordOutput("Gripper/BottomReference", 0.0);
-    Logger.recordOutput("Gripper/RearReference", 0.0);
-    gripper.setVelocities(0.0, 0.0, 0.0);
-  }
-
-  public void intake() {
-    Logger.recordOutput("Gripper/TopReference", -0.5);
-    Logger.recordOutput("Gripper/BottomReference", -0.5);
-    Logger.recordOutput("Gripper/RearReference", -0.5);
-    gripper.setVelocities(-0.5, -0.5, -0.5);
-  }
-
-  public void deposit() {
-    Logger.recordOutput("Gripper/TopReference", 0.5);
-    Logger.recordOutput("Gripper/BottomReference", 0.5);
-    Logger.recordOutput("Gripper/RearReference", 0.5);
-    gripper.setVelocities(0.5, 0.5, 0.5);
+  // Whether the arm is at the reference position (within some tolerance)
+  // TODO: implement
+  public boolean isInPosition() {
+    return true;
   }
 }

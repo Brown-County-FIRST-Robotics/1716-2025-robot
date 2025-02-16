@@ -5,6 +5,9 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.Temperature;
 
 /** The abstraction for the CTRE Pigeon 2 IMU */
 public class IMUIOPigeon implements IMUIO {
@@ -13,10 +16,10 @@ public class IMUIOPigeon implements IMUIO {
   final StatusSignal<Double> qX;
   final StatusSignal<Double> qY;
   final StatusSignal<Double> qZ;
-  StatusSignal<Double> accelX;
-  StatusSignal<Double> accelY;
-  StatusSignal<Double> accelZ;
-  StatusSignal<Double> temp;
+  final StatusSignal<LinearAcceleration> accelX;
+  final StatusSignal<LinearAcceleration> accelY;
+  final StatusSignal<LinearAcceleration> accelZ;
+  final StatusSignal<Temperature> temp;
 
   /**
    * Constructs an IMU using a CAN id
@@ -29,30 +32,29 @@ public class IMUIOPigeon implements IMUIO {
     qX = imu.getQuatX();
     qY = imu.getQuatY();
     qZ = imu.getQuatZ();
-    // TEMP
-    //    accelX = imu.getAccelerationX();
-    //    accelY = imu.getAccelerationY();
-    //    accelZ = imu.getAccelerationZ();
-    //    temp = imu.getTemperature();
+    accelX = imu.getAccelerationX();
+    accelY = imu.getAccelerationY();
+    accelZ = imu.getAccelerationZ();
+    temp = imu.getTemperature();
     qW.setUpdateFrequency(50.0);
     qX.setUpdateFrequency(50.0);
     qY.setUpdateFrequency(50.0);
     qZ.setUpdateFrequency(50.0);
-    //    accelX.setUpdateFrequency(50.0);
-    //    accelY.setUpdateFrequency(50.0);
-    //    accelZ.setUpdateFrequency(50.0);
-    //    temp.setUpdateFrequency(20.0);
+    accelX.setUpdateFrequency(50.0);
+    accelY.setUpdateFrequency(50.0);
+    accelZ.setUpdateFrequency(50.0);
+    temp.setUpdateFrequency(20.0);
     imu.optimizeBusUtilization();
   }
 
   @Override
   public void updateInputs(IMUIOInputs inputs) {
     BaseStatusSignal.refreshAll(temp, qW, qX, qY, qZ, accelX, accelY, accelZ);
-    inputs.tempC = temp.getValue();
+    inputs.tempC = temp.getValue().in(Units.Celsius);
     inputs.rotation =
         new Rotation3d(new Quaternion(qW.getValue(), qX.getValue(), qY.getValue(), qZ.getValue()));
-    inputs.xAccelMPS = accelX.getValue();
-    inputs.yAccelMPS = accelY.getValue();
-    inputs.zAccelMPS = accelZ.getValue();
+    inputs.xAccelMPS = accelX.getValue().in(Units.MetersPerSecondPerSecond);
+    inputs.yAccelMPS = accelY.getValue().in(Units.MetersPerSecondPerSecond);
+    inputs.zAccelMPS = accelZ.getValue().in(Units.MetersPerSecondPerSecond);
   }
 }

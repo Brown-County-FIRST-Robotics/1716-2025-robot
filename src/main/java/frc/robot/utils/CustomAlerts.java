@@ -1,6 +1,7 @@
 package frc.robot.utils;
 
 import com.studica.frc.AHRS;
+import edu.wpi.first.hal.can.CANJNI;
 import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
@@ -152,16 +153,17 @@ public class CustomAlerts {
    */
   public static void makeCANFailAlerts(double errUtilization) {
     var stat = new CANStatus();
+    CANJNI.getCANStatus(stat);
 
-    //    new CustomAlert(
-    //        Alert.AlertType.ERROR,
-    //        () -> errUtilization < LoggedSystemStats.getInputs().canStatus.percentBusUtilization,
-    //        () ->
-    //            "CAN Bus utilization is "
-    //                + LoggedSystemStats.getInputs().canStatus.percentBusUtilization
-    //                + "(max "
-    //                + errUtilization
-    //                + "). All mechanisms may soon cease to function. ");
+    new CustomAlert(
+        Alert.AlertType.ERROR,
+        () -> errUtilization < stat.percentBusUtilization,
+        () ->
+            "CAN Bus utilization is "
+                + stat.percentBusUtilization
+                + "(max "
+                + errUtilization
+                + "). All mechanisms may soon cease to function. ");
   }
 
   /**
