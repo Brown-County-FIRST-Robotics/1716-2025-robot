@@ -9,10 +9,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class ClimberIOSparkMaxes implements ClimberIO {
-  private final SparkMax climberLeft; // temporary ID
+  private final SparkMax climberLeft;
   private final SparkMax climberRight;
   private final SparkMaxConfig climberConfig = new SparkMaxConfig();
-  // temporary ID
 
   // Custom methods go here:
   @Override
