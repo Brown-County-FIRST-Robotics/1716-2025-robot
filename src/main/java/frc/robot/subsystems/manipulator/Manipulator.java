@@ -25,6 +25,9 @@ public class Manipulator extends SubsystemBase {
 
   public void setElevatorReference(double reference) {
     Logger.recordOutput("Elevator/Reference", reference);
+    if(reference<0){
+      reference=0;
+    }
     elevator.setPosition(reference, 0);
   }
 

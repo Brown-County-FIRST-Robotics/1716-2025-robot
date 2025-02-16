@@ -10,6 +10,7 @@ public final class WhoAmI {
   public static final RobotType bot = RobotType.SWERVEBASE;
   /** The appendages to the robot */
   public static final Appendages[] appendages = {
+    Appendages.ELEVATOR
     // TODO:add this back in after we get some appendages
   };
 
