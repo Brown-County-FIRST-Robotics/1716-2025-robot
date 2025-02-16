@@ -6,22 +6,33 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.*;
+import frc.robot.commands.ManipulatorPresetFactory;
+import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.gripper.*;
-import frc.robot.subsystems.manipulator.*;
-import frc.robot.subsystems.mecanum.*;
+import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.gripper.GripperIO;
+import frc.robot.subsystems.gripper.GripperIOSparkMax;
+import frc.robot.subsystems.manipulator.ElevatorIO;
+import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
+import frc.robot.subsystems.manipulator.Manipulator;
+import frc.robot.subsystems.manipulator.WristIO;
+import frc.robot.subsystems.mecanum.MecanumDrivetrain;
+import frc.robot.subsystems.mecanum.MecanumIO;
+import frc.robot.subsystems.mecanum.MecanumIOSpark;
 import frc.robot.subsystems.swerve.Module;
 import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
@@ -102,6 +113,9 @@ public class RobotContainer {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
           gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
         }
+        if (appendage == WhoAmI.Appendages.ELEVATOR) {
+          elevatorIO = new ElevatorIOSparkMax(53, 0);
+        }
         System.out.println("No appendages yet");
       }
     } else {
@@ -155,7 +169,9 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
-    autoChooser.addOption("TEST CHOREO", autoFactory.trajectoryCmd("Test"));
+    autoChooser.addOption(
+        "TEST CHOREO",
+        autoFactory.resetOdometry("Test").andThen(autoFactory.trajectoryCmd("Test")));
     if (gripperIO == null) {
       gripperIO = new GripperIO() {};
     }
@@ -170,6 +186,17 @@ public class RobotContainer {
     gripper = new Gripper(gripperIO);
     presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
+    manipulator.setDefaultCommand(
+        Commands.run(
+            new Runnable() {
+
+              public void run() {
+                manipulator.setElevatorReference(manipulator.getPos()
+                + 4.0*(driverController.getLeftTriggerAxis()
+                    - driverController.getRightTriggerAxis()));
+              }
+            },
+            manipulator));
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     if (WhoAmI.isDemoMode) {
@@ -178,6 +205,7 @@ public class RobotContainer {
       configureCompBindings();
     }
   }
+
 
   public void configureAutos() {}
 
@@ -192,7 +220,7 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Manipulator Presets
-    manipulator.setDefaultCommand(presetFactory.retracted());
+    // manipulator.setDefaultCommand(presetFactory.retracted());
 
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
