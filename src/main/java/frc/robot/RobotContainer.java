@@ -18,6 +18,7 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final Drivetrain driveSys;
+  private final LEDs leds = new LEDs();
   private final LoggedDashboardChooser<Command> autoChooser;
   private AutoFactory autoFactory;
   private final Manipulator manipulator;
