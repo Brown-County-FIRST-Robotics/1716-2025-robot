@@ -153,6 +153,7 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
+    autoChooser.addOption("TEST CHOREO", autoFactory.trajectoryCmd("Test"));
     if (gripperIO == null) {
       gripperIO = new GripperIO() {};
     }
