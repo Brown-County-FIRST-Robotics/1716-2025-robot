@@ -8,12 +8,12 @@ import org.littletonrobotics.junction.networktables.*;
 public class ButtonBox {
   List<ButtonBoxPanel> panels = new ArrayList<>();
   GenericHID wrapped;
-  List<LoggedDashboardBoolean> dash = new ArrayList<>();
+  List<LoggedNetworkBoolean> dash = new ArrayList<>();
 
   public ButtonBox(int index) {
     wrapped = new GenericHID(index);
     for (int i = 0; i < 50; i++) {
-      dash.add(new LoggedDashboardBoolean("buttonbox/" + Integer.toString(i)));
+      dash.add(new LoggedNetworkBoolean("Shuffleboard/buttonbox/" + Integer.toString(i)));
     }
   }
 
