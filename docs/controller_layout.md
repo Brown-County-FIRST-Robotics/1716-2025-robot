@@ -13,4 +13,6 @@
 
 ## Driver 2
 
+![Manipulator Module Layout](./ManipulatorModule.svg)
+
 Driver 2 uses a button box module to control the manipulator.
