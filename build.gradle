@@ -141,7 +141,7 @@ tasks.register('checkSim',JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     args("sim")
 }
-simulateJava.dependsOn(checkSim);
+//simulateJava.dependsOn(checkSim);
 
 
 def writeGitData =tasks.create("writeGitData") {

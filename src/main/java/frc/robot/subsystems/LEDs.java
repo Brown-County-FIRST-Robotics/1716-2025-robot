@@ -57,6 +57,7 @@ public class LEDs extends PeriodicRunnable {
     if (value == x - 1) {
       value2++;
     }
+    value2 = value2 % 180;
 
     for (var i = 0;
         i < 85;
