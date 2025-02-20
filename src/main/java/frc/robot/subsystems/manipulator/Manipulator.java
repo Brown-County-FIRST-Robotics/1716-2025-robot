@@ -10,6 +10,8 @@ public class Manipulator extends SubsystemBase {
   private final WristIO wrist;
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
+  private double elevatorPositionOffset = 0.0;
+
   public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
     this.wrist = wrist;
@@ -21,10 +23,22 @@ public class Manipulator extends SubsystemBase {
     wrist.updateInputs(wristInputs);
     Logger.processInputs("Elevator", elevatorInputs);
     Logger.processInputs("Wrist", wristInputs);
+
+    if (elevatorInputs.limitSwitch) {
+      elevatorPositionOffset = elevatorInputs.position;
+    }
+    Logger.recordOutput(
+        "Elevator/ActualPosition", elevatorInputs.position - elevatorPositionOffset);
   }
 
   public void setElevatorReference(double reference) {
-    Logger.recordOutput("Elevator/Reference", reference);
+    double convertedReference =
+        Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
+    // TODO: Update these values to the actual max and min based on the position of the limit switch
+    convertedReference = convertedReference + elevatorPositionOffset;
+
+    Logger.recordOutput("Elevator/CommandReference", reference);
+    Logger.recordOutput("Elevator/ActualReference", convertedReference);
     elevator.setPosition(reference, 0);
   }
 

@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
@@ -17,7 +16,8 @@ public class ClimberIOSparkMaxes implements ClimberIO {
   private final DigitalInput rightLimitSwitch;
   private final SparkMaxConfig climberConfig;
 
-  public ClimberIOSparkMaxes(int leftID, int rightID, int leftLimitSwitchID, int rightLimitSwitchID) {
+  public ClimberIOSparkMaxes(
+      int leftID, int rightID, int leftLimitSwitchID, int rightLimitSwitchID) {
     climberLeft = new SparkMax(leftID, MotorType.kBrushless); // declares motor type & sets ID
     climberRight = new SparkMax(rightID, MotorType.kBrushless);
     leftLimitSwitch = new DigitalInput(leftLimitSwitchID);
@@ -57,15 +57,10 @@ public class ClimberIOSparkMaxes implements ClimberIO {
 
     inputs.limitSwitches = new boolean[] {leftLimitSwitch.get(), rightLimitSwitch.get()};
   }
-  
+
   @Override
-  public void setPositions(
-      double leftPosition, double rightPosition) {
-    climberLeft
-        .getClosedLoopController()
-        .setReference(leftPosition, ControlType.kPosition);
-    climberRight
-        .getClosedLoopController()
-        .setReference(rightPosition, ControlType.kPosition);
+  public void setPositions(double leftPosition, double rightPosition) {
+    climberLeft.getClosedLoopController().setReference(leftPosition, ControlType.kPosition);
+    climberRight.getClosedLoopController().setReference(rightPosition, ControlType.kPosition);
   }
 }

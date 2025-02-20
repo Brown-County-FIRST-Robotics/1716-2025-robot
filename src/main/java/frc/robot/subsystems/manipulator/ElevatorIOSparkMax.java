@@ -1,7 +1,6 @@
 package frc.robot.subsystems.manipulator;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -31,7 +30,7 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.height = elevatorEncoder.getPosition();
+    inputs.position = elevatorEncoder.getPosition();
     inputs.velocity = elevatorEncoder.getVelocity();
 
     inputs.appliedOutput = elevator.getAppliedOutput();
@@ -41,9 +40,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   public void setPosition(double commandPosition, double arbFF) {
-    elevator
-        .getClosedLoopController()
-        .setReference(
-            commandPosition, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, arbFF);
+    elevator.getClosedLoopController().setReference(commandPosition, ControlType.kPosition);
   }
 }
