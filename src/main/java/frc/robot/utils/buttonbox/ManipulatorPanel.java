@@ -1,7 +1,6 @@
 package frc.robot.utils.buttonbox;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.gripper.Gripper;
 
 public class ManipulatorPanel extends ButtonBoxPanel {
   // Digital Input IDs, assuming that level2 is TROUGH_ID + 1, etc.
@@ -55,12 +54,12 @@ public class ManipulatorPanel extends ButtonBoxPanel {
                 || (getButton(LEFT_POLE_ID) && getButton(LEFT_POLE_ID + 1)));
   }
 
-  public Trigger processor(Gripper gripper) {
-    return new Trigger(() -> getButton(UTILITY_ID) && gripper.hasAlgae());
+  public Trigger processor() {
+    return new Trigger(() -> getButton(UTILITY_ID));
   }
 
-  public Trigger intake(Gripper gripper) { // coral station
-    return new Trigger(() -> getButton(UTILITY_ID) && !gripper.hasAlgae());
+  public Trigger intake() { // coral station
+    return new Trigger(() -> getButton(UTILITY_ID));
   }
 
   public Trigger eject() {

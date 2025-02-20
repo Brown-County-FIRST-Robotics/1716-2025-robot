@@ -62,7 +62,7 @@ public class Gripper extends SubsystemBase {
               // }
               setFront((getAlgaeDistanceReading().orElse(0.15) - 0.11) * 50000);
               // setFront(2000);
-              //System.out.println(getAlgaeDistanceReading().orElse(0.15));
+              // System.out.println(getAlgaeDistanceReading().orElse(0.15));
             },
             this)
         .beforeStarting(
