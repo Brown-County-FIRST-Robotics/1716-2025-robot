@@ -10,9 +10,11 @@ public interface ClimberIO {
     double temperatures[] = new double[] {0.0, 0.0};
     double currents[] = new double[] {0.0, 0.0};
     double appliedOutputs[] = new double[] {0.0, 0.0};
+
+    boolean limitSwitches[] = new boolean[] {false, false};
   }
 
   default void updateInputs(ClimberIOInputs inputs) {}
 
-  default void setVelocities(double velocityLeft, double velocityRight) {}
+  default void setPositions(double leftPosition, double rightPosition) {}
 }

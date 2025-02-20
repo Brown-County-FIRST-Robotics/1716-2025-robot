@@ -6,28 +6,23 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ClimberIOSparkMaxes implements ClimberIO {
   private final SparkMax climberLeft;
   private final SparkMax climberRight;
-  private final SparkMaxConfig climberConfig = new SparkMaxConfig();
+  private final DigitalInput leftLimitSwitch;
+  private final DigitalInput rightLimitSwitch;
+  private final SparkMaxConfig climberConfig;
 
-  // Custom methods go here:
-  @Override
-  public void setVelocities(
-      double velocityLeft, double velocityRight) { // sets the motor control type to velocity
-    climberLeft
-        .getClosedLoopController()
-        .setReference(velocityLeft, ControlType.kMAXMotionVelocityControl);
-    climberRight
-        .getClosedLoopController()
-        .setReference(velocityRight, ControlType.kMAXMotionVelocityControl);
-  }
-
-  public ClimberIOSparkMaxes(int leftID, int rightID) {
+  public ClimberIOSparkMaxes(int leftID, int rightID, int leftLimitSwitchID, int rightLimitSwitchID) {
     climberLeft = new SparkMax(leftID, MotorType.kBrushless); // declares motor type & sets ID
     climberRight = new SparkMax(rightID, MotorType.kBrushless);
+    leftLimitSwitch = new DigitalInput(leftLimitSwitchID);
+    rightLimitSwitch = new DigitalInput(rightLimitSwitchID);
+    climberConfig = new SparkMaxConfig();
 
     climberConfig.closedLoop.maxMotion.maxAcceleration(
         1200); // placeholder, will be replaced with actual acceleration
@@ -59,5 +54,18 @@ public class ClimberIOSparkMaxes implements ClimberIO {
         new double[] {climberLeft.getOutputCurrent(), climberRight.getOutputCurrent()};
     inputs.appliedOutputs =
         new double[] {climberLeft.getAppliedOutput(), climberRight.getAppliedOutput()};
+
+    inputs.limitSwitches = new boolean[] {leftLimitSwitch.get(), rightLimitSwitch.get()};
+  }
+  
+  @Override
+  public void setPositions(
+      double leftPosition, double rightPosition) {
+    climberLeft
+        .getClosedLoopController()
+        .setReference(leftPosition, ControlType.kPosition);
+    climberRight
+        .getClosedLoopController()
+        .setReference(rightPosition, ControlType.kPosition);
   }
 }
