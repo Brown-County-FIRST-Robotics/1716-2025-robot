@@ -39,23 +39,27 @@ public class Climber extends SubsystemBase {
   }
 
   public void setVelocity(double velocity) {
-    double leftVelocity = velocity;
-    double rightVelocity = velocity;
+    double leftVelocity;
+    double rightVelocity;
 
     // prevent it from overextending
     // TODO: set endpoints based on position of limit switch
     if ((inputs.positions[0] - leftPositionOffset > 0.0 || velocity > 0)
         && (inputs.positions[0] - leftPositionOffset < 1.0 || velocity < 0)) {
-      leftVelocity = 200;
+      leftVelocity = velocity;
     } else {
       leftVelocity = 0;
     }
     if ((inputs.positions[1] - rightPositionOffset > 0.0 || velocity > 0)
         && (inputs.positions[1] - rightPositionOffset < 1.0 || velocity < 0)) {
-      rightVelocity = 200;
+      rightVelocity = velocity;
     } else {
       rightVelocity = 0;
     }
     io.setVelocities(leftVelocity, rightVelocity);
+  }
+
+  public boolean atLimit() {
+    return inputs.limitSwitches[0] && inputs.limitSwitches[1];
   }
 }

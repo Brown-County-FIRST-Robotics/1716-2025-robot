@@ -19,6 +19,8 @@ import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
@@ -53,6 +55,7 @@ public class RobotContainer {
   private AutoFactory autoFactory;
   private final Manipulator manipulator;
   private final Gripper gripper;
+  public final Climber climber;
 
   private final ManipulatorPresetFactory presetFactory;
 
@@ -61,6 +64,7 @@ public class RobotContainer {
     ElevatorIO elevatorIO = null;
     GripperIO gripperIO = null;
     WristIO wristIO = null;
+    ClimberIO climberIO = null;
     autoChooser = new LoggedDashboardChooser<Command>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
@@ -165,9 +169,13 @@ public class RobotContainer {
     if (elevatorIO == null) {
       elevatorIO = new ElevatorIO() {};
     }
+    if (climberIO == null) {
+      climberIO = new ClimberIO() {};
+    }
 
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
+    climber = new Climber(climberIO);
     presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
     // TODO: add appendage backups here
@@ -214,6 +222,10 @@ public class RobotContainer {
                 () -> gripper.setGripper(-2000, -2000, -2000),
                 () -> gripper.setGripper(0, 0, 0),
                 gripper));
+
+    // Climber
+    driverController.a().or(driverController.povDown()).whileTrue(Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+    driverController.y().or(driverController.povUp()).whileTrue(Commands.runEnd(() -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
   }
 
   /**
