@@ -7,166 +7,99 @@ import java.util.Random;
 
 public class LEDs extends PeriodicRunnable {
   AddressableLED leds;
-  AddressableLEDBuffer ledBuff;
-  int counter = 0;
-  int colour = 0;
-  int brightness = 25;
-  int x = 5;
-  int x2 = 44;
-  int y = 0;
-  int y2 = 0;
-  int a = 15;
-  int time = 0;
-  int timespeed = 3; // bigger value makes stuff slower
-  int raindrop[] = new int[180];
-  boolean mode1 = false;
-  boolean mode2 = false;
-  boolean mode3 = true;
+  AddressableLEDBuffer ledBuff; // length of LEDS on robot [85]
+
   Random random = new Random();
-  private static LEDs globalInst;
+  int raindrop[] = new int[180]; // how many random numbers are we creating
 
-  public static LEDs getInstance() {
-    if (globalInst == null) {
-      globalInst = new LEDs();
-    }
-    return globalInst;
-  }
+  int timespeed;
+  int time;
+  int value; // COLOR
+  int value2;
+  int x; // used to change value in stuff
 
-  private LEDs() {
+  boolean mode1;
+  boolean mode2;
+
+  public LEDs() {
     super(); // Super call adds it to the registry, which calls the periodic method every tick
-    // leds = new AddressableLED(5);
-    // ledBuff = new AddressableLEDBuffer(100); // something around 280 length for LED
+    leds = new AddressableLED(5);
+    ledBuff =
+        new AddressableLEDBuffer(
+            280); // something around 280 length for full LED (only 85 on robot though)
     leds.setLength(ledBuff.getLength());
     leds.setData(ledBuff);
     leds.start();
-    // resetLeds();
 
-    // for (var i = 0; i != ledBuff.getLength(); i++) {
-    //   raindrop[i] = random.nextInt(255);
-    // }
+    mode1 = false; // lights moving in a line mode
+    mode2 = true;
+    x = 1;
+
+    for (var i = 0; i < 180; i++) {
+      raindrop[i] = random.nextInt(255); // create a random number between 0-255
+    }
+
+    for (var i = 0; i != 85; i++) {
+      ledBuff.setHSV(i, 130, 255, 255);
+    }
   }
 
   @Override
   public void periodic() {
 
-    // time++;
-    // time = time % timespeed;
+    timespeed++; // use this to control the speed of other variables around like the color change.
+    timespeed = timespeed % 3; // higher value = slower time/speed.
 
-    // brightness = (a - 15) * (a - 15);
+    if (timespeed == 0) { // value controls the color change speed here currently.
+      value++;
+    }
+    value = value % x;
+    if (value == x - 1) {
+      value2++;
+    }
 
-    // if (time == 1) {
-    //   a++;
-    //   a = a % 30;
-    // }
+    for (var i = 0;
+        i < 85;
+        i++) { // this for loop can be used to set the whole led strip to one specific color
+      // Sets the specified LED to the HSV values to ALL WHITE
+      // ledBuff.setHSV(i, 130, 255, 255);
+    }
 
-    // if (time == 1) {
-    //   x = x + y % ledBuff.getLength();
-    //   x2 = x2 + y2 % ledBuff.getLength();
-    // }
-    // if (x == 44) {
-    //   y = -1;
-    //   y2 = 1;
-    // }
-
-    // if (x == 5) {
-    //   y = 1;
-    //   y2 = -1;
-    // }
-
-    // if (mode1) // MODE 1
-    // {
-    //   for (var i = 0; i < ledBuff.getLength(); i++) {
-    //     ledBuff.setHSV(i, colour, 255, brightness);
-    //   }
-    //   colour = (colour + 1) % 180;
-    // }
-
-    // if (mode2) // MODE 2
-    // {
-    //   ledBuff.setHSV((x - (y * 5)), 7, 255, 0);
-
-    //   ledBuff.setHSV(x, colour, 255, brightness);
-
-    //   ledBuff.setHSV((x2 - (y2 * 5)), 7, 255, 0);
-
-    //   ledBuff.setHSV(x2, colour + 50, 255, brightness);
-
-    //   colour = (colour + 1) % 180;
-    // }
-
-    if (mode3) // MODE 3
-    {
-
-      if (time == 1) {
-        for (var i = 0; i < 100; i++) {
-          ledBuff.setHSV(i, colour, 255, raindrop[i]);
-          raindrop[i]--;
-          brightness = raindrop[i];
-          /*  if(time == 0)
-          {
-            colour = random.nextInt(180);
-          } */
-
-        }
+    if (mode1 == true) { // ///////////////////////////////////START OF MODE 1
+      x = 95;
+      for (var i = value; i < 1 + value; i++) { // This will creat random leds
+        ledBuff.setHSV(i, raindrop[i], 255, 255);
       }
+
+      if (value > 11) { // this will cancle thd leds 10 indexs behind giving it a moving effect
+        ledBuff.setHSV(value - 10, 130, 255, 50);
+      }
+
+      for (var i = 85;
+          i < 95;
+          i++) { // this will delete the leds at the end so they dont just stay light
+        ledBuff.setHSV(i, 0, 0, 0);
+        ledBuff.setHSV(0, 0, 0, 0);
+      }
+    } ///////////////////////////////////////////////////////// END OF MODE 1
+
+    if (mode2 == true) { // ///////////////////////////////////////START OF MODE 2
+      x = 85;
+      ledBuff.setHSV(value, raindrop[value2], 255, 255);
     }
 
+    /*  if(mode3 == true){ /////////////////////////////////////////START OF MODE 3 THIS DOES NOT WORK CURRENTLY
+      x = 43;
+      for(var i = value + 42; i < value + 43; i++)
+        ledBuff.setHSV(i, raindrop[value2], 255, 255);
+
+    } */
+
+    // ledBuff.setHSV(30, 60, 255, 255);
     leds.setData(ledBuff);
-  }
 
-  public void mode1() {
-    mode1 = true;
-    mode2 = false;
-    mode3 = false;
-  }
-
-  public void mode2() {
-    mode2 = true;
-    mode1 = false;
-    mode3 = false;
-  }
-
-  public void mode3() {
-    mode3 = true;
-    mode1 = false;
-    mode2 = false;
-  }
-
-  public void intakelight() {
-    colour = 31;
-  }
-
-  public void errorLight() {
-    colour = 1;
-  }
-
-  public void shooterlight() {
-    colour = 60;
-  }
-
-  public void separateClimberLight() {
-    colour = 120;
-  }
-
-  /* private void resetLeds() {
-    for(int i = 0; i < ledBuff.getLength(); i++){
-      brightness = 0;
-    }
-  } */
-
-  // public void getControllerInput(double left, double right) {
-  //   timespeed+= left;
-  //   if(timespeed != 0)
-  //   {
-  //   timespeed-= right;
-  // }
-  // }
-
-  public void increaseSpeed() {
-    timespeed -= 2;
-  }
-
-  public void decreaseSpeed() {
-    timespeed += 2;
+    /*LEDPattern red = LEDPattern.solid(Color.kRed);
+    red.applyTo(ledBuff);
+    leds.setData(ledBuff); */
   }
 }

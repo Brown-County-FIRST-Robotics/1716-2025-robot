@@ -24,7 +24,7 @@ public class LoggedTunableNumber extends PeriodicRunnable {
   public LoggedTunableNumber(String name) {
     super();
     this.name = name;
-    key = tableKey + "/" + name;
+    key = "Shuffleboard/" + tableKey + "/" + name;
   }
 
   /**
