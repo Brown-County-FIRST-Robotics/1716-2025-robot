@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,6 +14,9 @@ import frc.robot.utils.Overrides;
 import frc.robot.utils.Vector;
 import frc.robot.utils.buttonbox.OverridePanel;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 /** A command for manual control */
@@ -21,6 +25,10 @@ public class TeleopDrive extends Command {
   private final CommandXboxController controller;
   private final CommandXboxController secondController;
   private final OverridePanel overridePanel;
+  private static DoubleSupplier elevatorHeight = new DoubleSupplier() {
+    @Override 
+    public double getAsDouble() {return 0.0;} 
+  };
 
   boolean doFieldOriented = true;
   boolean locked = false; // point wheels towards center in x pattern
@@ -78,6 +86,10 @@ public class TeleopDrive extends Command {
     translationLimiter.reset(0);
     rotationLimiter.reset(0);
     customRotation = Optional.empty();
+  }
+
+  public static double maxAcceleration(){
+    return 9.8065 * 0.5 * Units.inchesToMeters(22)/ (Units.inchesToMeters(6.5)+Units.inchesToMeters(10) * elevatorHeight.getAsDouble());
   }
 
   @Override
@@ -176,13 +188,12 @@ public class TeleopDrive extends Command {
     double frictionClampedVelocityChange =
         clamp(
             velocityChange.getNorm(),
-            Constants.Driver.MAX_FRICTION_ACCELERATION / 50); // TODO: CHANGE NAME
+           Math.min(Constants.Driver.MAX_FRICTION_ACCELERATION, maxAcceleration()) / 50); // TODO: CHANGE NAME
     Vector cappedAcceleration =
         new Vector(frictionClampedVelocityChange, velocityChange.getAngle());
     commandedVector = currentVector.plus(cappedAcceleration);
 
-    double jeff = commandedVector.getNorm() - currentVector.getNorm();
-    if (jeff > Constants.Driver.MAX_ACCELERATION / 50) {
+    if (commandedVector.getNorm() - currentVector.getNorm() > Constants.Driver.MAX_ACCELERATION / 50) {
       commandedVector.setNorm(currentVector.getNorm() + Constants.Driver.MAX_ACCELERATION / 50);
     }
 
