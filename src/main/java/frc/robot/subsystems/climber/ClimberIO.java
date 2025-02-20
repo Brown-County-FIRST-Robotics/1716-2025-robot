@@ -16,5 +16,5 @@ public interface ClimberIO {
 
   default void updateInputs(ClimberIOInputs inputs) {}
 
-  default void setPositions(double leftPosition, double rightPosition) {}
+  default void setVelocities(double leftVelocity, double rightVelocity) {}
 }

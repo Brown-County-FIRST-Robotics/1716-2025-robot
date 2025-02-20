@@ -59,8 +59,8 @@ public class ClimberIOSparkMaxes implements ClimberIO {
   }
 
   @Override
-  public void setPositions(double leftPosition, double rightPosition) {
-    climberLeft.getClosedLoopController().setReference(leftPosition, ControlType.kPosition);
-    climberRight.getClosedLoopController().setReference(rightPosition, ControlType.kPosition);
+  public void setVelocities(double leftVelocity, double rightVelocity) {
+    climberLeft.getClosedLoopController().setReference(leftVelocity, ControlType.kVelocity);
+    climberRight.getClosedLoopController().setReference(rightVelocity, ControlType.kVelocity);
   }
 }

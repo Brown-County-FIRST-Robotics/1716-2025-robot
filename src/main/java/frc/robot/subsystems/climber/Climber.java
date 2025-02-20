@@ -34,24 +34,28 @@ public class Climber extends SubsystemBase {
     if (inputs.limitSwitches[1]) {
       rightPositionOffset = inputs.positions[1];
     }
-    Logger.recordOutput(
-        "Climber/LeftActualPosition", inputs.positions[0] - leftPositionOffset);
-    Logger.recordOutput(
-        "Climber/RightActualPosition", inputs.positions[1] - rightPositionOffset);
+    Logger.recordOutput("Climber/LeftActualPosition", inputs.positions[0] - leftPositionOffset);
+    Logger.recordOutput("Climber/RightActualPosition", inputs.positions[1] - rightPositionOffset);
   }
 
-  public void setReference(double reference) {
-    double convertedReference =
-        Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
-    // TODO: Update these values to the actual max and min based on the position of the limit switch
+  public void setVelocity(double velocity) {
+    double leftVelocity = velocity;
+    double rightVelocity = velocity;
 
-    double leftReference = convertedReference + leftPositionOffset;
-    double rightReference = convertedReference + rightPositionOffset;
-
-    Logger.recordOutput("Climber/CommandReference", reference);
-    Logger.recordOutput("Climber/LeftActualReference", leftReference);
-    Logger.recordOutput("Climber/RightActualReference", rightReference);
-
-    io.setPositions(leftReference, rightReference);
+    // prevent it from overextending
+    // TODO: set endpoints based on position of limit switch
+    if ((inputs.positions[0] - leftPositionOffset > 0.0 || velocity > 0)
+        && (inputs.positions[0] - leftPositionOffset < 1.0 || velocity < 0)) {
+      leftVelocity = 200;
+    } else {
+      leftVelocity = 0;
+    }
+    if ((inputs.positions[1] - rightPositionOffset > 0.0 || velocity > 0)
+        && (inputs.positions[1] - rightPositionOffset < 1.0 || velocity < 0)) {
+      rightVelocity = 200;
+    } else {
+      rightVelocity = 0;
+    }
+    io.setVelocities(leftVelocity, rightVelocity);
   }
 }
