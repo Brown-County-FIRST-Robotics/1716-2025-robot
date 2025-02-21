@@ -21,6 +21,7 @@ import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
 import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.mecanum.*;
@@ -106,7 +107,15 @@ public class RobotContainer {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
           gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
         }
-        System.out.println("No appendages yet");
+        if (appendage == WhoAmI.Appendages.CLIMBER) {
+          climberIO = new ClimberIOSparkMaxes(31, 11, 4, 0); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.ELEVATOR) {
+          elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.WRIST) {
+          wristIO = new WristIOSparkFlex(1); // TODO:Add real values
+        }
       }
     } else {
       switch (WhoAmI.bot) {
@@ -224,8 +233,17 @@ public class RobotContainer {
                 gripper));
 
     // Climber
-    driverController.a().or(driverController.povDown()).whileTrue(Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
-    driverController.y().or(driverController.povUp()).whileTrue(Commands.runEnd(() -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
+    driverController
+        .a()
+        .or(driverController.povDown())
+        .whileTrue(
+            Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+    driverController
+        .y()
+        .or(driverController.povUp())
+        .whileTrue(
+            Commands.runEnd(
+                () -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
   }
 
   /**
