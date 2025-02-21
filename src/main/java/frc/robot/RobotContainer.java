@@ -111,7 +111,7 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(31, 11, 4, 0);
+          gripperIO = new GripperIOSparkMax(31, 11, 4, 0, 1);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
@@ -184,7 +184,6 @@ public class RobotContainer {
 
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
-    presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
     manipulator.setDefaultCommand(
         Commands.run(
@@ -199,6 +198,8 @@ public class RobotContainer {
             manipulator));
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
+    presetFactory =
+        new ManipulatorPresetFactory(manipulator, gripper, teleopDrive, driveSys, manipulatorPanel);
     if (WhoAmI.isDemoMode) {
       configureDemoBindings(teleopDrive);
     } else {
@@ -229,8 +230,10 @@ public class RobotContainer {
     manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
     manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
 
-    manipulatorPanel.intake().whileTrue(presetFactory.intake());
-    manipulatorPanel.processor().whileTrue(presetFactory.processor());
+    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).whileTrue(presetFactory.intake());
+    manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());
+
+    manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
@@ -238,10 +241,7 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.runEnd(
-                () -> gripper.setGripper(-2000, -2000, -2000),
-                () -> gripper.setGripper(0, 0, 0),
-                gripper));
+            Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
   }
 
   /**
