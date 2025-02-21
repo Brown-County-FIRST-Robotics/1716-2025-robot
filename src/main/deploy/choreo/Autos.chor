@@ -1,5 +1,5 @@
 {
- "name":"Basic config",
+ "name":"Autos",
  "version":1,
  "type":"Swerve",
  "variables":{
@@ -52,8 +52,8 @@
    "val":4.69
   },
   "cof":{
-   "exp":"1",
-   "val":1.0
+   "exp":"0.25",
+   "val":0.25
   },
   "bumper":{
    "front":{
