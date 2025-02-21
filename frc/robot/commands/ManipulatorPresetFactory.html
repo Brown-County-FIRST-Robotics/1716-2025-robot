@@ -88,8 +88,11 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(frc.robot.subsystems.manipulator.Manipulator,frc.robot.subsystems.gripper.Gripper)" class="member-name-link">ManipulatorPresetFactory</a><wbr>(<a href="../subsystems/manipulator/Manipulator.html" title="class in frc.robot.subsystems.manipulator">Manipulator</a>&nbsp;manipulator_,
- <a href="../subsystems/gripper/Gripper.html" title="class in frc.robot.subsystems.gripper">Gripper</a>&nbsp;gripper_)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(frc.robot.subsystems.manipulator.Manipulator,frc.robot.subsystems.gripper.Gripper,frc.robot.commands.TeleopDrive,frc.robot.subsystems.Drivetrain,frc.robot.utils.buttonbox.ManipulatorPanel)" class="member-name-link">ManipulatorPresetFactory</a><wbr>(<a href="../subsystems/manipulator/Manipulator.html" title="class in frc.robot.subsystems.manipulator">Manipulator</a>&nbsp;manipulator_,
+ <a href="../subsystems/gripper/Gripper.html" title="class in frc.robot.subsystems.gripper">Gripper</a>&nbsp;gripper_,
+ <a href="TeleopDrive.html" title="class in frc.robot.commands">TeleopDrive</a>&nbsp;teleopDrive_,
+ <a href="../subsystems/Drivetrain.html" title="interface in frc.robot.subsystems">Drivetrain</a>&nbsp;driveTrain_,
+ <a href="../utils/buttonbox/ManipulatorPanel.html" title="class in frc.robot.utils.buttonbox">ManipulatorPanel</a>&nbsp;manipulatorPanel_)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -106,31 +109,37 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#algaeHigh()" class="member-name-link">algaeHigh</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#aim()" class="member-name-link">aim</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#algaeLow()" class="member-name-link">algaeLow</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#algaeHigh()" class="member-name-link">algaeHigh</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#intake()" class="member-name-link">intake</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#algaeLow()" class="member-name-link">algaeLow</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level2()" class="member-name-link">level2</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#intake()" class="member-name-link">intake</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level3()" class="member-name-link">level3</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level2()" class="member-name-link">level2</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level4()" class="member-name-link">level4</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level3()" class="member-name-link">level3</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processor()" class="member-name-link">processor</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level4()" class="member-name-link">level4</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#retracted()" class="member-name-link">retracted</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processor()" class="member-name-link">processor</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#trough()" class="member-name-link">trough</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#retracted()" class="member-name-link">retracted</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.wpilibj2.command.Command</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#trough()" class="member-name-link">trough</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;edu.wpi.first.math.geometry.Translation2d&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#whereShouldIBe()" class="member-name-link">whereShouldIBe</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -150,10 +159,13 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(frc.robot.subsystems.manipulator.Manipulator,frc.robot.subsystems.gripper.Gripper)">
+<section class="detail" id="&lt;init&gt;(frc.robot.subsystems.manipulator.Manipulator,frc.robot.subsystems.gripper.Gripper,frc.robot.commands.TeleopDrive,frc.robot.subsystems.Drivetrain,frc.robot.utils.buttonbox.ManipulatorPanel)">
 <h3>ManipulatorPresetFactory</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ManipulatorPresetFactory</span><wbr><span class="parameters">(<a href="../subsystems/manipulator/Manipulator.html" title="class in frc.robot.subsystems.manipulator">Manipulator</a>&nbsp;manipulator_,
- <a href="../subsystems/gripper/Gripper.html" title="class in frc.robot.subsystems.gripper">Gripper</a>&nbsp;gripper_)</span></div>
+ <a href="../subsystems/gripper/Gripper.html" title="class in frc.robot.subsystems.gripper">Gripper</a>&nbsp;gripper_,
+ <a href="TeleopDrive.html" title="class in frc.robot.commands">TeleopDrive</a>&nbsp;teleopDrive_,
+ <a href="../subsystems/Drivetrain.html" title="interface in frc.robot.subsystems">Drivetrain</a>&nbsp;driveTrain_,
+ <a href="../utils/buttonbox/ManipulatorPanel.html" title="class in frc.robot.utils.buttonbox">ManipulatorPanel</a>&nbsp;manipulatorPanel_)</span></div>
 </section>
 </li>
 </ul>
@@ -164,6 +176,18 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="whereShouldIBe()">
+<h3>whereShouldIBe</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;edu.wpi.first.math.geometry.Translation2d&gt;</span>&nbsp;<span class="element-name">whereShouldIBe</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="aim()">
+<h3>aim</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">edu.wpi.first.wpilibj2.command.Command</span>&nbsp;<span class="element-name">aim</span>()</div>
+</section>
+</li>
 <li>
 <section class="detail" id="retracted()">
 <h3>retracted</h3>
