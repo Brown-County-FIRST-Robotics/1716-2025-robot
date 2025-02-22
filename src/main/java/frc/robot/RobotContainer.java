@@ -157,14 +157,35 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
-    var path = "Test Path";
-    AutoRoutine routine = autoFactory.newRoutine("followPath" + path);
 
-    AutoTrajectory trajectory = routine.trajectory(path);
+    AutoRoutine fAuto = autoFactory.newRoutine("F-Auto");
+    AutoRoutine mAuto = autoFactory.newRoutine("M-Auto");
+    AutoRoutine oAuto = autoFactory.newRoutine("O-Auto");
 
-    routine.active().onTrue(trajectory.cmd());
+    AutoRoutine moveBack = autoFactory.newRoutine("MoveBack");
 
-    autoChooser.addOption("TEST CHOREO", routine.cmd());
+    AutoTrajectory fAlign = fAuto.trajectory("F-Align");
+    AutoTrajectory fPickup = fAuto.trajectory("F-Pickup");
+
+    AutoTrajectory mAlign = mAuto.trajectory("M-Align");
+    AutoTrajectory mPickup = mAuto.trajectory("M-Pickup");
+
+    AutoTrajectory oAlign = oAuto.trajectory("O-Align");
+    AutoTrajectory oPickup = oAuto.trajectory("O-Pickup");
+    
+    AutoTrajectory moveBackTraj = moveBack.trajectory("Backup", 0);
+    AutoTrajectory turnTraj = moveBack.trajectory("Backup", 1);
+
+    fAuto.active().onTrue(fAlign.cmd().andThen(fPickup.cmd()));
+    mAuto.active().onTrue(mAlign.cmd().andThen(mPickup.cmd()));
+    oAuto.active().onTrue(oAlign.cmd().andThen(oPickup.cmd()));
+    
+    moveBack.active().onTrue(moveBackTraj.cmd().andThen(Commands.waitSeconds(5).andThen(turnTraj.cmd())));
+
+    autoChooser.addOption("Friendly Choreo", fAuto.cmd());
+    autoChooser.addOption("Middle Choreo", mAuto.cmd());
+    autoChooser.addOption("Opponent Choreo", oAuto.cmd());
+    autoChooser.addOption("Test auto", moveBack.cmd());
     if (gripperIO == null) {
       gripperIO = new GripperIO() {};
     }
