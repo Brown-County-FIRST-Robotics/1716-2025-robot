@@ -49,10 +49,8 @@ public class LEDs extends PeriodicRunnable {
   @Override
   public void periodic() {
 
-    x=85;
-    ledBuff.setHSV(value, 180, 1, raindrop[value] -1);  //can delete all of this later
-
-
+    x = 85;
+    ledBuff.setHSV(value, 180, 1, raindrop[value] - 1); // can delete all of this later
 
     timespeed++; // use this to control the speed of other variables around like the color change.
     timespeed = timespeed % 2; // higher value = slower time/speed.
@@ -91,22 +89,19 @@ public class LEDs extends PeriodicRunnable {
       }
     } ///////////////////////////////////////////////////////// END OF MODE 1
 
-
-
     if (mode2 == true) { // ///////////////////////////////////////START OF MODE 2
       x = 85;
       ledBuff.setHSV(value, raindrop[value2], 255, 255);
     }
 
-      if(mode3 == true){ /////////////////////////////////////////START OF MODE 3 THIS DOES NOT WORK CURRENTLY
+    if (mode3
+        == true) { ///////////////////////////////////////// START OF MODE 3 THIS DOES NOT WORK
+      // CURRENTLY
       x = 43;
-      for(var i = value + 42; i < value + 43; i++)
-        ledBuff.setHSV(i, raindrop[value2], 255, 255);
+      for (var i = value + 42; i < value + 43; i++) ledBuff.setHSV(i, raindrop[value2], 255, 255);
 
-        for(var i = -value + 42; i < -value + 43; i++)
-        ledBuff.setHSV(i, raindrop[value2], 255, 255);
-
-    } /////////////////////////////////////////////////////////////END OF MODE 3
+      for (var i = -value + 42; i < -value + 43; i++) ledBuff.setHSV(i, raindrop[value2], 255, 255);
+    } ///////////////////////////////////////////////////////////// END OF MODE 3
 
     // ledBuff.setHSV(30, 60, 255, 255);
     leds.setData(ledBuff);
