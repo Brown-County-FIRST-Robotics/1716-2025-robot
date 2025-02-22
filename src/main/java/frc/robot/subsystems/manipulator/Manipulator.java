@@ -10,6 +10,8 @@ public class Manipulator extends SubsystemBase {
   private final WristIO wrist;
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
+  private double elevatorCommandedPosition = 0;
+
   public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
     this.wrist = wrist;
@@ -29,6 +31,7 @@ public class Manipulator extends SubsystemBase {
 
   public void setElevatorReference(double reference) {
     Logger.recordOutput("Elevator/Reference", reference);
+    elevatorCommandedPosition = reference;
     if (reference < 0) {
       reference = 0;
     }
@@ -41,8 +44,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   // Whether the arm is at the reference position (within some tolerance)
-  // TODO: implement
   public boolean isInPosition() {
-    return true;
+    return Math.abs(elevatorInputs.height - elevatorCommandedPosition) < 0.02;
   }
 }
