@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 /** The abstraction for the Kauai labs Navx2 IMU */
 public class IMUIONavx implements IMUIO {
   final AHRS imu;
+  Rotation3d basRotation3d;
 
   /** Constructs a Navx that uses SPI */
   public IMUIONavx() {
@@ -16,6 +17,7 @@ public class IMUIONavx implements IMUIO {
     while (!imu.isConnected()) {
       imu.isConnected();
     }
+    basRotation3d = imu.getRotation3d();
     Logger.recordOutput("Firmware/NAVX", imu.getFirmwareVersion());
     CustomAlerts.makeNavxFailAlerts(imu);
   }
@@ -25,11 +27,12 @@ public class IMUIONavx implements IMUIO {
     inputs.tempC = imu.getTempC();
     inputs.rotation =
         new Rotation3d(
-            new Quaternion(
-                imu.getQuaternionW(),
-                imu.getQuaternionX(),
-                imu.getQuaternionY(),
-                imu.getQuaternionZ()));
+                new Quaternion(
+                    imu.getQuaternionW(),
+                    imu.getQuaternionX(),
+                    imu.getQuaternionY(),
+                    imu.getQuaternionZ()))
+            .minus(basRotation3d);
     inputs.xAccelMPS = imu.getRawAccelX() * 9.8065;
     inputs.yAccelMPS = imu.getRawAccelY() * 9.8065;
     inputs.zAccelMPS = imu.getRawAccelZ() * 9.8065;
