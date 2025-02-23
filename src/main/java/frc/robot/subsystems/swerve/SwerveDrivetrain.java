@@ -26,7 +26,7 @@ public class SwerveDrivetrain implements Drivetrain {
   final Module bl;
   final Module br;
 
-  Rotation2d lastIMU;
+  Rotation3d lastIMU;
   SwerveModulePosition[] lastPositions;
   final PoseEstimator poseEstimator;
 
@@ -60,7 +60,7 @@ public class SwerveDrivetrain implements Drivetrain {
     this.br = br;
     poseEstimator = new PoseEstimator();
     poseEstimator.setPose(Constants.INIT_POSE);
-    lastIMU = getGyro().toRotation2d();
+    lastIMU = getGyro();
     lastPositions = getPositions();
   }
 
@@ -76,13 +76,11 @@ public class SwerveDrivetrain implements Drivetrain {
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
     Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());
     if (!Overrides.disableIMU.get()) {
-      odoTwist =
-          new Twist2d(
-              odoTwist.dx, odoTwist.dy, getGyro().rotateBy(new Rotation3d(0,-Math.PI/2,0)).toRotation2d().minus(lastIMU).getRadians());
+      odoTwist = new Twist2d(odoTwist.dx, odoTwist.dy, -getGyro().minus(lastIMU).getX());
     }
     poseEstimator.addOdometry(odoTwist);
     lastPositions = getPositions();
-    lastIMU = getGyro().rotateBy(new Rotation3d(0,-Math.PI/2,0)).toRotation2d();
+    lastIMU = getGyro();
     Logger.recordOutput("Drive/Pose", getPosition());
 
     checkForYawReset();
