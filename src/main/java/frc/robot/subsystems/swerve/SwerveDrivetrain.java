@@ -78,11 +78,17 @@ public class SwerveDrivetrain implements Drivetrain {
     if (!Overrides.disableIMU.get()) {
       odoTwist =
           new Twist2d(
-              odoTwist.dx, odoTwist.dy, getGyro().rotateBy(new Rotation3d(0,-Math.PI/2,0)).toRotation2d().minus(lastIMU).getRadians());
+              odoTwist.dx,
+              odoTwist.dy,
+              getGyro()
+                  .rotateBy(new Rotation3d(0, -Math.PI / 2, 0))
+                  .toRotation2d()
+                  .minus(lastIMU)
+                  .getRadians());
     }
     poseEstimator.addOdometry(odoTwist);
     lastPositions = getPositions();
-    lastIMU = getGyro().rotateBy(new Rotation3d(0,-Math.PI/2,0)).toRotation2d();
+    lastIMU = getGyro().rotateBy(new Rotation3d(0, 0, 0)).toRotation2d();
     Logger.recordOutput("Drive/Pose", getPosition());
 
     checkForYawReset();
