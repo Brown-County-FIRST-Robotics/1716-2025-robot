@@ -190,9 +190,11 @@ public class RobotContainer {
             new Runnable() {
 
               public void run() {
-                manipulator.setElevatorReference(manipulator.getPos()
-                + 120*(driverController.getLeftTriggerAxis()
-                    - driverController.getRightTriggerAxis()));
+                manipulator.setElevatorReference(
+                    manipulator.getPos()
+                        + 120
+                            * (driverController.getLeftTriggerAxis()
+                                - driverController.getRightTriggerAxis()));
               }
             },
             manipulator));
@@ -206,7 +208,6 @@ public class RobotContainer {
       configureCompBindings();
     }
   }
-
 
   public void configureAutos() {}
 
