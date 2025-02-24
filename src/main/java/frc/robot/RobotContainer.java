@@ -6,6 +6,9 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -23,13 +26,19 @@ import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
+import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
+import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.manipulator.ElevatorIO;
 import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.WristIO;
+import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -64,6 +73,7 @@ public class RobotContainer {
   private AutoFactory autoFactory;
   private final Manipulator manipulator;
   private final Gripper gripper;
+  public final Climber climber;
 
   private final ManipulatorPresetFactory presetFactory;
 
@@ -72,6 +82,7 @@ public class RobotContainer {
     ElevatorIO elevatorIO = null;
     GripperIO gripperIO = null;
     WristIO wristIO = null;
+    ClimberIO climberIO = null;
     autoChooser = new LoggedDashboardChooser<Command>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
@@ -116,7 +127,15 @@ public class RobotContainer {
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
-        System.out.println("No appendages yet");
+        if (appendage == WhoAmI.Appendages.CLIMBER) {
+          climberIO = new ClimberIOSparkMaxes(31, 11, 4, 0); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.ELEVATOR) {
+          elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.WRIST) {
+          wristIO = new WristIOSparkFlex(1); // TODO:Add real values
+        }
       }
     } else {
       switch (WhoAmI.bot) {
@@ -152,7 +171,7 @@ public class RobotContainer {
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
       }
     }
-    // TODO: Fix the followTrajectory code so it takes the correct argument (Collin)
+
     autoFactory =
         new AutoFactory(
             driveSys::getPosition,
@@ -169,9 +188,59 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
-    autoChooser.addOption(
-        "TEST CHOREO",
-        autoFactory.resetOdometry("Test").andThen(autoFactory.trajectoryCmd("Test")));
+
+    // ************ SCORE 1 CORAL AND RETURN TO STATION ************
+    // Routines for all 3 starting positions
+    AutoRoutine lAuto = autoFactory.newRoutine("L-Auto");
+    AutoRoutine mAuto = autoFactory.newRoutine("M-Auto");
+    AutoRoutine rAuto = autoFactory.newRoutine("R-Auto");
+
+    // Add all of the trajectories
+    AutoTrajectory lAlign = lAuto.trajectory("L-Auto", 0);
+    AutoTrajectory lPickup = lAuto.trajectory("L-Auto", 1);
+
+    AutoTrajectory mAlign = mAuto.trajectory("M-Auto", 0);
+    AutoTrajectory mPickup = mAuto.trajectory("M-Auto", 1);
+
+    AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
+    AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
+
+    // Commands that start when auto routines are called
+    lAuto.active().onTrue(lAlign.cmd().andThen(lPickup.cmd()));
+    mAuto.active().onTrue(mAlign.cmd().andThen(mPickup.cmd()));
+    rAuto.active().onTrue(rAlign.cmd().andThen(rPickup.cmd()));
+
+    // Add paths to the auto chooser
+    autoChooser.addOption("Left (Friendly) - Choreo", lAuto.cmd());
+    autoChooser.addOption("Middle - Choreo", mAuto.cmd());
+    autoChooser.addOption("Right (Opponent) - Choreo", rAuto.cmd());
+
+    // ************ DRIVE TO CORAL STATION ************
+    // Make the routines
+    // They will drive to the nearest station, middle has an auto to go to either station
+    AutoRoutine fToStation = autoFactory.newRoutine("L-ToStation");
+    AutoRoutine mToStationL = autoFactory.newRoutine("M-ToStationL");
+    AutoRoutine mToStationR = autoFactory.newRoutine("M-ToStationR");
+    AutoRoutine rToStation = autoFactory.newRoutine("R-ToStation");
+
+    // Get all of the trajectories from Choreo
+    AutoTrajectory lToStationTraj = fToStation.trajectory("L-ToStation");
+    AutoTrajectory mToStationTrajL = fToStation.trajectory("M-ToStationL");
+    AutoTrajectory mToStationTrajR = fToStation.trajectory("M-ToStationR");
+    AutoTrajectory rToStationTraj = fToStation.trajectory("R-ToStation");
+
+    // Merge all the commands into the auto routines
+    fToStation.active().onTrue(lToStationTraj.cmd());
+    mToStationL.active().onTrue(mToStationTrajL.cmd());
+    mToStationR.active().onTrue(mToStationTrajR.cmd());
+    rToStation.active().onTrue(rToStationTraj.cmd());
+
+    // Add the new paths to the auto chooser
+    autoChooser.addOption("Left to station - Choreo", fToStation.cmd());
+    autoChooser.addOption("Middle to left station - Choreo", mToStationL.cmd());
+    autoChooser.addOption("Middle to right station - Choreo", mToStationR.cmd());
+    autoChooser.addOption("Right to station - Choreo", rToStation.cmd());
+
     if (gripperIO == null) {
       gripperIO = new GripperIO() {};
     }
@@ -181,18 +250,24 @@ public class RobotContainer {
     if (elevatorIO == null) {
       elevatorIO = new ElevatorIO() {};
     }
+    if (climberIO == null) {
+      climberIO = new ClimberIO() {};
+    }
 
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
+    climber = new Climber(climberIO);
 
     manipulator.setDefaultCommand(
         Commands.run(
             new Runnable() {
 
               public void run() {
-                manipulator.setElevatorReference(manipulator.getPos()
-                + 120*(driverController.getLeftTriggerAxis()
-                    - driverController.getRightTriggerAxis()));
+                manipulator.setElevatorReference(
+                    manipulator.getPos()
+                        + 120
+                            * (driverController.getLeftTriggerAxis()
+                                - driverController.getRightTriggerAxis()));
               }
             },
             manipulator));
@@ -206,7 +281,6 @@ public class RobotContainer {
       configureCompBindings();
     }
   }
-
 
   public void configureAutos() {}
 
@@ -242,6 +316,19 @@ public class RobotContainer {
         .or(manipulatorPanel.eject())
         .whileTrue(
             Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
+
+    // Climber
+    driverController
+        .a()
+        .or(driverController.povDown())
+        .whileTrue(
+            Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+    driverController
+        .y()
+        .or(driverController.povUp())
+        .whileTrue(
+            Commands.runEnd(
+                () -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
   }
 
   /**
