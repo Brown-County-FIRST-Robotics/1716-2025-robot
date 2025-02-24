@@ -65,8 +65,8 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
-  private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
+  private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
   private final LEDs leds = new LEDs();
   private final LoggedDashboardChooser<Command> autoChooser;
