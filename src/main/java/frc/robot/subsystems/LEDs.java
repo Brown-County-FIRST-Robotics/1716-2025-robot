@@ -20,6 +20,7 @@ public class LEDs extends PeriodicRunnable {
 
   boolean mode1;
   boolean mode2;
+  boolean mode3;
 
   public LEDs() {
     super(); // Super call adds it to the registry, which calls the periodic method every tick
@@ -32,7 +33,8 @@ public class LEDs extends PeriodicRunnable {
     leds.start();
 
     mode1 = false; // lights moving in a line mode
-    mode2 = true;
+    mode2 = false;
+    mode3 = false;
     x = 1;
 
     for (var i = 0; i < 180; i++) {
@@ -47,8 +49,11 @@ public class LEDs extends PeriodicRunnable {
   @Override
   public void periodic() {
 
+    x = 85;
+    ledBuff.setHSV(value, 180, 1, raindrop[value] - 1); // can delete all of this later
+
     timespeed++; // use this to control the speed of other variables around like the color change.
-    timespeed = timespeed % 3; // higher value = slower time/speed.
+    timespeed = timespeed % 2; // higher value = slower time/speed.
 
     if (timespeed == 0) { // value controls the color change speed here currently.
       value++;
@@ -57,6 +62,7 @@ public class LEDs extends PeriodicRunnable {
     if (value == x - 1) {
       value2++;
     }
+    value2 = value2 % 180;
 
     for (var i = 0;
         i < 85;
@@ -65,7 +71,7 @@ public class LEDs extends PeriodicRunnable {
       // ledBuff.setHSV(i, 130, 255, 255);
     }
 
-    if (mode1 == true) { // ///////////////////////////////////START OF MODE 1
+    if (mode1 == true) { // /////////////////////////////////////////////START OF MODE 1
       x = 95;
       for (var i = value; i < 1 + value; i++) { // This will creat random leds
         ledBuff.setHSV(i, raindrop[i], 255, 255);
@@ -88,12 +94,14 @@ public class LEDs extends PeriodicRunnable {
       ledBuff.setHSV(value, raindrop[value2], 255, 255);
     }
 
-    /*  if(mode3 == true){ /////////////////////////////////////////START OF MODE 3 THIS DOES NOT WORK CURRENTLY
+    if (mode3
+        == true) { ///////////////////////////////////////// START OF MODE 3 THIS DOES NOT WORK
+      // CURRENTLY
       x = 43;
-      for(var i = value + 42; i < value + 43; i++)
-        ledBuff.setHSV(i, raindrop[value2], 255, 255);
+      for (var i = value + 42; i < value + 43; i++) ledBuff.setHSV(i, raindrop[value2], 255, 255);
 
-    } */
+      for (var i = -value + 42; i < -value + 43; i++) ledBuff.setHSV(i, raindrop[value2], 255, 255);
+    } ///////////////////////////////////////////////////////////// END OF MODE 3
 
     // ledBuff.setHSV(30, 60, 255, 255);
     leds.setData(ledBuff);
