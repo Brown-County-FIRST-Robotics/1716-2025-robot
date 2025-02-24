@@ -55,8 +55,6 @@ public class ManipulatorPanel extends ButtonBoxPanel {
   }
 
   public Trigger processor() {
-    // TODO: check whether the robot has an algae or not to determine whether to do processor or
-    // intake
     return new Trigger(() -> getButton(UTILITY_ID));
   }
 

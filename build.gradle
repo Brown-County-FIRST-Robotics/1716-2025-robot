@@ -141,7 +141,7 @@ tasks.register('checkSim',JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     args("sim")
 }
-simulateJava.dependsOn(checkSim);
+//simulateJava.dependsOn(checkSim);
 
 
 def writeGitData =tasks.create("writeGitData") {
@@ -197,6 +197,7 @@ def writeGitData =tasks.create("writeGitData") {
                 "deployer.txt"
                 ).text = userstdout.toString().trim()
     }}
+writeGitData.dependsOn(spotlessApply);
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeGitData)
 
