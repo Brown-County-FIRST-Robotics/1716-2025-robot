@@ -174,7 +174,8 @@ public class PoseEstimator {
       @Override
       public void periodic() {
         if (pastSnapshots.size() > 1) {
-          while (Timer.getFPGATimestamp() - pastSnapshots.firstKey() > 3) {
+          while (Timer.getFPGATimestamp() - pastSnapshots.firstKey() > 3
+              && pastSnapshots.size() > 3) {
             pastSnapshots.remove(pastSnapshots.firstKey());
           }
         }
