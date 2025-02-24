@@ -129,9 +129,11 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    //ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber).until(() -> robotContainer.climber.atLimit()).schedule();
-    
+    // ensure the climber hits the limit switch at the beginning
+    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
+        .until(() -> robotContainer.climber.atLimit())
+        .schedule();
+
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -146,8 +148,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    //ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber).until(() -> robotContainer.climber.atLimit()).schedule();
+    // ensure the climber hits the limit switch at the beginning
+    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
+        .until(() -> robotContainer.climber.atLimit())
+        .schedule();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

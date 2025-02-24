@@ -18,7 +18,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public double getPos() {
-    return elevatorInputs.height;
+    return elevatorInputs.position;
   }
 
   @Override

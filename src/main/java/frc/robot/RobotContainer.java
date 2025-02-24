@@ -29,15 +29,15 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.gripper.*;
-import frc.robot.subsystems.manipulator.*;
-import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
+import frc.robot.subsystems.manipulator.*;
 import frc.robot.subsystems.manipulator.ElevatorIO;
 import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.WristIO;
+import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -248,7 +248,6 @@ public class RobotContainer {
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
     climber = new Climber(climberIO);
-    presetFactory = new ManipulatorPresetFactory(manipulator, gripper);
 
     manipulator.setDefaultCommand(
         Commands.run(
@@ -307,14 +306,20 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.runEnd(
-                () -> gripper.setGripper(-2000),
-                () -> gripper.setGripper(0),
-                gripper));
+            Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
 
     // Climber
-    driverController.a().or(driverController.povDown()).whileTrue(Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
-    driverController.y().or(driverController.povUp()).whileTrue(Commands.runEnd(() -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
+    driverController
+        .a()
+        .or(driverController.povDown())
+        .whileTrue(
+            Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+    driverController
+        .y()
+        .or(driverController.povUp())
+        .whileTrue(
+            Commands.runEnd(
+                () -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
   }
 
   /**
