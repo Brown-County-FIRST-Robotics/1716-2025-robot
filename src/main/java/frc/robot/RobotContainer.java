@@ -28,6 +28,7 @@ import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
 import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
@@ -126,7 +127,15 @@ public class RobotContainer {
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
-        System.out.println("No appendages yet");
+        if (appendage == WhoAmI.Appendages.CLIMBER) {
+          climberIO = new ClimberIOSparkMaxes(31, 11, 4, 0); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.ELEVATOR) {
+          elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
+        }
+        if (appendage == WhoAmI.Appendages.WRIST) {
+          wristIO = new WristIOSparkFlex(1); // TODO:Add real values
+        }
       }
     } else {
       switch (WhoAmI.bot) {
