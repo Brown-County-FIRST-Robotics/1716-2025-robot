@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
@@ -28,6 +30,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
         1200); // placeholder, will be replaced with actual acceleration
     climberConfig.smartCurrentLimit(
         Constants.CurrentLimits.NEO); // sets the limits based on the NEO motors
+    climberConfig.idleMode(IdleMode.kBrake);
 
     climberLeft
         .configure( // persist mode keeps the last data value even after the robot is shut off, in
