@@ -197,6 +197,7 @@ def writeGitData =tasks.create("writeGitData") {
                 "deployer.txt"
                 ).text = userstdout.toString().trim()
     }}
+writeGitData.dependsOn(spotlessApply);
 
 deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeGitData)
 
