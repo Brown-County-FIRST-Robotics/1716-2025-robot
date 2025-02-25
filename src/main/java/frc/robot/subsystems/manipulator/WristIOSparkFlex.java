@@ -9,17 +9,20 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
   private final SparkFlexConfig wristConfig;
-  private final RelativeEncoder wristEncoder;
+  private final RelativeEncoder relativeEncoder;
+  private final DutyCycleEncoder absoluteEncoder;
 
-  public WristIOSparkFlex(int id) {
+  public WristIOSparkFlex(int id, int absEncoderID) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
     wristConfig = new SparkFlexConfig();
-    wristEncoder = wrist.getEncoder();
+    relativeEncoder = wrist.getEncoder();
+    absoluteEncoder = new DutyCycleEncoder(absEncoderID);
 
     wristConfig.closedLoop.maxMotion.maxAcceleration(1200); // placeholder
     wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX);
@@ -28,8 +31,8 @@ public class WristIOSparkFlex implements WristIO {
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.angle = Rotation2d.fromRotations(wristEncoder.getPosition());
-    inputs.omega = wristEncoder.getVelocity();
+    inputs.angle = Rotation2d.fromRotations(absoluteEncoder.get());
+    inputs.omega = relativeEncoder.getVelocity();
 
     inputs.appliedOutput = wrist.getAppliedOutput();
     inputs.temperature = wrist.getMotorTemperature();
@@ -37,6 +40,7 @@ public class WristIOSparkFlex implements WristIO {
   }
 
   public void setPosition(double commandPosition, double arbFF) {
+    // TODO: use absolute encoder
     wrist
         .getClosedLoopController()
         .setReference(
