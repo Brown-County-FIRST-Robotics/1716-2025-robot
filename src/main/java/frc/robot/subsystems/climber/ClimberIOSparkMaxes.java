@@ -3,8 +3,8 @@ package frc.robot.subsystems.climber;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkLimitSwitch;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -19,11 +19,14 @@ public class ClimberIOSparkMaxes implements ClimberIO {
     climber = new SparkMax(motorID, MotorType.kBrushless);
     limitSwitch = climber.getForwardLimitSwitch();
     climberConfig = new SparkMaxConfig();
-
-    climberConfig.closedLoop.maxMotion.maxAcceleration(
-        1200); // placeholder, will be replaced with actual acceleration
+    climberConfig.closedLoop.velocityFF(1.0 / 6500.0);
+    climberConfig
+        .closedLoop
+        .smartMotion
+        .maxAcceleration(1200)
+        .maxVelocity(5000); // placeholder, will be replaced with actual acceleration
     climberConfig.smartCurrentLimit(
-        Constants.CurrentLimits.NEO); // sets the limits based on the NEO motors
+        Constants.CurrentLimits.NEO_VORTEX); // sets the limits based on the NEO motors
     climberConfig.idleMode(IdleMode.kBrake);
 
     climber
@@ -46,7 +49,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
 
   @Override
   public void setPosition(double position) {
-    climber.getClosedLoopController().setReference(position, ControlType.kPosition);
+    climber.getClosedLoopController().setReference(position, ControlType.kSmartMotion);
   }
 
   @Override

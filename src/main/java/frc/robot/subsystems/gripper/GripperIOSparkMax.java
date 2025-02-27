@@ -41,12 +41,10 @@ public class GripperIOSparkMax implements GripperIO {
     coralMeasurement = null; // set in UpdateInputs
     algaeMeasurement = null;
 
-    config.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
+    config.closedLoop.smartMotion.maxAcceleration(12000); // placeholder
     config.smartCurrentLimit(Constants.CurrentLimits.NEO550);
-    config.closedLoop.p(0.0001);
-    config.closedLoop.i(0);
-    config.closedLoop.d(0);
-    config.closedLoop.velocityFF(1 / 12000);
+    config.closedLoop.p(0.0001).i(0).d(0).maxOutput(1).minOutput(-1);
+    config.closedLoop.velocityFF(1.0 / 12000);
 
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -120,8 +118,10 @@ public class GripperIOSparkMax implements GripperIO {
 
   public void setVelocities(
       double topCommandVelocity, double bottomCommandVelocity, double rearCommandVelocity) {
-    top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kVelocity);
-    bottom.getClosedLoopController().setReference(bottomCommandVelocity, ControlType.kVelocity);
-    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kVelocity);
+    top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kSmartVelocity);
+    bottom
+        .getClosedLoopController()
+        .setReference(bottomCommandVelocity, ControlType.kSmartVelocity);
+    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kSmartVelocity);
   }
 }

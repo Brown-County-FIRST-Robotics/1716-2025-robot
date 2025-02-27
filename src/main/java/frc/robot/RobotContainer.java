@@ -131,7 +131,7 @@ public class RobotContainer {
           climberIO = new ClimberIOSparkMaxes(36, 0); // TODO:Add real values
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
-          wristIO = new WristIOSparkFlex(55, 0); // TODO:Add real values
+          wristIO = new WristIOSparkFlex(55); // TODO:Add real values
         }
       }
     } else {
@@ -260,6 +260,8 @@ public class RobotContainer {
             new Runnable() {
 
               public void run() {
+                manipulator.setWristReference(
+                    manipulator.getW() + driverController.getHID().getRightY() * 0.1);
                 manipulator.setElevatorReference(
                     manipulator.getPos()
                         + 120
@@ -313,7 +315,7 @@ public class RobotContainer {
         .or(manipulatorPanel.eject())
         .whileTrue(
             Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
-
+    driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
     // Climber
     driverController
         .a()

@@ -32,6 +32,7 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevatorConfig
         .closedLoop
         .velocityFF(1.0 / 6700.0)
+        .p(1.0 / 6700.0)
         .maxOutput(1)
         .minOutput(-1)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
@@ -52,6 +53,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   }
 
   public void setPosition(double commandPosition, double arbFF) {
-    elevator.getClosedLoopController().setReference(commandPosition, ControlType.kPosition);
+    elevator.getClosedLoopController().setReference(commandPosition, ControlType.kSmartMotion);
   }
 }

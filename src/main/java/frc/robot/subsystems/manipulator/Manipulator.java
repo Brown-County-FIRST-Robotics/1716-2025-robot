@@ -41,13 +41,17 @@ public class Manipulator extends SubsystemBase {
     elevatorCommandedPosition = reference;
 
     double convertedReference =
-        Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
+        Math.max(Math.min(reference, 0), 550.0); // prevent from going out of bounds
     // TODO: Update these values to the actual max and min based on the position of the limit switch
     convertedReference = convertedReference + elevatorPositionOffset;
 
     Logger.recordOutput("Elevator/CommandReference", reference);
     Logger.recordOutput("Elevator/ActualReference", convertedReference);
-    elevator.setPosition(reference, 0);
+    elevator.setPosition(convertedReference, 0);
+  }
+
+  public double getW() {
+    return wristInputs.angle;
   }
 
   public void setWristReference(double reference) {
@@ -61,8 +65,9 @@ public class Manipulator extends SubsystemBase {
     //         10); // conversion from degrees to... and ensures above elevator hardware limit
     // double convertedReference =
     //     Math.max(Math.min(reference, 0), maxExtent); // prevent from going out of bounds
-    
-    double convertedReference = Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
+
+    double convertedReference =
+        Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
 
     Logger.recordOutput("Wrist/CommandReference", reference);
     Logger.recordOutput("Wrist/ActualReference", convertedReference);
@@ -79,6 +84,6 @@ public class Manipulator extends SubsystemBase {
   }
 
   public boolean wristIsInPosiion() {
-    return Math.abs(wristInputs.angle.getDegrees() - wristCommandedAngle) < 0.02;
+    return Math.abs(wristInputs.angle - wristCommandedAngle) < 0.02;
   }
 }

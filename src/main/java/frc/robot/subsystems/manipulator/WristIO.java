@@ -6,7 +6,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface WristIO {
   @AutoLog
   class WristIOInputs {
-    Rotation2d angle = Rotation2d.kZero;
+    double angle = 0.0;
     double omega = 0.0;
 
     double appliedOutput = 0.0;

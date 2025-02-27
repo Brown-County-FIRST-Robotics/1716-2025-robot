@@ -259,17 +259,17 @@ public class ManipulatorPresetFactory {
                                   manipulator.setWristReference(wristIntake.get());
                                 },
                                 manipulator)
-                            .until(() -> manipulator.elevatorIsInPosition())),
-                    //////////////////////////////
-                    // Extend wrist back out
-                    //////////////////////////////
-                    Commands.run(
-                            () -> {
-                              manipulator.setElevatorReference(elevatorBase.get());
-                              manipulator.setWristReference(wristOut.get());
-                            },
-                            manipulator)
-                        .until(() -> manipulator.wristIsInPosiion()))));
+                            .until(() -> manipulator.elevatorIsInPosition()),
+                        //////////////////////////////
+                        // Extend wrist back out
+                        //////////////////////////////
+                        Commands.run(
+                                () -> {
+                                  manipulator.setElevatorReference(elevatorBase.get());
+                                  manipulator.setWristReference(wristOut.get());
+                                },
+                                manipulator)
+                            .until(() -> manipulator.wristIsInPosiion())))));
   }
 
   public Command processor() {
