@@ -134,7 +134,7 @@ public class RobotContainer {
           elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
-          wristIO = new WristIOSparkFlex(1); // TODO:Add real values
+          wristIO = new WristIOSparkFlex(1, 0); // TODO:Add real values
         }
       }
     } else {
