@@ -128,7 +128,7 @@ public class RobotContainer {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(31, 11, 4, 0); // TODO:Add real values
+          climberIO = new ClimberIOSparkMaxes(31, 0); // TODO:Add real values
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
@@ -321,14 +321,11 @@ public class RobotContainer {
     driverController
         .a()
         .or(driverController.povDown())
-        .whileTrue(
-            Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+        .onTrue(Commands.runOnce(() -> climber.setPosition(true), climber));
     driverController
         .y()
         .or(driverController.povUp())
-        .whileTrue(
-            Commands.runEnd(
-                () -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
+        .onTrue(Commands.runOnce(() -> climber.setPosition(false), climber));
   }
 
   /**

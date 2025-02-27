@@ -5,16 +5,18 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ClimberIO {
   @AutoLog // needed for logging
   class ClimberIOInputs {
-    double positions[] = new double[] {0.0, 0.0}; // this is all the info needed for climber logs
-    double velocities[] = new double[] {0.0, 0.0};
-    double temperatures[] = new double[] {0.0, 0.0};
-    double currents[] = new double[] {0.0, 0.0};
-    double appliedOutputs[] = new double[] {0.0, 0.0};
+    double position = 0.0; // this is all the info needed for climber logs
+    double velocity = 0.0;
+    double temperature = 0.0;
+    double current = 0.0;
+    double appliedOutput = 0.0;
 
-    boolean limitSwitches[] = new boolean[] {false, false};
+    boolean limitSwitch = false;
   }
 
   default void updateInputs(ClimberIOInputs inputs) {}
 
-  default void setVelocities(double leftVelocity, double rightVelocity) {}
+  default void setPosition(double position) {}
+
+  default void setVelocity(double velocity) {}
 }

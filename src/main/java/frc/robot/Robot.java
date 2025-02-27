@@ -130,7 +130,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
+    Commands.run(() -> robotContainer.climber.setVelocityFORZERO(-.25), robotContainer.climber)
         .until(() -> robotContainer.climber.atLimit())
         .schedule();
 
@@ -149,7 +149,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     // ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
+    Commands.run(() -> robotContainer.climber.setVelocityFORZERO(-.25), robotContainer.climber)
         .until(() -> robotContainer.climber.atLimit())
         .schedule();
 
