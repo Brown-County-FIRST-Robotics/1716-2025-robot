@@ -51,16 +51,18 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setWristReference(double reference) {
-    double maxExtent =
-        -180 * Math.pow(0.58 * elevatorInputs.position, 2)
-            + 150; // https://www.desmos.com/calculator/qrehndsfwy
+    // double maxExtent =
+    //     -180 * Math.pow(0.58 * elevatorInputs.position, 2)
+    //         + 150; // https://www.desmos.com/calculator/qrehndsfwy
     // Max distance towards the electrical board the wrist can extend
-    maxExtent =
-        Math.max(
-            maxExtent * 1.0,
-            10); // conversion from degrees to... and ensures above elevator hardware limit
-    double convertedReference =
-        Math.max(Math.min(reference, 0), maxExtent); // prevent from going out of bounds
+    // maxExtent =
+    //     Math.max(
+    //         maxExtent * 1.0,
+    //         10); // conversion from degrees to... and ensures above elevator hardware limit
+    // double convertedReference =
+    //     Math.max(Math.min(reference, 0), maxExtent); // prevent from going out of bounds
+    
+    double convertedReference = Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
 
     Logger.recordOutput("Wrist/CommandReference", reference);
     Logger.recordOutput("Wrist/ActualReference", convertedReference);
