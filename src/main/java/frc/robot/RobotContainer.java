@@ -122,19 +122,16 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(31, 11, 4, 0, 1);
+          gripperIO = new GripperIOSparkMax(4, 1, 10, 0, 2);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(31, 0); // TODO:Add real values
-        }
-        if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
+          climberIO = new ClimberIOSparkMaxes(36, 0); // TODO:Add real values
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
-          wristIO = new WristIOSparkFlex(1, 0); // TODO:Add real values
+          wristIO = new WristIOSparkFlex(55, 0); // TODO:Add real values
         }
       }
     } else {
