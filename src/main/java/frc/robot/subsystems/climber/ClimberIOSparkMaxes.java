@@ -4,20 +4,20 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ClimberIOSparkMaxes implements ClimberIO {
   private final SparkMax climber;
-  private final DigitalInput limitSwitch;
+  private final SparkLimitSwitch limitSwitch;
   private final SparkMaxConfig climberConfig;
 
   public ClimberIOSparkMaxes(int motorID, int limitSwitchID) {
     climber = new SparkMax(motorID, MotorType.kBrushless);
-    limitSwitch = new DigitalInput(limitSwitchID);
+    limitSwitch = climber.getForwardLimitSwitch();
     climberConfig = new SparkMaxConfig();
 
     climberConfig.closedLoop.maxMotion.maxAcceleration(
@@ -41,7 +41,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
     inputs.current = climber.getOutputCurrent();
     inputs.appliedOutput = climber.getAppliedOutput();
 
-    inputs.limitSwitch = limitSwitch.get();
+    inputs.limitSwitch = limitSwitch.isPressed();
   }
 
   @Override
