@@ -17,6 +17,7 @@ public class Manipulator extends SubsystemBase {
     this.elevator = elevator;
     this.wrist = wrist;
 
+    elevator.updateInputs(elevatorInputs);
     if (elevatorInputs.limitSwitch) {
       elevatorPositionOffset = elevatorInputs.position;
     } else {
@@ -72,7 +73,7 @@ public class Manipulator extends SubsystemBase {
     //     Math.max(Math.min(reference, 0), maxExtent); // prevent from going out of bounds
 
     double convertedReference =
-        Math.max(Math.min(reference, -0.05), -.4); // prevent from going out of bounds
+        Math.max(Math.min(reference, -0.0), -0.4); // prevent from going out of bounds
 
     Logger.recordOutput("Wrist/CommandReference", reference);
     Logger.recordOutput("Wrist/ActualReference", convertedReference);

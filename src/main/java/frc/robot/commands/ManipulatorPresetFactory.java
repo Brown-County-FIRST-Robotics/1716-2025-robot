@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.gripper.Gripper;
@@ -23,9 +22,9 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
   LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
   LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 60);
+  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 65);
   LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 110);
+  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
   LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
   LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 1.0);
   LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", 1.0);
@@ -35,12 +34,8 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristAlgaeHigh = new LoggedTunableNumber("Wrist Algae High", 1.0);
   LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
   LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
-
-  // Intake
-  LoggedTunableNumber elevatorBase = new LoggedTunableNumber("Elevator Base", 0.0);
-  LoggedTunableNumber wristOut = new LoggedTunableNumber("Wrist Out", -0.4);
-  LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 1.0);
-  LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", 1.0);
+  LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
+  LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
 
   public ManipulatorPresetFactory(
       Manipulator manipulator_,
@@ -174,102 +169,24 @@ public class ManipulatorPresetFactory {
   }
 
   public Command intake() {
-    return Commands.sequence(
-        ////////////////
-        // Lower elevator all the way
-        ////////////////
-        Commands.run(
-                () -> {
-                  manipulator.setElevatorReference(elevatorBase.get());
-                  manipulator.setWristReference(wristOut.get());
-                },
-                manipulator)
-            .until(() -> manipulator.elevatorIsInPosition()),
-        ////////////////////////////////
-        // Flips wrist over
-        //////////////////////////////
-        Commands.run(
-                () -> {
-                  manipulator.setElevatorReference(elevatorBase.get());
-                  manipulator.setWristReference(wristIntake.get());
-                },
-                manipulator)
-            .until(() -> manipulator.wristIsInPosiion()),
-        //////////////////////////////
-        // Raises elevator to ramp height
-        //////////////////////////////
-        Commands.run(
-                () -> {
-                  manipulator.setElevatorReference(elevatorIntake.get());
-                  manipulator.setWristReference(wristIntake.get());
-                },
-                manipulator)
-            .until(() -> manipulator.elevatorIsInPosition()),
-        //////////////////////////////
-        // Holds the manipulator position and intakes
-        //////////////////////////////
-        Commands.runEnd(
-                () -> {
-                  manipulator.setElevatorReference(elevatorIntake.get());
-                  manipulator.setWristReference(wristIntake.get());
-                  gripper.setGripper(-3500);
-                },
-                () -> gripper.setGripper(0),
-                manipulator,
-                gripper)
-            .until(
-                () ->
-                    gripper
-                        .getCoralDistanceReading()
-                        .filter(
-                            (Double d) -> {
-                              return d < 0.1;
-                            })
-                        .isPresent()),
-        //////////////////////////////
-        // No longer cares about button input
-        //////////////////////////////
-        new ScheduleCommand(
-            ///////////////////////////////////////////////
-            // Runs the gripper until it sees the coral
-            ///////////////////////////////////////////////
-            Commands.runEnd(
-                    () -> {
-                      gripper.setGripper(-3500);
-                    },
-                    () -> gripper.setGripper(0),
-                    gripper)
-                .until(
-                    () ->
-                        gripper
-                            .getCoralDistanceReading()
-                            .filter(
-                                (Double d) -> {
-                                  return d < 0.1;
-                                })
-                            .isPresent())
-                .alongWith(
-                    Commands.sequence(
-                        //////////////////////////////
-                        // Lower elevator
-                        //////////////////////////////
-                        Commands.run(
-                                () -> {
-                                  manipulator.setElevatorReference(elevatorBase.get());
-                                  manipulator.setWristReference(wristIntake.get());
-                                },
-                                manipulator)
-                            .until(() -> manipulator.elevatorIsInPosition()),
-                        //////////////////////////////
-                        // Extend wrist back out
-                        //////////////////////////////
-                        Commands.run(
-                                () -> {
-                                  manipulator.setElevatorReference(elevatorBase.get());
-                                  manipulator.setWristReference(wristOut.get());
-                                },
-                                manipulator)
-                            .until(() -> manipulator.wristIsInPosiion())))));
+    return Commands.runEnd(
+            () -> {
+              manipulator.setElevatorReference(elevatorIntake.get());
+              manipulator.setWristReference(wristIntake.get());
+              gripper.setGripper(3000);
+            },
+            () -> gripper.setGripper(0),
+            manipulator,
+            gripper)
+        .until(
+            () ->
+                gripper
+                    .getCoralDistanceReading()
+                    .filter(
+                        (Double d) -> {
+                          return d < 0.1;
+                        })
+                    .isPresent());
   }
 
   public Command processor() {

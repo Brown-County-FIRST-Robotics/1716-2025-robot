@@ -51,9 +51,4 @@ public class ClimberIOSparkMaxes implements ClimberIO {
   public void setPosition(double position) {
     climber.getClosedLoopController().setReference(position, ControlType.kSmartMotion);
   }
-
-  @Override
-  public void setVelocity(double velocity) {
-    climber.set(velocity);
-  }
 }

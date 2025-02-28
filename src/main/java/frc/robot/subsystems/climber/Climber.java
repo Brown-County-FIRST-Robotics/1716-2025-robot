@@ -9,7 +9,7 @@ public class Climber extends SubsystemBase {
   ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   ClimberIO io;
 
-  private double positionOffset = 0.0;
+  private double positionOffset;
   private boolean isDown = false;
   // private boolean isZeroed = false;
 
@@ -19,6 +19,8 @@ public class Climber extends SubsystemBase {
     CustomAlerts.makeOverTempAlert(
         () -> inputs.temperature, 60, 50, "climber motor"); // alerts if motor temps get too high
     Logger.recordOutput("Climber/RequestedPosition", isDown);
+
+    positionOffset = inputs.position;
   }
 
   @Override
@@ -44,15 +46,6 @@ public class Climber extends SubsystemBase {
   public void setPosition(boolean down) { // up or down
     isDown = down;
     Logger.recordOutput("Climber/RequestedPosition", isDown);
-  }
-
-  public void setVelocityFORZERO(
-      double velocity) { // only to be used at robot initialization for zeroing
-    io.setVelocity(velocity);
-  }
-
-  public void zero() { // Zero the position
-    positionOffset = inputs.position;
   }
 
   public boolean atLimit() {
