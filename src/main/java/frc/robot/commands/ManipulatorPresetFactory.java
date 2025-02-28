@@ -20,13 +20,13 @@ public class ManipulatorPresetFactory {
   ManipulatorPanel manipulatorPanel;
 
   LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
-  LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", 0.0);
-  LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 1.0);
-  LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", 1.0);
-  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 1.0);
-  LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", 1.0);
-  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 1.0);
-  LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", 1.0);
+  LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
+  LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
+  LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
+  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 60);
+  LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
+  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 110);
+  LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
   LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 1.0);
   LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", 1.0);
   LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 1.0);
@@ -37,8 +37,8 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
 
   // Intake
-  LoggedTunableNumber elevatorBase = new LoggedTunableNumber("Elevator Intake", 1.0);
-  LoggedTunableNumber wristOut = new LoggedTunableNumber("Wrist Intake", 1.0);
+  LoggedTunableNumber elevatorBase = new LoggedTunableNumber("Elevator Base", 0.0);
+  LoggedTunableNumber wristOut = new LoggedTunableNumber("Wrist Out", -0.4);
   LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 1.0);
   LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", 1.0);
 

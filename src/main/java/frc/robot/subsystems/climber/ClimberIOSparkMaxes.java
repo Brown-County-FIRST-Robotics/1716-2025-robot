@@ -19,7 +19,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
     climber = new SparkMax(motorID, MotorType.kBrushless);
     limitSwitch = climber.getForwardLimitSwitch();
     climberConfig = new SparkMaxConfig();
-    climberConfig.closedLoop.velocityFF(1.0 / 6500.0);
+    climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(1.5 / 6500.0);
     climberConfig
         .closedLoop
         .smartMotion

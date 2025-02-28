@@ -1,6 +1,5 @@
 package frc.robot.subsystems.manipulator;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,16 +10,22 @@ public class Manipulator extends SubsystemBase {
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
   private double elevatorCommandedPosition = 0.0;
-  private double elevatorPositionOffset = 0.0;
+  private double elevatorPositionOffset;
   private double wristCommandedAngle = 0.0;
 
   public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
     this.wrist = wrist;
+
+    if (elevatorInputs.limitSwitch) {
+      elevatorPositionOffset = elevatorInputs.position;
+    } else {
+      elevatorPositionOffset = elevatorInputs.position - 182.0;
+    }
   }
 
-  public double getPos() {
-    return elevatorInputs.position;
+  public double getElevator() {
+    return elevatorInputs.position - elevatorPositionOffset;
   }
 
   @Override
@@ -41,7 +46,7 @@ public class Manipulator extends SubsystemBase {
     elevatorCommandedPosition = reference;
 
     double convertedReference =
-        Math.max(Math.min(reference, 0), 550.0); // prevent from going out of bounds
+        Math.max(Math.min(reference, 180.0), 0.0); // prevent from going out of bounds
     // TODO: Update these values to the actual max and min based on the position of the limit switch
     convertedReference = convertedReference + elevatorPositionOffset;
 
@@ -50,7 +55,7 @@ public class Manipulator extends SubsystemBase {
     elevator.setPosition(convertedReference, 0);
   }
 
-  public double getW() {
+  public double getWrist() {
     return wristInputs.angle;
   }
 
@@ -67,11 +72,11 @@ public class Manipulator extends SubsystemBase {
     //     Math.max(Math.min(reference, 0), maxExtent); // prevent from going out of bounds
 
     double convertedReference =
-        Math.max(Math.min(reference, 0), 1.0); // prevent from going out of bounds
+        Math.max(Math.min(reference, -0.05), -.4); // prevent from going out of bounds
 
     Logger.recordOutput("Wrist/CommandReference", reference);
     Logger.recordOutput("Wrist/ActualReference", convertedReference);
-    wrist.setPosition(Rotation2d.fromDegrees(reference), 0);
+    wrist.setPosition(convertedReference, 0);
   }
 
   // Whether the arm is at the reference position (within some tolerance)

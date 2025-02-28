@@ -255,21 +255,6 @@ public class RobotContainer {
     gripper = new Gripper(gripperIO);
     climber = new Climber(climberIO);
 
-    manipulator.setDefaultCommand(
-        Commands.run(
-            new Runnable() {
-
-              public void run() {
-                manipulator.setWristReference(
-                    manipulator.getW() + driverController.getHID().getRightY() * 0.1);
-                manipulator.setElevatorReference(
-                    manipulator.getPos()
-                        + 120
-                            * (driverController.getLeftTriggerAxis()
-                                - driverController.getRightTriggerAxis()));
-              }
-            },
-            manipulator));
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     presetFactory =
@@ -294,7 +279,23 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Manipulator Presets
-    // manipulator.setDefaultCommand(presetFactory.retracted());
+    manipulator.setDefaultCommand(presetFactory.retracted());
+
+    // manipulator.setDefaultCommand(
+    //     Commands.run(
+    //         new Runnable() {
+
+    //           public void run() {
+    //             // manipulator.setWristReference(
+    //             //     manipulator.getWrist() + driverController.getHID().getRightY());
+    //             manipulator.setElevatorReference(
+    //                 manipulator.getElevator()
+    //                     + 50
+    //                         * (-driverController.getLeftTriggerAxis()
+    //                             + driverController.getRightTriggerAxis()));
+    //           }
+    //         },
+    //         manipulator));
 
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
@@ -314,7 +315,7 @@ public class RobotContainer {
         .rightTrigger(0.2)
         .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
+            Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
     // Climber
     driverController

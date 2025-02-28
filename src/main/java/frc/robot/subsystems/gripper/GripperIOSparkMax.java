@@ -9,6 +9,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import frc.robot.Constants;
 import frc.robot.utils.Alert;
 
@@ -42,7 +44,7 @@ public class GripperIOSparkMax implements GripperIO {
     algaeMeasurement = null;
 
     config.closedLoop.smartMotion.maxAcceleration(12000); // placeholder
-    config.smartCurrentLimit(Constants.CurrentLimits.NEO550);
+    config.smartCurrentLimit(Constants.CurrentLimits.NEO550).idleMode(IdleMode.kBrake);
     config.closedLoop.p(0.0001).i(0).d(0).maxOutput(1).minOutput(-1);
     config.closedLoop.velocityFF(1.0 / 12000);
 
@@ -118,10 +120,8 @@ public class GripperIOSparkMax implements GripperIO {
 
   public void setVelocities(
       double topCommandVelocity, double bottomCommandVelocity, double rearCommandVelocity) {
-    top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kSmartVelocity);
-    bottom
-        .getClosedLoopController()
-        .setReference(bottomCommandVelocity, ControlType.kSmartVelocity);
-    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kSmartVelocity);
+    top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kVelocity);
+    bottom.getClosedLoopController().setReference(bottomCommandVelocity, ControlType.kVelocity);
+    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kVelocity);
   }
 }

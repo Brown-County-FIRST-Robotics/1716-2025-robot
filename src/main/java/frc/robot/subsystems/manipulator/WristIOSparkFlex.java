@@ -9,19 +9,20 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
   private final SparkFlexConfig wristConfig;
   private final AbsoluteEncoder encoder;
-  private final double offset = 0.0;
+  private final double offset = 0.5043;
 
   public WristIOSparkFlex(int id) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
     wristConfig = new SparkFlexConfig();
     encoder = wrist.getAbsoluteEncoder();
-    wristConfig.closedLoop.velocityFF(1.0 / 6700.0).maxOutput(1).minOutput(-1);
-    wristConfig.closedLoop.smartMotion.maxAcceleration(1200); // placeholder
+    wristConfig.closedLoop.velocityFF(1.0 / 6700.0).p(1.0 / 3000.0).maxOutput(1).minOutput(-1);
+    wristConfig.closedLoop.smartMotion.maxAcceleration(1200).maxVelocity(250); // placeholder
     wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX);
     wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 

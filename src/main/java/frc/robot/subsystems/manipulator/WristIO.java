@@ -1,6 +1,5 @@
 package frc.robot.subsystems.manipulator;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface WristIO {
@@ -16,5 +15,5 @@ public interface WristIO {
 
   default void updateInputs(WristIOInputs inputs) {}
 
-  default void setPosition(Rotation2d commandPosition, double arbFF) {}
+  default void setPosition(double commandPosition, double arbFF) {}
 }
