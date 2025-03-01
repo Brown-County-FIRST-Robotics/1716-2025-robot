@@ -258,7 +258,36 @@ public class RobotContainer {
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     presetFactory =
-        new ManipulatorPresetFactory(manipulator, gripper, teleopDrive, driveSys, manipulatorPanel);
+        new ManipulatorPresetFactory(
+            manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
+    autoChooser.addOption(
+        "Crappy 1 coral",
+        Commands.runEnd(
+                () -> driveSys.humanDrive(new ChassisSpeeds(1, 0, 0)),
+                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                driveSys)
+            .alongWith(presetFactory.retracted())
+            .raceWith(Commands.waitSeconds(2.0))
+            .andThen(
+                presetFactory
+                    .level2()
+                    .alongWith(
+                        Commands.waitSeconds(3)
+                            .andThen(
+                                Commands.runEnd(
+                                        () -> gripper.setGripper(-4000),
+                                        () -> gripper.setGripper(0),
+                                        gripper)
+                                    .raceWith(Commands.waitSeconds(2))
+                                    .andThen(
+                                        Commands.runEnd(
+                                                () ->
+                                                    driveSys.humanDrive(
+                                                        new ChassisSpeeds(-.5, 0, 0)),
+                                                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                                                driveSys)
+                                            .raceWith(Commands.waitSeconds(1.5)))))));
+
     if (WhoAmI.isDemoMode) {
       configureDemoBindings(teleopDrive);
     } else {
@@ -309,14 +338,22 @@ public class RobotContainer {
 
     manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
 
+    manipulatorPanel
+        .leftPole()
+        .and(manipulatorPanel.rightPole())
+        .onTrue(Commands.runOnce(() -> manipulator.resetElevator()));
+
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
     driverController
         .rightTrigger(0.2)
+        .or(driverController.leftTrigger(0.2))
         .or(manipulatorPanel.eject())
         .whileTrue(
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
+
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
+
     // Climber
     driverController
         .a()

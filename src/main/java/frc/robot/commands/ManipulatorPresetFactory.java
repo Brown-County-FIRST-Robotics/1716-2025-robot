@@ -1,10 +1,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.utils.LoggedTunableNumber;
@@ -17,12 +19,13 @@ public class ManipulatorPresetFactory {
   TeleopDrive teleopDrive;
   Drivetrain driveTrain;
   ManipulatorPanel manipulatorPanel;
+  LEDs leds;
 
   LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
   LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
   LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
   LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 65);
+  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
   LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
   LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
   LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
@@ -42,12 +45,14 @@ public class ManipulatorPresetFactory {
       Gripper gripper_,
       TeleopDrive teleopDrive_,
       Drivetrain driveTrain_,
-      ManipulatorPanel manipulatorPanel_) {
+      ManipulatorPanel manipulatorPanel_,
+      LEDs leds_) {
     manipulator = manipulator_;
     gripper = gripper_;
     driveTrain = driveTrain_;
     teleopDrive = teleopDrive_;
     manipulatorPanel = manipulatorPanel_;
+    leds = leds_;
   }
 
   public Optional<Translation2d> whereShouldIBe() {
@@ -108,64 +113,67 @@ public class ManipulatorPresetFactory {
   }
 
   public Command level4() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorLevel4.get());
-          manipulator.setWristReference(wristLevel4.get());
-        },
-        manipulator);
+    return Commands.none();
+    // return Commands.run(
+    //     () -> {
+    //       manipulator.setElevatorReference(elevatorLevel4.get());
+    //       manipulator.setWristReference(wristLevel4.get());
+    //     },
+    //     manipulator);
   }
 
   public Command algaeLow() {
-    return Commands.run(
-            () -> {
-              manipulator.setElevatorReference(elevatorAlgaeLow.get());
-              manipulator.setWristReference(wristAlgaeLow.get());
+    return Commands.none();
+    // return Commands.run(
+    //         () -> {
+    //           manipulator.setElevatorReference(elevatorAlgaeLow.get());
+    //           manipulator.setWristReference(wristAlgaeLow.get());
 
-              if (manipulator.isInPosition()) {
-                gripper.setGripper(-3500);
-              } else {
-                gripper.setGripper(0);
-              }
-            },
-            gripper,
-            manipulator)
-        .until(
-            () ->
-                gripper
-                    .getAlgaeDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.1;
-                        })
-                    .isEmpty())
-        .andThen(gripper.holdAlgae());
+    //           if (manipulator.isInPosition()) {
+    //             gripper.setGripper(-3500);
+    //           } else {
+    //             gripper.setGripper(0);
+    //           }
+    //         },
+    //         gripper,
+    //         manipulator)
+    //     .until(
+    //         () ->
+    //             gripper
+    //                 .getAlgaeDistanceReading()
+    //                 .filter(
+    //                     (Double d) -> {
+    //                       return d < 0.1;
+    //                     })
+    //                 .isEmpty())
+    //     .andThen(gripper.holdAlgae());
   }
 
   public Command algaeHigh() {
-    return Commands.run(
-            () -> {
-              manipulator.setElevatorReference(elevatorAlgaeHigh.get());
-              manipulator.setWristReference(wristAlgaeHigh.get());
+    return Commands.none();
+    // return Commands.run(
+    //         () -> {
+    //           manipulator.setElevatorReference(elevatorAlgaeHigh.get());
+    //           manipulator.setWristReference(wristAlgaeHigh.get());
 
-              if (manipulator.isInPosition()) {
-                gripper.setGripper(1000);
-              } else {
-                gripper.setGripper(0);
-              }
-            },
-            gripper,
-            manipulator)
-        .until(
-            () ->
-                gripper
-                    .getAlgaeDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.1;
-                        })
-                    .isEmpty())
-        .andThen(gripper.holdAlgae());
+    //           if (manipulator.isInPosition()) {
+    //             gripper.setGripper(1000);
+    //           } else {
+    //             gripper.setGripper(0);
+    //           }
+    //         },
+    //         gripper,
+    //         manipulator)
+    //     .until(
+    //         () ->
+    //             gripper
+    //                 .getAlgaeDistanceReading()
+    //                 .filter(
+    //                     (Double d) -> {
+    //                       return d < 0.1;
+    //                     })
+    //                 .isEmpty())
+    //     .andThen(gripper.holdAlgae());
   }
 
   public Command intake() {
@@ -174,8 +182,17 @@ public class ManipulatorPresetFactory {
               manipulator.setElevatorReference(elevatorIntake.get());
               manipulator.setWristReference(wristIntake.get());
               gripper.setGripper(3000);
+
+              if (manipulator.isInPosition()) {
+                leds.setColor(Color.kGreen);
+              } else {
+                leds.setColor(Color.kRed);
+              }
             },
-            () -> gripper.setGripper(0),
+            () -> {
+              gripper.setGripper(0);
+              leds.setColor(Color.kRed);
+            },
             manipulator,
             gripper)
         .until(
@@ -190,11 +207,12 @@ public class ManipulatorPresetFactory {
   }
 
   public Command processor() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorProcessor.get());
-          manipulator.setWristReference(wristProcessor.get());
-        },
-        manipulator);
+    return Commands.none();
+    // return Commands.run(
+    //     () -> {
+    //       manipulator.setElevatorReference(elevatorProcessor.get());
+    //       manipulator.setWristReference(wristProcessor.get());
+    //     },
+    //     manipulator);
   }
 }

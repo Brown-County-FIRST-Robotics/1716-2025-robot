@@ -86,10 +86,18 @@ public class Manipulator extends SubsystemBase {
   }
 
   public boolean elevatorIsInPosition() {
-    return Math.abs(elevatorInputs.position - elevatorCommandedPosition) < 0.02;
+    return Math.abs(elevatorInputs.position - elevatorCommandedPosition) < 2;
   }
 
   public boolean wristIsInPosiion() {
-    return Math.abs(wristInputs.angle - wristCommandedAngle) < 0.02;
+    return Math.abs(wristInputs.angle - wristCommandedAngle) < 0.05;
+  }
+
+  public void resetElevator() {
+    if (elevatorInputs.limitSwitch) {
+      elevatorPositionOffset = elevatorInputs.position;
+    } else {
+      elevatorPositionOffset = elevatorInputs.position - 182.0;
+    }
   }
 }

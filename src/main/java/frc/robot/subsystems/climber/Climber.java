@@ -36,7 +36,7 @@ public class Climber extends SubsystemBase {
 
     // if (isZeroed) {
     if (isDown) {
-      io.setPosition(25.324 + positionOffset);
+      io.setPosition(80 + positionOffset);
     } else {
       io.setPosition(0.5 + positionOffset);
     }

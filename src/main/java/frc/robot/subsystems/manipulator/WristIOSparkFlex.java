@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants;
 
@@ -22,7 +23,7 @@ public class WristIOSparkFlex implements WristIO {
     encoder = wrist.getAbsoluteEncoder();
     wristConfig.closedLoop.velocityFF(1.0 / 6700.0).p(1.0 / 3000.0).maxOutput(1).minOutput(-1);
     wristConfig.closedLoop.smartMotion.maxAcceleration(1200).maxVelocity(250); // placeholder
-    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX);
+    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kBrake);
     wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
     wrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
