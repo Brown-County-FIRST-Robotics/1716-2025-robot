@@ -63,7 +63,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController secondController = new CommandXboxController(1);
+  // private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
@@ -375,18 +375,21 @@ public class RobotContainer {
    * joysticks}.
    */
   private TeleopDrive configureSharedBindings() {
-    var teleopDrive = new TeleopDrive(driveSys, driverController, secondController, overridePanel);
+    // var teleopDrive = new TeleopDrive(driveSys, driverController, secondController,
+    // overridePanel);
+    var teleopDrive = new TeleopDrive(driveSys, driverController, overridePanel);
+
     driveSys.setDefaultCommand(teleopDrive);
-    secondController
-        .povUp()
-        .onTrue(
-            Commands.runOnce(
-                () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
-    secondController
-        .povDown()
-        .onTrue(
-            Commands.runOnce(
-                () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
+    // secondController
+    //     .povUp()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
+    // secondController
+    //     .povDown()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
 
     return teleopDrive;
   }
