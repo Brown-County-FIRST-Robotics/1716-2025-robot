@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
@@ -25,7 +26,11 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() { // runs every frame (useful for data logging)
+    var t0 = RobotController.getFPGATime();
+
     io.updateInputs(inputs);
+    System.out.println("Climber Periodic:" + Long.toString(RobotController.getFPGATime() - t0));
+
     Logger.processInputs("Climber", inputs);
 
     // if (inputs.limitSwitch) {
