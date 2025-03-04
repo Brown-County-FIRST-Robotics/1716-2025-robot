@@ -1,5 +1,7 @@
 package frc.robot.subsystems.manipulator;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -31,10 +33,13 @@ public class Manipulator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    var t0 = RobotController.getFPGATime();
     elevator.updateInputs(elevatorInputs);
     wrist.updateInputs(wristInputs);
     Logger.processInputs("Elevator", elevatorInputs);
     Logger.processInputs("Wrist", wristInputs);
+
+    System.out.println("Wrist Periodic:" + Long.toString(RobotController.getFPGATime() - t0));
 
     if (elevatorInputs.limitSwitch) {
       elevatorPositionOffset = elevatorInputs.position;
