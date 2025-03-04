@@ -5,6 +5,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.utils.Overrides;
@@ -66,12 +67,14 @@ public class SwerveDrivetrain implements Drivetrain {
 
   @Override
   public void periodic() {
+    var t0 = RobotController.getFPGATime();
     imu.updateInputs(imuInputs);
     Logger.processInputs("Drive/IMU", imuInputs);
     fl.periodic();
     fr.periodic();
     bl.periodic();
     br.periodic();
+    System.out.println("Swerve Periodic:" + Long.toString(RobotController.getFPGATime() - t0));
 
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
     Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());

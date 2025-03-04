@@ -1,5 +1,6 @@
 package frc.robot.subsystems.gripper;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,7 +18,11 @@ public class Gripper extends SubsystemBase {
 
   @Override
   public void periodic() {
+    var t0 = RobotController.getFPGATime();
+
     gripperIO.updateInputs(gripperInputs);
+
+    System.out.println("Gripper Periodic:" + Long.toString(RobotController.getFPGATime() - t0));
     Logger.processInputs("Gripper", gripperInputs);
   }
 

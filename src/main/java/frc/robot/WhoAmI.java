@@ -9,9 +9,7 @@ public final class WhoAmI {
   /** The robot */
   public static final RobotType bot = RobotType.SWERVEBASE;
   /** The appendages to the robot */
-  public static final Appendages[] appendages = {
-    Appendages.CLIMBER, Appendages.GRIPPER, Appendages.WRIST, Appendages.ELEVATOR
-  };
+  public static final Appendages[] appendages = {Appendages.GRIPPER, Appendages.WRIST};
 
   public static final boolean isDemoMode = false;
 
