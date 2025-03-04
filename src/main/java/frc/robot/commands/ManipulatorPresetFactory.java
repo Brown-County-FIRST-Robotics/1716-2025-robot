@@ -29,8 +29,8 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
   LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
   LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 1.0);
-  LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", 1.0);
+  LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
+  LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
   LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 1.0);
   LoggedTunableNumber wristAlgaeLow = new LoggedTunableNumber("Wrist Algae Low", 1.0);
   LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 1.0);

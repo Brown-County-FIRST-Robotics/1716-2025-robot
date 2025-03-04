@@ -47,7 +47,7 @@ public class Manipulator extends SubsystemBase {
     elevatorCommandedPosition = reference;
 
     double convertedReference =
-        Math.max(Math.min(reference, 180.0), 0.0); // prevent from going out of bounds
+        Math.max(Math.min(reference, 190.0), 0.0); // prevent from going out of bounds
     // TODO: Update these values to the actual max and min based on the position of the limit switch
     convertedReference = convertedReference + elevatorPositionOffset;
 
