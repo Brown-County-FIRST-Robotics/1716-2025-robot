@@ -39,6 +39,8 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
   LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
   LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
+  LoggedTunableNumber wristIntakeDescending =
+      new LoggedTunableNumber("Wrist Intake on Descent", -.4);
 
   public ManipulatorPresetFactory(
       Manipulator manipulator_,
@@ -180,8 +182,14 @@ public class ManipulatorPresetFactory {
     return Commands.runEnd(
             () -> {
               manipulator.setElevatorReference(elevatorIntake.get());
-              manipulator.setWristReference(wristIntake.get());
-              gripper.setGripper(3000);
+
+              if (manipulator.getElevator() <= elevatorIntake.get() + 10) {
+                manipulator.setWristReference(wristIntake.get());
+                gripper.setGripper(3000);
+              } else {
+                manipulator.setWristReference(wristIntakeDescending.get());
+                gripper.setGripper(0);
+              }
 
               if (manipulator.isInPosition()) {
                 leds.setColor(Color.kGreen);
