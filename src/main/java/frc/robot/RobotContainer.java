@@ -333,7 +333,7 @@ public class RobotContainer {
     manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
     manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
 
-    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).whileTrue(presetFactory.intake());
+    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).onTrue(presetFactory.intake());
     manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());
 
     manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());

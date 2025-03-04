@@ -22,7 +22,7 @@ public class WristIOSparkFlex implements WristIO {
     wristConfig = new SparkFlexConfig();
     encoder = wrist.getAbsoluteEncoder();
     wristConfig.closedLoop.velocityFF(1.0 / 6700.0).p(1.0 / 3000.0).maxOutput(1).minOutput(-1);
-    wristConfig.closedLoop.smartMotion.maxAcceleration(1200).maxVelocity(250); // placeholder
+    wristConfig.closedLoop.smartMotion.maxAcceleration(6000).maxVelocity(1000); // placeholder
     wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kBrake);
     wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
