@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.hal.HALUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,6 +44,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     // Record metadata
+    DriverStation.silenceJoystickConnectionWarning(true);
     Logger.recordMetadata("ProjectName", "2025");
     File deployDir = Filesystem.getDeployDirectory();
     File tagFile = new File(deployDir, "git_tag.txt");

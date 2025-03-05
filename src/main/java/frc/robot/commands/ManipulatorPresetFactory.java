@@ -200,9 +200,7 @@ public class ManipulatorPresetFactory {
             () -> {
               gripper.setGripper(0);
               leds.setColor(Color.kRed);
-            },
-            manipulator,
-            gripper)
+            })
         .until(
             () ->
                 gripper
