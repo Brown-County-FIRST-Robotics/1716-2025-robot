@@ -31,12 +31,11 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
   LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
   LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
-  LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 1.0);
-  LoggedTunableNumber wristAlgaeLow = new LoggedTunableNumber("Wrist Algae Low", 1.0);
-  LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 1.0);
-  LoggedTunableNumber wristAlgaeHigh = new LoggedTunableNumber("Wrist Algae High", 1.0);
-  LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
-  LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
+  LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
+  LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
+  LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
+  // LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
+  // LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
   LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
   LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
   LoggedTunableNumber wristIntakeDescending =
@@ -125,57 +124,23 @@ public class ManipulatorPresetFactory {
   }
 
   public Command algaeLow() {
-    return Commands.none();
-    // return Commands.run(
-    //         () -> {
-    //           manipulator.setElevatorReference(elevatorAlgaeLow.get());
-    //           manipulator.setWristReference(wristAlgaeLow.get());
-
-    //           if (manipulator.isInPosition()) {
-    //             gripper.setGripper(-3500);
-    //           } else {
-    //             gripper.setGripper(0);
-    //           }
-    //         },
-    //         gripper,
-    //         manipulator)
-    //     .until(
-    //         () ->
-    //             gripper
-    //                 .getAlgaeDistanceReading()
-    //                 .filter(
-    //                     (Double d) -> {
-    //                       return d < 0.1;
-    //                     })
-    //                 .isEmpty())
-    //     .andThen(gripper.holdAlgae());
+    // return Commands.none();
+    return Commands.run(
+        () -> {
+          manipulator.setElevatorReference(elevatorAlgaeLow.get());
+          manipulator.setWristReference(wristAlgae.get());
+        },
+        manipulator);
   }
 
   public Command algaeHigh() {
-    return Commands.none();
-    // return Commands.run(
-    //         () -> {
-    //           manipulator.setElevatorReference(elevatorAlgaeHigh.get());
-    //           manipulator.setWristReference(wristAlgaeHigh.get());
-
-    //           if (manipulator.isInPosition()) {
-    //             gripper.setGripper(1000);
-    //           } else {
-    //             gripper.setGripper(0);
-    //           }
-    //         },
-    //         gripper,
-    //         manipulator)
-    //     .until(
-    //         () ->
-    //             gripper
-    //                 .getAlgaeDistanceReading()
-    //                 .filter(
-    //                     (Double d) -> {
-    //                       return d < 0.1;
-    //                     })
-    //                 .isEmpty())
-    //     .andThen(gripper.holdAlgae());
+    // return Commands.none();
+    return Commands.run(
+        () -> {
+          manipulator.setElevatorReference(elevatorAlgaeHigh.get());
+          manipulator.setWristReference(wristAlgae.get());
+        },
+        manipulator);
   }
 
   public Command intake() {

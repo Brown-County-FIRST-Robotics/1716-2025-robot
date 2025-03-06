@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ManipulatorPresetFactory;
@@ -330,8 +331,12 @@ public class RobotContainer {
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
     manipulatorPanel.level3().whileTrue(presetFactory.level3());
     manipulatorPanel.level4().whileTrue(presetFactory.level4());
-    manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
-    manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
+    manipulatorPanel
+        .algaeLow()
+        .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
+    manipulatorPanel
+        .algaeHigh()
+        .whileTrue(presetFactory.algaeHigh().alongWith(gripper.holdAlgae()));
 
     manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).onTrue(presetFactory.intake());
     manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());
