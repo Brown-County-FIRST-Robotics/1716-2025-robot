@@ -336,7 +336,7 @@ public class RobotContainer {
         .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
     manipulatorPanel
         .algaeHigh()
-        .whileTrue(presetFactory.algaeHigh().alongWith(gripper.holdAlgae()));
+        .whileTrue(presetFactory.algaeHigh().alongWith(new ScheduleCommand(gripper.holdAlgae())));
 
     manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).onTrue(presetFactory.intake());
     manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());

@@ -58,7 +58,7 @@ public class Gripper extends SubsystemBase {
               if (getAlgaeDistanceReading()
                   .filter(
                       (Double d) -> {
-                        return d < 0.3;
+                        return d < 0.15;
                       })
                   .isPresent()) {
                 hasAlgae = true;
@@ -78,7 +78,7 @@ public class Gripper extends SubsystemBase {
                     && getAlgaeDistanceReading()
                         .filter(
                             (Double d) -> {
-                              return d < 0.3;
+                              return d < 0.15;
                             })
                         .isEmpty());
   }
