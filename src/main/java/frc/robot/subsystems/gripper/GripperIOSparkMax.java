@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 import frc.robot.utils.Alert;
@@ -41,12 +42,10 @@ public class GripperIOSparkMax implements GripperIO {
     coralMeasurement = null; // set in UpdateInputs
     algaeMeasurement = null;
 
-    config.closedLoop.maxMotion.maxAcceleration(12000); // placeholder
-    config.smartCurrentLimit(Constants.CurrentLimits.NEO550);
-    config.closedLoop.p(0.0001);
-    config.closedLoop.i(0);
-    config.closedLoop.d(0);
-    config.closedLoop.velocityFF(1 / 12000);
+    config.closedLoop.smartMotion.maxAcceleration(12000); // placeholder
+    config.smartCurrentLimit(Constants.CurrentLimits.NEO550).idleMode(IdleMode.kBrake);
+    config.closedLoop.p(0.0001).i(0).d(0).maxOutput(1).minOutput(-1);
+    config.closedLoop.velocityFF(1.0 / 12000);
 
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

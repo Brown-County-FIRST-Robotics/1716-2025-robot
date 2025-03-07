@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.utils.Alert;
 import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.PeriodicRunnable;
@@ -129,11 +128,6 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
-        .until(() -> robotContainer.climber.atLimit())
-        .schedule();
-
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -148,11 +142,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    // ensure the climber hits the limit switch at the beginning
-    Commands.run(() -> robotContainer.climber.setVelocity(-200), robotContainer.climber)
-        .until(() -> robotContainer.climber.atLimit())
-        .schedule();
-
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ManipulatorPresetFactory;
@@ -63,7 +64,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController secondController = new CommandXboxController(1);
+  // private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
@@ -122,19 +123,16 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(31, 11, 4, 0, 1);
+          gripperIO = new GripperIOSparkMax(4, 1, 10, 0, 2);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(31, 11, 4, 0); // TODO:Add real values
-        }
-        if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(1, 1); // TODO:Add real values
+          climberIO = new ClimberIOSparkMaxes(36, 0); // TODO:Add real values
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
-          wristIO = new WristIOSparkFlex(1, 0); // TODO:Add real values
+          wristIO = new WristIOSparkFlex(55); // TODO:Add real values
         }
       }
     } else {
@@ -258,23 +256,39 @@ public class RobotContainer {
     gripper = new Gripper(gripperIO);
     climber = new Climber(climberIO);
 
-    manipulator.setDefaultCommand(
-        Commands.run(
-            new Runnable() {
-
-              public void run() {
-                manipulator.setElevatorReference(
-                    manipulator.getPos()
-                        + 120
-                            * (driverController.getLeftTriggerAxis()
-                                - driverController.getRightTriggerAxis()));
-              }
-            },
-            manipulator));
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     presetFactory =
-        new ManipulatorPresetFactory(manipulator, gripper, teleopDrive, driveSys, manipulatorPanel);
+        new ManipulatorPresetFactory(
+            manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
+    autoChooser.addOption(
+        "Crappy 1 coral",
+        Commands.runEnd(
+                () -> driveSys.humanDrive(new ChassisSpeeds(1, 0, 0)),
+                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                driveSys)
+            .alongWith(presetFactory.retracted())
+            .raceWith(Commands.waitSeconds(2.0))
+            .andThen(
+                presetFactory
+                    .level2()
+                    .alongWith(
+                        Commands.waitSeconds(3)
+                            .andThen(
+                                Commands.runEnd(
+                                        () -> gripper.setGripper(-4000),
+                                        () -> gripper.setGripper(0),
+                                        gripper)
+                                    .raceWith(Commands.waitSeconds(2))
+                                    .andThen(
+                                        Commands.runEnd(
+                                                () ->
+                                                    driveSys.humanDrive(
+                                                        new ChassisSpeeds(-.5, 0, 0)),
+                                                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                                                driveSys)
+                                            .raceWith(Commands.waitSeconds(1.5)))))));
+
     if (WhoAmI.isDemoMode) {
       configureDemoBindings(teleopDrive);
     } else {
@@ -295,40 +309,65 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Manipulator Presets
-    // manipulator.setDefaultCommand(presetFactory.retracted());
+    manipulator.setDefaultCommand(presetFactory.retracted());
+
+    // manipulator.setDefaultCommand(
+    //     Commands.run(
+    //         new Runnable() {
+
+    //           public void run() {
+    //             // manipulator.setWristReference(
+    //             //     manipulator.getWrist() + driverController.getHID().getRightY());
+    //             manipulator.setElevatorReference(
+    //                 manipulator.getElevator()
+    //                     + 50
+    //                         * (-driverController.getLeftTriggerAxis()
+    //                             + driverController.getRightTriggerAxis()));
+    //           }
+    //         },
+    //         manipulator));
 
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
     manipulatorPanel.level3().whileTrue(presetFactory.level3());
     manipulatorPanel.level4().whileTrue(presetFactory.level4());
-    manipulatorPanel.algaeLow().whileTrue(presetFactory.algaeLow());
-    manipulatorPanel.algaeHigh().whileTrue(presetFactory.algaeHigh());
+    manipulatorPanel
+        .algaeLow()
+        .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
+    manipulatorPanel
+        .algaeHigh()
+        .whileTrue(presetFactory.algaeHigh().alongWith(new ScheduleCommand(gripper.holdAlgae())));
 
-    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).whileTrue(presetFactory.intake());
+    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).onTrue(presetFactory.intake());
     manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());
 
     manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
+
+    manipulatorPanel
+        .leftPole()
+        .and(manipulatorPanel.rightPole())
+        .onTrue(Commands.runOnce(() -> manipulator.resetElevator()));
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
     driverController
         .rightTrigger(0.2)
+        .or(driverController.leftTrigger(0.2))
         .or(manipulatorPanel.eject())
         .whileTrue(
-            Commands.runEnd(() -> gripper.setGripper(-2000), () -> gripper.setGripper(0), gripper));
+            Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
+
+    driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
 
     // Climber
     driverController
         .a()
         .or(driverController.povDown())
-        .whileTrue(
-            Commands.runEnd(() -> climber.setVelocity(200), () -> climber.setVelocity(0), climber));
+        .onTrue(Commands.runOnce(() -> climber.setPosition(true), climber));
     driverController
         .y()
         .or(driverController.povUp())
-        .whileTrue(
-            Commands.runEnd(
-                () -> climber.setVelocity(-200), () -> climber.setVelocity(0), climber));
+        .onTrue(Commands.runOnce(() -> climber.setPosition(false), climber));
   }
 
   /**
@@ -341,18 +380,21 @@ public class RobotContainer {
    * joysticks}.
    */
   private TeleopDrive configureSharedBindings() {
-    var teleopDrive = new TeleopDrive(driveSys, driverController, secondController, overridePanel);
+    // var teleopDrive = new TeleopDrive(driveSys, driverController, secondController,
+    // overridePanel);
+    var teleopDrive = new TeleopDrive(driveSys, driverController, overridePanel);
+
     driveSys.setDefaultCommand(teleopDrive);
-    secondController
-        .povUp()
-        .onTrue(
-            Commands.runOnce(
-                () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
-    secondController
-        .povDown()
-        .onTrue(
-            Commands.runOnce(
-                () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
+    // secondController
+    //     .povUp()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
+    // secondController
+    //     .povDown()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
 
     return teleopDrive;
   }

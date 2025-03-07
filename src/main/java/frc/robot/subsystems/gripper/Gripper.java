@@ -52,37 +52,34 @@ public class Gripper extends SubsystemBase {
   }
 
   public Command holdAlgae() {
-    return Commands.run(
+    return Commands.runEnd(
             () -> {
-              // if (getAlgaeDistanceReading().orElse(0.15) > 0.11) {
-              //   setFront(1500);
-              // }
-              // else {
-              //   setFront(0);
-              // }
-              setFront((getAlgaeDistanceReading().orElse(0.15) - 0.11) * 50000);
-              // setFront(2000);
-              // System.out.println(getAlgaeDistanceReading().orElse(0.15));
+              setFront(4500);
+              if (getAlgaeDistanceReading()
+                  .filter(
+                      (Double d) -> {
+                        return d < 0.15;
+                      })
+                  .isPresent()) {
+                hasAlgae = true;
+                Logger.recordOutput("Gripper/HasAlgae", true);
+              }
             },
+            () -> setFront(0),
             this)
-        .beforeStarting(
-            () -> {
-              hasAlgae = true;
-              Logger.recordOutput("Gripper/HasAlgae", true);
-            })
         .finallyDo(
             () -> {
-              setFront(0);
               hasAlgae = false;
               Logger.recordOutput("Gripper/HasAlgae", false);
             })
         .until(
             () ->
-                getAlgaeDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.25;
-                        })
-                    .isEmpty());
+                hasAlgae
+                    && getAlgaeDistanceReading()
+                        .filter(
+                            (Double d) -> {
+                              return d < 0.15;
+                            })
+                        .isEmpty());
   }
 }

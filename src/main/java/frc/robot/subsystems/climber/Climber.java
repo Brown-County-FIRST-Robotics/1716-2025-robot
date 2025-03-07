@@ -9,18 +9,18 @@ public class Climber extends SubsystemBase {
   ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   ClimberIO io;
 
-  private double leftPositionOffset = 0.0;
-  private double rightPositionOffset = 0.0;
+  private double positionOffset;
+  private boolean isDown = false;
+  // private boolean isZeroed = false;
 
   // Constructor
   public Climber(ClimberIO io) {
     this.io = io;
     CustomAlerts.makeOverTempAlert(
-        () -> inputs.temperatures[0],
-        60,
-        50,
-        "Left Climber motor"); // alerts if motor temps get too high
-    CustomAlerts.makeOverTempAlert(() -> inputs.temperatures[1], 60, 50, "Right Climber motor");
+        () -> inputs.temperature, 60, 50, "climber motor"); // alerts if motor temps get too high
+    Logger.recordOutput("Climber/RequestedPosition", isDown);
+
+    positionOffset = inputs.position;
   }
 
   @Override
@@ -28,38 +28,27 @@ public class Climber extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
 
-    if (inputs.limitSwitches[0]) {
-      leftPositionOffset = inputs.positions[0];
+    // if (inputs.limitSwitch) {
+    //   isZeroed = true;
+    //   positionOffset = inputs.position;
+    // }
+    Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
+
+    // if (isZeroed) {
+    if (isDown) {
+      io.setPosition(80 + positionOffset);
+    } else {
+      io.setPosition(0.5 + positionOffset);
     }
-    if (inputs.limitSwitches[1]) {
-      rightPositionOffset = inputs.positions[1];
-    }
-    Logger.recordOutput("Climber/LeftActualPosition", inputs.positions[0] - leftPositionOffset);
-    Logger.recordOutput("Climber/RightActualPosition", inputs.positions[1] - rightPositionOffset);
+    // }
   }
 
-  public void setVelocity(double velocity) {
-    double leftVelocity;
-    double rightVelocity;
-
-    // prevent it from overextending
-    // TODO: set endpoints based on position of limit switch
-    if ((inputs.positions[0] - leftPositionOffset > 0.0 || velocity > 0)
-        && (inputs.positions[0] - leftPositionOffset < 1.0 || velocity < 0)) {
-      leftVelocity = velocity;
-    } else {
-      leftVelocity = 0;
-    }
-    if ((inputs.positions[1] - rightPositionOffset > 0.0 || velocity > 0)
-        && (inputs.positions[1] - rightPositionOffset < 1.0 || velocity < 0)) {
-      rightVelocity = velocity;
-    } else {
-      rightVelocity = 0;
-    }
-    io.setVelocities(leftVelocity, rightVelocity);
+  public void setPosition(boolean down) { // up or down
+    isDown = down;
+    Logger.recordOutput("Climber/RequestedPosition", isDown);
   }
 
   public boolean atLimit() {
-    return inputs.limitSwitches[0] && inputs.limitSwitches[1];
+    return inputs.limitSwitch;
   }
 }

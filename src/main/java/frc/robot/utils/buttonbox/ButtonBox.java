@@ -29,7 +29,7 @@ public class ButtonBox {
   }
 
   private boolean getButton(int ind) {
-    boolean useDash = true;
+    boolean useDash = false;
     if (useDash) {
       return dash.get(ind).get();
     }

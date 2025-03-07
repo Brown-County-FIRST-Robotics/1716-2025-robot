@@ -19,7 +19,7 @@ import org.littletonrobotics.junction.Logger;
 public class TeleopDrive extends Command {
   private final Drivetrain drivetrain;
   private final CommandXboxController controller;
-  private final CommandXboxController secondController;
+  private final Optional<CommandXboxController> secondController;
   private final OverridePanel overridePanel;
 
   boolean doFieldOriented = true;
@@ -67,7 +67,16 @@ public class TeleopDrive extends Command {
       OverridePanel overridePanel_) {
     this.drivetrain = drivetrain;
     this.controller = controller;
-    this.secondController = secondController;
+    this.secondController = Optional.of(secondController);
+    this.overridePanel = overridePanel_;
+    addRequirements(this.drivetrain);
+  }
+
+  public TeleopDrive(
+      Drivetrain drivetrain, CommandXboxController controller, OverridePanel overridePanel_) {
+    this.drivetrain = drivetrain;
+    this.controller = controller;
+    this.secondController = Optional.empty();
     this.overridePanel = overridePanel_;
     addRequirements(this.drivetrain);
   }
@@ -97,7 +106,9 @@ public class TeleopDrive extends Command {
 
     Logger.recordOutput("TeleopDrive/ext", customAngleModifier);
     slowModeSpeedModifier = controller.getHID().getLeftBumper() ? 0.2 : 1.0;
-    if (isKidMode && secondController.rightTrigger().getAsBoolean()) {
+    if (isKidMode
+        && secondController.isPresent()
+        && secondController.get().rightTrigger().getAsBoolean()) {
       slowModeSpeedModifier = 0;
     }
     doFieldOriented = !controller.getHID().getRightBumper() && !isKidMode;
@@ -193,7 +204,9 @@ public class TeleopDrive extends Command {
             new ChassisSpeeds(
                 commandedVector.getX(),
                 commandedVector.getY(),
-                isKidMode && secondController.rightTrigger().getAsBoolean()
+                isKidMode
+                        && secondController.isPresent()
+                        && secondController.get().rightTrigger().getAsBoolean()
                     ? 0
                     : commandedSpeeds.omegaRadiansPerSecond),
             0.02));
