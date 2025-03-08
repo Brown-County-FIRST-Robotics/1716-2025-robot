@@ -11,12 +11,16 @@ public interface ClimberIO {
     double current = 0.0;
     double appliedOutput = 0.0;
 
-    boolean limitSwitch = false;
+    double servoPosition = 0.0;
+
+    // boolean limitSwitch = false;
   }
 
   default void updateInputs(ClimberIOInputs inputs) {}
 
   default void setPosition(double position) {}
 
-  default void setVelocity(double velocity) {}
+  default void setSpeed(double speed) {}
+
+  default void setServo(double position) {}
 }

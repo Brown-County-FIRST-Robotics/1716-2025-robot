@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.utils.Alert;
 import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.PeriodicRunnable;
@@ -128,6 +129,17 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    Commands.sequence(
+        Commands.runOnce(() -> robotContainer.climber.setServo(false), robotContainer.climber),
+        Commands.waitSeconds(1),
+        Commands.runEnd(
+                () -> robotContainer.climber.setSpeedFORZERO(-0.05),
+                () -> robotContainer.climber.setSpeedFORZERO(0),
+                robotContainer.climber)
+            .raceWith(Commands.waitSeconds(10)),
+        Commands.runOnce(() -> robotContainer.climber.zero()),
+        Commands.runOnce(() -> robotContainer.climber.setServo(true), robotContainer.climber));
+
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
