@@ -7,8 +7,9 @@ public class ManipulatorPanel extends ButtonBoxPanel {
   private static final int TROUGH_ID = 0;
   private static final int ALGAE_LOW_ID = 4;
   private static final int LEFT_POLE_ID = 6;
-  private static final int UTILITY_ID = 8;
+  private static final int INTAKE_ID = 8;
   private static final int EJECT_ID = 9;
+  private static final int PROCESSOR_ID = 3;
 
   public ManipulatorPanel(ButtonBox bb) {
     super(bb);
@@ -55,11 +56,11 @@ public class ManipulatorPanel extends ButtonBoxPanel {
   }
 
   public Trigger processor() {
-    return new Trigger(() -> getButton(UTILITY_ID));
+    return new Trigger(() -> getButton(PROCESSOR_ID));
   }
 
   public Trigger intake() { // coral station
-    return new Trigger(() -> getButton(UTILITY_ID));
+    return new Trigger(() -> getButton(INTAKE_ID));
   }
 
   public Trigger eject() {
