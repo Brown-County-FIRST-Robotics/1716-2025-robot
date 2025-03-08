@@ -41,8 +41,7 @@ public class Robot extends LoggedRobot {
   private final XboxController driverController = new XboxController(0);
   private boolean hasRumbledMatchTime = false; // hasStarted, hasEnded
 
-
-  //TEMP CODE
+  // TEMP CODE
 
   NetworkTable table = NetworkTableInstance.getDefault().getTable("questnav");
   DoubleArraySubscriber questRot =
@@ -51,8 +50,7 @@ public class Robot extends LoggedRobot {
       table.getDoubleArrayTopic("position").subscribe(new double[] {});
   SimpleQuaternion rotation;
 
-//END TEMP CODE
-
+  // END TEMP CODE
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -136,35 +134,19 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     PeriodicRunnable.runPeriodic();
 
-
-//TEMP CODE
-
-    rotation =
-        new SimpleQuaternion(
-            questRot.get()[0], questRot.get()[1], questRot.get()[2], questRot.get()[3]);
-    System.out.println(
-        "Roll: "
-            + rotation.getRoll()
-            + " Pitch: "
-            + rotation.getPitch()
-            + " Yaw: "
-            + rotation.getYaw());
-    System.out.println(
-        "x: "
-            + questPosition.get()[0]
-            + " y: "
-            + questPosition.get()[1]
-            + " z: "
-            + questPosition.get()[2]);
-
-    Logger.recordOutput(
-        "headset/position",
-        new Pose2d(
-            questPosition.get()[0],
-            questPosition.get()[2],
-            Rotation2d.fromDegrees(rotation.getYaw())));
-
-//END TEMP CODE
+    // TEMP CODE
+    if (questRot.get().length > 0) {
+      rotation =
+          new SimpleQuaternion(
+              questRot.get()[0], questRot.get()[1], questRot.get()[2], questRot.get()[3]);
+      Logger.recordOutput(
+          "headset/position",
+          new Pose2d(
+              questPosition.get()[0],
+              questPosition.get()[2],
+              Rotation2d.fromDegrees(rotation.getYaw())));
+    }
+    // END TEMP CODE
 
   }
 
