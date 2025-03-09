@@ -59,7 +59,7 @@ public class SwerveDrivetrain implements Drivetrain {
     this.bl = bl;
     this.br = br;
     poseEstimator = new PoseEstimator();
-    poseEstimator.setPose(Constants.INIT_POSE);
+    //    poseEstimator.setPose(Constants.INIT_POSE);
     lastIMU = getGyro();
     lastPositions = getPositions();
   }
@@ -78,7 +78,6 @@ public class SwerveDrivetrain implements Drivetrain {
     if (!Overrides.disableIMU.get()) {
       odoTwist = new Twist2d(odoTwist.dx, odoTwist.dy, -getGyro().minus(lastIMU).getX());
     }
-    poseEstimator.addOdometry(odoTwist);
     lastPositions = getPositions();
     lastIMU = getGyro();
     Logger.recordOutput("Drive/Pose", getPosition());
@@ -123,9 +122,7 @@ public class SwerveDrivetrain implements Drivetrain {
   }
 
   @Override
-  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {
-    poseEstimator.addVision(newPose, stdDevs, timestamp);
-  }
+  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {}
 
   @Override
   public void humanDrive(ChassisSpeeds cmd) {
