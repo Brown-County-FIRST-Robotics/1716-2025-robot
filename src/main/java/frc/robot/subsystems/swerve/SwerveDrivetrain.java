@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.numbers.N3;
@@ -59,7 +60,7 @@ public class SwerveDrivetrain implements Drivetrain {
     this.bl = bl;
     this.br = br;
     poseEstimator = new PoseEstimator();
-    poseEstimator.setPose(Constants.INIT_POSE);
+    //    poseEstimator.setPose(Constants.INIT_POSE);
     lastIMU = getGyro();
     lastPositions = getPositions();
   }
@@ -78,7 +79,6 @@ public class SwerveDrivetrain implements Drivetrain {
     if (!Overrides.disableIMU.get()) {
       odoTwist = new Twist2d(odoTwist.dx, odoTwist.dy, -getGyro().minus(lastIMU).getX());
     }
-    poseEstimator.addOdometry(odoTwist);
     lastPositions = getPositions();
     lastIMU = getGyro();
     Logger.recordOutput("Drive/Pose", getPosition());
@@ -123,9 +123,7 @@ public class SwerveDrivetrain implements Drivetrain {
   }
 
   @Override
-  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {
-    poseEstimator.addVision(newPose, stdDevs, timestamp);
-  }
+  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {}
 
   @Override
   public void humanDrive(ChassisSpeeds cmd) {
@@ -163,6 +161,10 @@ public class SwerveDrivetrain implements Drivetrain {
   public PoseEstimator getPE() {
     return poseEstimator;
   }
+
+  PIDController xPid = new PIDController(0.1, 0.0, 0.0);
+  PIDController yPid = new PIDController(0.1, 0.0, 0.0);
+  PIDController thPid = new PIDController(0.1, 0.0, 0.0);
 
   @Override
   public void followTrajectory(SwerveSample sample) {
