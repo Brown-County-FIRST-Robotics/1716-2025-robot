@@ -71,7 +71,6 @@ public class MecanumDrivetrain implements Drivetrain {
           new Twist2d(
               odoTwist.dx, odoTwist.dy, getGyro().toRotation2d().minus(lastIMU).getRadians());
     }
-    poseEstimator.addOdometry(odoTwist);
     lastIMU = getGyro().toRotation2d();
     lastPositions = driveInputs.pos;
 
@@ -128,9 +127,7 @@ public class MecanumDrivetrain implements Drivetrain {
   }
 
   @Override
-  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {
-    poseEstimator.addVision(newPose, stdDevs, timestamp);
-  }
+  public void addVisionUpdate(Pose2d newPose, Vector<N3> stdDevs, double timestamp) {}
 
   @Override
   public PoseEstimator getPE() {
