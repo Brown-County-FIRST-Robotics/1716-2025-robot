@@ -49,8 +49,7 @@ import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionSLAMIOculus;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -76,6 +75,8 @@ public class RobotContainer {
   private final Gripper gripper;
   public final Climber climber;
 
+  Rotation3d rotation;
+  Pose3d lpos = Pose3d.kZero;
   private final ManipulatorPresetFactory presetFactory;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -110,13 +111,16 @@ public class RobotContainer {
           var vision =
               new Vision(
                   driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(8 * 0.0254, 11 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -8.0 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIOPhotonVision("SS_LAPTOP", "0")},
-                  overridePanel);
+                  new Transform3d(
+                      new Translation3d(),
+                      new Rotation3d(90.0 * Math.PI / 180.0, 90.0 * Math.PI / 180.0, 0)),
+                  new VisionSLAMIOculus());
+          new Trigger(vision::isActive)
+              .onTrue(
+                  Commands.waitSeconds(10)
+                      .andThen(
+                          Commands.runOnce(
+                              () -> vision.setpos(new Pose2d())))); // TEMP: fix after adb
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
@@ -154,16 +158,7 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 2),
                   new Module(new ModuleIO() {}, 3),
                   new IMUIO() {});
-          var vision =
-              new Vision(
-                  driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(0 * 0.0254, 0 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -12 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIO() {}},
-                  overridePanel);
+          // TEMP:ADD VISION BACK
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
@@ -199,17 +194,21 @@ public class RobotContainer {
 
     AutoTrajectory mAlign = mAuto.trajectory("M-Auto", 0);
     AutoTrajectory mPickup = mAuto.trajectory("M-Auto", 1);
+    var asdf = autoFactory.newRoutine("DELTEMEE");
 
     AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
     AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
+    AutoTrajectory DEL = asdf.trajectory("DELETEME");
 
     // Commands that start when auto routines are called
     lAuto.active().onTrue(lAlign.cmd().andThen(lPickup.cmd()));
+
     mAuto.active().onTrue(mAlign.cmd().andThen(mPickup.cmd()));
     rAuto.active().onTrue(rAlign.cmd().andThen(rPickup.cmd()));
-
+    asdf.active().onTrue(asdf.resetOdometry(DEL).andThen(DEL.cmd()));
     // Add paths to the auto chooser
     autoChooser.addOption("Left (Friendly) - Choreo", lAuto.cmd());
+    autoChooser.addOption("DEL", asdf.cmd());
     autoChooser.addOption("Middle - Choreo", mAuto.cmd());
     autoChooser.addOption("Right (Opponent) - Choreo", rAuto.cmd());
 
