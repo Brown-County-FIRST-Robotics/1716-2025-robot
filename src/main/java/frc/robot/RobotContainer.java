@@ -8,12 +8,16 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -51,9 +55,11 @@ import frc.robot.subsystems.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.utils.PeriodicRunnable;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -76,6 +82,13 @@ public class RobotContainer {
   private final Gripper gripper;
   public final Climber climber;
 
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("questnav");
+  DoubleArraySubscriber questRot =
+      table.getDoubleArrayTopic("quaternion").subscribe(new double[] {});
+  DoubleArraySubscriber questPosition =
+      table.getDoubleArrayTopic("position").subscribe(new double[] {});
+  Rotation3d rotation;
+  Pose3d lpos = Pose3d.kZero;
   private final ManipulatorPresetFactory presetFactory;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -294,6 +307,35 @@ public class RobotContainer {
     } else {
       configureCompBindings();
     }
+    new PeriodicRunnable() {
+
+      Pose3d p = Pose3d.kZero;
+      Pose3d lp = Pose3d.kZero;
+
+      @Override
+      public void periodic() {
+        if (questRot.get().length > 0) {
+          var q =
+              new Quaternion(
+                      questRot.get()[0], questRot.get()[1], questRot.get()[2], questRot.get()[3])
+                  .toRotationVector();
+          rotation = new Rotation3d(VecBuilder.fill(-q.get(0), -q.get(2), q.get(1)));
+          var cpos =
+              new Pose3d(
+                  -questPosition.get()[2],
+                  -questPosition.get()[0],
+                  -questPosition.get()[1],
+                  rotation);
+          if (driverController.getHID().getAButtonPressed()) {
+            p = cpos;
+          }
+          //          p = p.plus(cpos.minus(lp));
+          Logger.recordOutput("asdf", Pose3d.kZero.plus(cpos.minus(lp).times(50)));
+
+          lp = cpos;
+        }
+      }
+    };
   }
 
   public void configureAutos() {}
