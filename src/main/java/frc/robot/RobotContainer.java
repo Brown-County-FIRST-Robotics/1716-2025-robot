@@ -49,8 +49,7 @@ import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionSLAMIOculus;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -76,6 +75,8 @@ public class RobotContainer {
   private final Gripper gripper;
   public final Climber climber;
 
+  Rotation3d rotation;
+  Pose3d lpos = Pose3d.kZero;
   private final ManipulatorPresetFactory presetFactory;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -110,13 +111,10 @@ public class RobotContainer {
           var vision =
               new Vision(
                   driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(8 * 0.0254, 11 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -8.0 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIOPhotonVision("SS_LAPTOP", "0")},
-                  overridePanel);
+                  new Transform3d(
+                      new Translation3d(),
+                      new Rotation3d(90.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                  new VisionSLAMIOculus());
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
@@ -154,16 +152,7 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 2),
                   new Module(new ModuleIO() {}, 3),
                   new IMUIO() {});
-          var vision =
-              new Vision(
-                  driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(0 * 0.0254, 0 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -12 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIO() {}},
-                  overridePanel);
+          // TEMP:ADD VISION BACK
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
