@@ -30,7 +30,6 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
-import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
@@ -39,7 +38,6 @@ import frc.robot.subsystems.manipulator.ElevatorIO;
 import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.WristIO;
-import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -48,8 +46,9 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionSLAMIOculus;
+import frc.robot.subsystems.vision.FusedVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionSLAMIOQuest;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -109,12 +108,17 @@ public class RobotContainer {
                   new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
                   new IMUIONavx());
           var vision =
-              new Vision(
+              new FusedVision(
                   driveSys,
                   new Transform3d(
                       new Translation3d(),
-                      new Rotation3d(90.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
-                  new VisionSLAMIOculus());
+                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                  new VisionSLAMIOQuest(),
+                  new VisionIOPhotonVision(
+                      "TH_CAM0",
+                      new Transform3d(
+                          new Translation3d(-0.5, 0, 0), new Rotation3d(0, 0, Math.PI))));
+
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
