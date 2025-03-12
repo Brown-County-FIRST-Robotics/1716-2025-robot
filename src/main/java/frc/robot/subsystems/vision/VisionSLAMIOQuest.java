@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
 
-public class VisionSLAMIOculus implements VisionSLAMIO {
+public class VisionSLAMIOQuest implements VisionSLAMIO {
   NetworkTable table = NetworkTableInstance.getDefault().getTable("questnav");
   DoubleArraySubscriber questRot =
       table.getDoubleArrayTopic("quaternion").subscribe(new double[] {});

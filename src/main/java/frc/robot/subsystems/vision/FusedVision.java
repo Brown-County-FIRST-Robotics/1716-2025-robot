@@ -9,7 +9,7 @@ import frc.robot.utils.buttonbox.OverridePanel;
 import org.littletonrobotics.junction.Logger;
 
 /** The vision subsystem */
-public class Vision extends PeriodicRunnable {
+public class FusedVision extends PeriodicRunnable {
   final VisionIO io;
   public VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
   Drivetrain drivetrain;
@@ -30,13 +30,17 @@ public class Vision extends PeriodicRunnable {
     zero = zero.plus(new Transform3d(Pose3d.kZero, new Pose3d(pos)).inverse());
   }
 
-  public Vision(
+  public FusedVision(
       Drivetrain drivetrain, Transform3d slamPose, VisionSLAMIO slamio, VisionIO visionIO) {
     this.drivetrain = drivetrain;
     this.slamPose = slamPose;
     this.slamio = slamio;
     drivetrain.getPE().pt = this;
     this.io = visionIO;
+    new CustomAlerts.CustomAlert(
+        Alert.AlertType.WARNING,
+        () -> slamInputs.battPercent < 20.0,
+        () -> "Quest battery is at " + Double.toString(slamInputs.battPercent) + "%");
   }
 
   public Pose2d getSlamPose() {
@@ -55,6 +59,7 @@ public class Vision extends PeriodicRunnable {
   public void periodic() {
     slamio.updateInputs(slamInputs);
     Logger.processInputs("Vision/SLAM", slamInputs);
+
     frameTimeDelta = slamInputs.frames - lastFrame;
     lastFrame = slamInputs.frames;
     Logger.recordOutput("Vision/QuestConnected", isActive());
