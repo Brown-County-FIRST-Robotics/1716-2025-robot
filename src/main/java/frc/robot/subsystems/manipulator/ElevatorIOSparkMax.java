@@ -40,7 +40,7 @@ public class ElevatorIOSparkMax implements ElevatorIO {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     elevatorConfig
         .smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX)
-        .inverted(true)
+        .inverted(false)
         .idleMode(IdleMode.kBrake);
     // elevatorConfig.softLimit.forwardSoftLimitEnabled(false).forwardSoftLimit(182.0);
     elevator.configure(
