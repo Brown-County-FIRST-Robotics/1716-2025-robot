@@ -221,7 +221,7 @@ public class RobotContainer {
     // This is the command to drop the current coral
     Command dropCoral =
         Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
-            .raceWith(Commands.waitSeconds(2));
+            .until(() -> !gripper.hasGamepiece());
 
     // Level represents the height of the elevator preset
     for (int level = 1; level <= 3; level++) {
