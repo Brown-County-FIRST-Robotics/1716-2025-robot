@@ -122,10 +122,10 @@ public class RobotContainer {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(36, 0); // TODO:Add real values
+          climberIO = new ClimberIOSparkMaxes(36, 0);
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
-          wristIO = new WristIOSparkFlex(55); // TODO:Add real values
+          wristIO = new WristIOSparkFlex(55);
         }
       }
     } else {
@@ -370,10 +370,10 @@ public class RobotContainer {
         .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
     manipulatorPanel
         .algaeHigh()
-        .whileTrue(presetFactory.algaeHigh().alongWith(gripper.holdAlgae()));
+        .whileTrue(presetFactory.algaeHigh().alongWith(new ScheduleCommand(gripper.holdAlgae())));
 
-    manipulatorPanel.intake().and(() -> !gripper.hasAlgae()).onTrue(presetFactory.intake());
-    manipulatorPanel.processor().and(gripper::hasAlgae).whileTrue(presetFactory.processor());
+    manipulatorPanel.intake().onTrue(presetFactory.intake());
+    manipulatorPanel.processor().whileTrue(presetFactory.processor());
 
     manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
 
@@ -397,11 +397,23 @@ public class RobotContainer {
     driverController
         .a()
         .or(driverController.povDown())
-        .onTrue(Commands.runOnce(() -> climber.setPosition(true), climber));
+        .or(driverController.povDownLeft())
+        .or(driverController.povDownRight())
+        .onTrue(
+            Commands.runOnce(() -> climber.setServo(true), climber)
+                .andThen(
+                    Commands.waitSeconds(1)
+                        .andThen(Commands.runOnce(() -> climber.setPosition(true), climber))));
     driverController
         .y()
         .or(driverController.povUp())
-        .onTrue(Commands.runOnce(() -> climber.setPosition(false), climber));
+        .or(driverController.povUpLeft())
+        .or(driverController.povUpRight())
+        .onTrue(
+            Commands.runOnce(() -> climber.setServo(false), climber)
+                .andThen(
+                    Commands.waitSeconds(1)
+                        .andThen(Commands.runOnce(() -> climber.setPosition(false), climber))));
   }
 
   /**

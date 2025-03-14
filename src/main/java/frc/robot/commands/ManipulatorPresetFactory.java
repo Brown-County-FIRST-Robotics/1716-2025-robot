@@ -34,8 +34,8 @@ public class ManipulatorPresetFactory {
   LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
   LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
   LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
-  // LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 1.0);
-  // LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", 1.0);
+  LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
+  LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
   LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
   LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
   LoggedTunableNumber wristIntakeDescending =
@@ -193,12 +193,12 @@ public class ManipulatorPresetFactory {
   }
 
   public Command processor() {
-    return Commands.none();
-    // return Commands.run(
-    //     () -> {
-    //       manipulator.setElevatorReference(elevatorProcessor.get());
-    //       manipulator.setWristReference(wristProcessor.get());
-    //     },
-    //     manipulator);
+    // return Commands.none();
+    return Commands.run(
+        () -> {
+          manipulator.setElevatorReference(elevatorProcessor.get());
+          manipulator.setWristReference(wristProcessor.get());
+        },
+        manipulator);
   }
 }

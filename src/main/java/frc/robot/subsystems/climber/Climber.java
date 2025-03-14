@@ -48,7 +48,20 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/RequestedPosition", isDown);
   }
 
-  public boolean atLimit() {
-    return inputs.limitSwitch;
+  public void setSpeedFORZERO(double speed) {
+    io.setSpeed(speed);
+  }
+
+  public void zero() { // Zero the position
+
+    positionOffset = inputs.position;
+  }
+
+  // public boolean atLimit() {
+  //   return inputs.limitSwitch;
+  // }
+
+  public void setServo(boolean allowDown) {
+    io.setServo(allowDown ? 0 : 180); // NEEDS REAL VALUES
   }
 }
