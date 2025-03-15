@@ -30,7 +30,6 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
-import frc.robot.subsystems.gripper.*;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
@@ -39,7 +38,6 @@ import frc.robot.subsystems.manipulator.ElevatorIO;
 import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.WristIO;
-import frc.robot.subsystems.mecanum.*;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -48,9 +46,7 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.*;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -108,15 +104,17 @@ public class RobotContainer {
                   new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
                   new IMUIONavx());
           var vision =
-              new Vision(
+              new FusedVision(
                   driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(8 * 0.0254, 11 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -8.0 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIOPhotonVision("SS_LAPTOP", "0")},
-                  overridePanel);
+                  new Transform3d(
+                      new Translation3d(),
+                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                  new VisionSLAMIOQuest(),
+                  new VisionIOPhotonVision(
+                      "TH_CAM0",
+                      new Transform3d(
+                          new Translation3d(-0.5, 0, 0), new Rotation3d(0, 0, Math.PI))));
+
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIOSpark(1, 2, 3, 4), new IMUIONavx());
@@ -154,16 +152,15 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 2),
                   new Module(new ModuleIO() {}, 3),
                   new IMUIO() {});
+          // TODO: this is a bad way of doing this
           var vision =
-              new Vision(
+              new FusedVision(
                   driveSys,
-                  new Transform3d[] {
-                    new Transform3d(
-                        new Translation3d(0 * 0.0254, 0 * 0.0254, 22 * 0.0254),
-                        new Rotation3d(0, -12 * Math.PI / 180, 0))
-                  },
-                  new VisionIO[] {new VisionIO() {}},
-                  overridePanel);
+                  new Transform3d(
+                      new Translation3d(),
+                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                  new VisionSLAMIO() {},
+                  new VisionIO() {});
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
