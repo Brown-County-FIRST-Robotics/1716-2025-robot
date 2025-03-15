@@ -16,8 +16,4 @@ public interface VisionSLAMIO {
   }
 
   default void updateInputs(VisionSLAMIOInputs inputs) {}
-
-  default void ADBKill() {}
-
-  default void ADBStart() {}
 }

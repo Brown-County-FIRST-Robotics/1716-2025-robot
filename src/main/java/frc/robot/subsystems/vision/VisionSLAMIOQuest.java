@@ -26,18 +26,4 @@ public class VisionSLAMIOQuest implements VisionSLAMIO {
       inputs.present = false;
     }
   }
-
-  @Override
-  public void ADBKill() {
-    VisionSLAMIO.super.ADBKill();
-  }
-
-  @Override
-  public void ADBStart() {
-    try {
-      Runtime.getRuntime().exec(new String[] {"asd", "asdsa"});
-    } catch (Exception e) {
-
-    }
-  }
 }
