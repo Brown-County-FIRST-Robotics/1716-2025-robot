@@ -96,24 +96,5 @@ public class FusedVision extends PeriodicRunnable {
     }
     io.updateInputs(inputs);
     Logger.processInputs("Vision/AprilInputs", inputs);
-    // TEMP: Add some of this back in
-    //    for (int i = 0; i < ios.length; i++) {
-    //      ios[i].updateInputs(inputs[i]);
-    //      Logger.processInputs("Vision/Inputs_" + i, inputs[i]);
-    //      if (inputs[i].pose.isPresent() && inputs[i].timestamp.isPresent()) {
-    //        visionWatchDog.feed();
-    //        Pose3d outPose = inputs[i].pose.get();
-    //        Logger.recordOutput("Vision/EstPose_" + i, outPose);
-    //        if (!overridePanel.disableVision().getAsBoolean()
-    //            && (ShootWhileMove.getFieldRelativeSpeeds(drivetrain.getVelocity(), new
-    // Rotation2d())
-    //                    .getNorm()
-    //                < 0.8)
-    //            && Math.abs(drivetrain.getVelocity().omegaRadiansPerSecond) < 0.5) {
-    //          drivetrain.addVisionUpdate(
-    //              outPose.toPose2d(), VecBuilder.fill(0.1, 0.1, 1), inputs[i].timestamp.get());
-    //        }
-    //      }
-    //    }
   }
 }

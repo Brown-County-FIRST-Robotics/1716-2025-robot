@@ -46,9 +46,7 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkFX;
 import frc.robot.subsystems.swerve.SwerveDrivetrain;
-import frc.robot.subsystems.vision.FusedVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionSLAMIOQuest;
+import frc.robot.subsystems.vision.*;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -74,8 +72,6 @@ public class RobotContainer {
   private final Gripper gripper;
   public final Climber climber;
 
-  Rotation3d rotation;
-  Pose3d lpos = Pose3d.kZero;
   private final ManipulatorPresetFactory presetFactory;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -156,7 +152,15 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 2),
                   new Module(new ModuleIO() {}, 3),
                   new IMUIO() {});
-          // TEMP:ADD VISION BACK
+          // TODO: this is a bad way of doing this
+          var vision =
+              new FusedVision(
+                  driveSys,
+                  new Transform3d(
+                      new Translation3d(),
+                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                  new VisionSLAMIO() {},
+                  new VisionIO() {});
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});
