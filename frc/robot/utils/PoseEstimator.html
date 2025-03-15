@@ -44,13 +44,13 @@ loadScripts(document, 'script');</script>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
 </ul>
 <ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-detail">Method</a></li>
 </ul>
@@ -81,6 +81,21 @@ loadScripts(document, 'script');</script>
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#pt" class="member-name-link">pt</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <li>
 <section class="constructor-summary" id="constructor-summary">
@@ -108,38 +123,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addOdometry(edu.wpi.first.math.geometry.Twist2d)" class="member-name-link">addOdometry</a><wbr>(edu.wpi.first.math.geometry.Twist2d&nbsp;odo)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Adds an odometry record at the current time</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addOdometry(edu.wpi.first.math.geometry.Twist2d,double)" class="member-name-link">addOdometry</a><wbr>(edu.wpi.first.math.geometry.Twist2d&nbsp;odo,
- double&nbsp;timestamp)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Adds an odometry record at the given time</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addVision(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.Vector,double)" class="member-name-link">addVision</a><wbr>(edu.wpi.first.math.geometry.Pose2d&nbsp;estimate,
- edu.wpi.first.math.Vector&lt;edu.wpi.first.math.numbers.N3&gt;&nbsp;visionMeasurementStdDevs,
- double&nbsp;t)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Adds a vision update</div>
-</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#feed()" class="member-name-link">feed</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>edu.wpi.first.math.geometry.Pose2d</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPose()" class="member-name-link">getPose</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the current pose</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;edu.wpi.first.math.geometry.Pose2d&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPose(double)" class="member-name-link">getPose</a><wbr>(double&nbsp;t)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the pose at a given time</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPose(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">setPose</a><wbr>(edu.wpi.first.math.geometry.Pose2d&nbsp;pose)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Resets the pose, and clears all the updates</div>
-</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPose(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">setPose</a><wbr>(edu.wpi.first.math.geometry.Pose2d&nbsp;pz)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -152,6 +143,20 @@ loadScripts(document, 'script');</script>
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="pt">
+<h3>pt</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a>&gt;</span>&nbsp;<span class="element-name">pt</span></div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
@@ -173,79 +178,21 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="addOdometry(edu.wpi.first.math.geometry.Twist2d)">
-<h3>addOdometry</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addOdometry</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Twist2d&nbsp;odo)</span></div>
-<div class="block">Adds an odometry record at the current time</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>odo</code> - The change in position since the last update</dd>
-</dl>
+<section class="detail" id="getPose()">
+<h3>getPose</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">edu.wpi.first.math.geometry.Pose2d</span>&nbsp;<span class="element-name">getPose</span>()</div>
 </section>
 </li>
 <li>
 <section class="detail" id="setPose(edu.wpi.first.math.geometry.Pose2d)">
 <h3>setPose</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPose</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Pose2d&nbsp;pose)</span></div>
-<div class="block">Resets the pose, and clears all the updates</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>pose</code> - The pose to set it to</dd>
-</dl>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPose</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Pose2d&nbsp;pz)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="addOdometry(edu.wpi.first.math.geometry.Twist2d,double)">
-<h3>addOdometry</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addOdometry</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Twist2d&nbsp;odo,
- double&nbsp;timestamp)</span></div>
-<div class="block">Adds an odometry record at the given time</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>odo</code> - The change in position since the last update</dd>
-<dd><code>timestamp</code> - The time at which the twist was measured</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addVision(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.Vector,double)">
-<h3>addVision</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addVision</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Pose2d&nbsp;estimate,
- edu.wpi.first.math.Vector&lt;edu.wpi.first.math.numbers.N3&gt;&nbsp;visionMeasurementStdDevs,
- double&nbsp;t)</span></div>
-<div class="block">Adds a vision update</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>estimate</code> - The pose estimate</dd>
-<dd><code>visionMeasurementStdDevs</code> - The measurement error standard deviations [x, y, theta]
-     [meters,meters,radians]</dd>
-<dd><code>t</code> - The time at which the camera captured the pose estimate</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getPose()">
-<h3>getPose</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">edu.wpi.first.math.geometry.Pose2d</span>&nbsp;<span class="element-name">getPose</span>()</div>
-<div class="block">Gets the current pose</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>The current pose</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getPose(double)">
-<h3>getPose</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;edu.wpi.first.math.geometry.Pose2d&gt;</span>&nbsp;<span class="element-name">getPose</span><wbr><span class="parameters">(double&nbsp;t)</span></div>
-<div class="block">Gets the pose at a given time</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>t</code> - The time</dd>
-<dt>Returns:</dt>
-<dd>If there has been no updates or the time is out of range, Optional.empty(). Otherwise,
-     the pose at the time.</dd>
-</dl>
+<section class="detail" id="feed()">
+<h3>feed</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">feed</span>()</div>
 </section>
 </li>
 </ul>

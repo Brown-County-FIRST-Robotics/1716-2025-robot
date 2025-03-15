@@ -60,18 +60,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The angular velocity of the steer motor according to the encoder on the wheel shaft</div>
 </dd>
-<dt><a href="frc/robot/utils/PoseEstimator.html#addOdometry(edu.wpi.first.math.geometry.Twist2d)" class="member-name-link">addOdometry(Twist2d)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Adds an odometry record at the current time</div>
-</dd>
-<dt><a href="frc/robot/utils/PoseEstimator.html#addOdometry(edu.wpi.first.math.geometry.Twist2d,double)" class="member-name-link">addOdometry(Twist2d, double)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Adds an odometry record at the given time</div>
-</dd>
-<dt><a href="frc/robot/utils/PoseEstimator.html#addVision(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.Vector,double)" class="member-name-link">addVision(Pose2d, Vector&lt;N3&gt;, double)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Adds a vision update</div>
-</dd>
 <dt><a href="frc/robot/subsystems/Drivetrain.html#addVisionUpdate(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.Vector,double)" class="member-name-link">addVisionUpdate(Pose2d, Vector&lt;N3&gt;, double)</a> - Method in interface frc.robot.subsystems.<a href="frc/robot/subsystems/Drivetrain.html" title="interface in frc.robot.subsystems">Drivetrain</a></dt>
 <dd>
 <div class="block">Adds a vision update to the pose estimator</div>
@@ -327,6 +315,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Resets the watchdog timer and deactivates the alert</div>
 </dd>
+<dt><a href="frc/robot/utils/PoseEstimator.html#feed()" class="member-name-link">feed()</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/FieldConstants.html" class="type-name-link" title="class in frc.robot">FieldConstants</a> - Class in <a href="frc/robot/package-summary.html">frc.robot</a></dt>
 <dd>
 <div class="block">Field positions of game components</div>
@@ -376,6 +366,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/utils/buttonbox/package-summary.html">frc.robot.utils.buttonbox</a> - package frc.robot.utils.buttonbox</dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/vision/VisionIO.VisionIOInputs.html#fromLog(org.littletonrobotics.junction.LogTable)" class="member-name-link">fromLog(LogTable)</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionIO.VisionIOInputs.html" title="class in frc.robot.subsystems.vision">VisionIO.VisionIOInputs</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html" class="type-name-link" title="class in frc.robot.subsystems.vision">FusedVision</a> - Class in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
+<dd>
+<div class="block">The vision subsystem</div>
+</dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#%3Cinit%3E(frc.robot.subsystems.Drivetrain,edu.wpi.first.math.geometry.Transform3d,frc.robot.subsystems.vision.VisionSLAMIO,frc.robot.subsystems.vision.VisionIO)" class="member-name-link">FusedVision(Drivetrain, Transform3d, VisionSLAMIO, VisionIO)</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
@@ -475,13 +471,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/FieldConstants.html#getPole(int,boolean)" class="member-name-link">getPole(int, boolean)</a> - Static method in class frc.robot.<a href="frc/robot/FieldConstants.html" title="class in frc.robot">FieldConstants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/PoseEstimator.html#getPose()" class="member-name-link">getPose()</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Gets the current pose</div>
-</dd>
-<dt><a href="frc/robot/utils/PoseEstimator.html#getPose(double)" class="member-name-link">getPose(double)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Gets the pose at a given time</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/ShootWhileMove.ShooterKinematics.html#getPose(frc.robot.utils.ShootWhileMove.ShootingCommand,edu.wpi.first.math.geometry.Translation2d)" class="member-name-link">getPose(ShootWhileMove.ShootingCommand, Translation2d)</a> - Method in interface frc.robot.utils.<a href="frc/robot/utils/ShootWhileMove.ShooterKinematics.html" title="interface in frc.robot.utils">ShootWhileMove.ShooterKinematics</a></dt>
 <dd>
 <div class="block">Gets the pose of the tip of the shooter given a command</div>
@@ -499,6 +489,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/subsystems/mecanum/MecanumDrivetrain.html#getPosition()" class="member-name-link">getPosition()</a> - Method in class frc.robot.subsystems.mecanum.<a href="frc/robot/subsystems/mecanum/MecanumDrivetrain.html" title="class in frc.robot.subsystems.mecanum">MecanumDrivetrain</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/swerve/SwerveDrivetrain.html#getPosition()" class="member-name-link">getPosition()</a> - Method in class frc.robot.subsystems.swerve.<a href="frc/robot/subsystems/swerve/SwerveDrivetrain.html" title="class in frc.robot.subsystems.swerve">SwerveDrivetrain</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#getSlamPose()" class="member-name-link">getSlamPose()</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/HolonomicTrajectoryFollower.html#getSpeedAtTime(double)" class="member-name-link">getSpeedAtTime(double)</a> - Method in class frc.robot.commands.<a href="frc/robot/commands/HolonomicTrajectoryFollower.html" title="class in frc.robot.commands">HolonomicTrajectoryFollower</a></dt>
 <dd>&nbsp;</dd>
@@ -624,9 +616,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The initial subroutine of a command.</div>
 </dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#inputs" class="member-name-link">inputs</a> - Variable in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/ManipulatorPresetFactory.html#intake()" class="member-name-link">intake()</a> - Method in class frc.robot.commands.<a href="frc/robot/commands/ManipulatorPresetFactory.html" title="class in frc.robot.commands">ManipulatorPresetFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/buttonbox/ManipulatorPanel.html#intake()" class="member-name-link">intake()</a> - Method in class frc.robot.utils.buttonbox.<a href="frc/robot/utils/buttonbox/ManipulatorPanel.html" title="class in frc.robot.utils.buttonbox">ManipulatorPanel</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#isActive()" class="member-name-link">isActive()</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/WhoAmI.html#isDemoMode" class="member-name-link">isDemoMode</a> - Static variable in class frc.robot.<a href="frc/robot/WhoAmI.html" title="class in frc.robot">WhoAmI</a></dt>
 <dd>&nbsp;</dd>
@@ -875,7 +871,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="frc/robot/subsystems/swerve/SwerveDrivetrain.html#periodic()" class="member-name-link">periodic()</a> - Method in class frc.robot.subsystems.swerve.<a href="frc/robot/subsystems/swerve/SwerveDrivetrain.html" title="class in frc.robot.subsystems.swerve">SwerveDrivetrain</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="frc/robot/subsystems/vision/Vision.html#periodic()" class="member-name-link">periodic()</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/Vision.html" title="class in frc.robot.subsystems.vision">Vision</a></dt>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#periodic()" class="member-name-link">periodic()</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/CustomAlerts.CustomAlert.html#periodic()" class="member-name-link">periodic()</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/CustomAlerts.CustomAlert.html" title="class in frc.robot.utils">CustomAlerts.CustomAlert</a></dt>
 <dd>&nbsp;</dd>
@@ -917,6 +913,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Step the simulation one tick (20 ms) forward.</div>
 </dd>
+<dt><a href="frc/robot/utils/PoseEstimator.html#pt" class="member-name-link">pt</a> - Variable in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
 <dl class="index">
@@ -1027,14 +1025,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/Vector.html#setNorm(double)" class="member-name-link">setNorm(double)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/Vector.html" title="class in frc.robot.utils">Vector</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/FusedVision.html#setpos(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">setpos(Pose2d)</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/FusedVision.html" title="class in frc.robot.subsystems.vision">FusedVision</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/RobotContainer.html#setPose(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">setPose(Pose2d)</a> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
 <div class="block">Updates the pose estimator to use the correct initial pose</div>
 </dd>
 <dt><a href="frc/robot/utils/PoseEstimator.html#setPose(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">setPose(Pose2d)</a> - Method in class frc.robot.utils.<a href="frc/robot/utils/PoseEstimator.html" title="class in frc.robot.utils">PoseEstimator</a></dt>
-<dd>
-<div class="block">Resets the pose, and clears all the updates</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/climber/Climber.html#setPosition(boolean)" class="member-name-link">setPosition(boolean)</a> - Method in class frc.robot.subsystems.climber.<a href="frc/robot/subsystems/climber/Climber.html" title="class in frc.robot.subsystems.climber">Climber</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/climber/ClimberIO.html#setPosition(double)" class="member-name-link">setPosition(double)</a> - Method in interface frc.robot.subsystems.climber.<a href="frc/robot/subsystems/climber/ClimberIO.html" title="interface in frc.robot.subsystems.climber">ClimberIO</a></dt>
@@ -1274,6 +1272,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html#updateInputs(frc.robot.subsystems.vision.VisionIO.VisionIOInputs)" class="member-name-link">updateInputs(VisionIO.VisionIOInputs)</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html" title="class in frc.robot.subsystems.vision">VisionIOPhotonVision</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIO.html#updateInputs(frc.robot.subsystems.vision.VisionSLAMIO.VisionSLAMIOInputs)" class="member-name-link">updateInputs(VisionSLAMIO.VisionSLAMIOInputs)</a> - Method in interface frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionSLAMIO.html" title="interface in frc.robot.subsystems.vision">VisionSLAMIO</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIOQuest.html#updateInputs(frc.robot.subsystems.vision.VisionSLAMIO.VisionSLAMIOInputs)" class="member-name-link">updateInputs(VisionSLAMIO.VisionSLAMIOInputs)</a> - Method in class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionSLAMIOQuest.html" title="class in frc.robot.subsystems.vision">VisionSLAMIOQuest</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/Overrides.html#useFieldOriented" class="member-name-link">useFieldOriented</a> - Static variable in class frc.robot.utils.<a href="frc/robot/utils/Overrides.html" title="class in frc.robot.utils">Overrides</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -1323,14 +1325,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/utils/Vector.html#%3Cinit%3E(double,edu.wpi.first.math.geometry.Rotation2d)" class="member-name-link">Vector(double, Rotation2d)</a> - Constructor for class frc.robot.utils.<a href="frc/robot/utils/Vector.html" title="class in frc.robot.utils">Vector</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="frc/robot/subsystems/vision/Vision.html" class="type-name-link" title="class in frc.robot.subsystems.vision">Vision</a> - Class in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
-<dd>
-<div class="block">The vision subsystem</div>
-</dd>
-<dt><a href="frc/robot/subsystems/vision/Vision.html#%3Cinit%3E(frc.robot.subsystems.Drivetrain,edu.wpi.first.math.geometry.Transform3d%5B%5D,frc.robot.subsystems.vision.VisionIO%5B%5D,frc.robot.utils.buttonbox.OverridePanel)" class="member-name-link">Vision(Drivetrain, Transform3d[], VisionIO[], OverridePanel)</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/Vision.html" title="class in frc.robot.subsystems.vision">Vision</a></dt>
-<dd>
-<div class="block">Constructs a <code>Vision</code> subsystem</div>
-</dd>
 <dt><a href="frc/robot/subsystems/vision/VisionIO.html" class="type-name-link" title="interface in frc.robot.subsystems.vision">VisionIO</a> - Interface in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
 <dd>
 <div class="block">The IO layer for one camera</div>
@@ -1345,10 +1339,20 @@ the order they are declared.</div>
 <dd>
 <div class="block">The IO layer for one SecondSight camera</div>
 </dd>
-<dt><a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">VisionIOPhotonVision(String, String)</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html" title="class in frc.robot.subsystems.vision">VisionIOPhotonVision</a></dt>
+<dt><a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html#%3Cinit%3E(java.lang.String,edu.wpi.first.math.geometry.Transform3d)" class="member-name-link">VisionIOPhotonVision(String, Transform3d)</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionIOPhotonVision.html" title="class in frc.robot.subsystems.vision">VisionIOPhotonVision</a></dt>
 <dd>
 <div class="block">Constructs a new <code>VisionIOPhotonVision</code> from a NT path</div>
 </dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIO.html" class="type-name-link" title="interface in frc.robot.subsystems.vision">VisionSLAMIO</a> - Interface in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIO.VisionSLAMIOInputs.html" class="type-name-link" title="class in frc.robot.subsystems.vision">VisionSLAMIO.VisionSLAMIOInputs</a> - Class in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIO.VisionSLAMIOInputs.html#%3Cinit%3E()" class="member-name-link">VisionSLAMIOInputs()</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionSLAMIO.VisionSLAMIOInputs.html" title="class in frc.robot.subsystems.vision">VisionSLAMIO.VisionSLAMIOInputs</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIOQuest.html" class="type-name-link" title="class in frc.robot.subsystems.vision">VisionSLAMIOQuest</a> - Class in <a href="frc/robot/subsystems/vision/package-summary.html">frc.robot.subsystems.vision</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="frc/robot/subsystems/vision/VisionSLAMIOQuest.html#%3Cinit%3E()" class="member-name-link">VisionSLAMIOQuest()</a> - Constructor for class frc.robot.subsystems.vision.<a href="frc/robot/subsystems/vision/VisionSLAMIOQuest.html" title="class in frc.robot.subsystems.vision">VisionSLAMIOQuest</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:W">W</h2>
 <dl class="index">
