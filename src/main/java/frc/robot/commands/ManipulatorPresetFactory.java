@@ -19,7 +19,6 @@ public class ManipulatorPresetFactory {
   TeleopDrive teleopDrive;
   Drivetrain driveTrain;
   ManipulatorPanel manipulatorPanel;
-  LEDs leds;
 
   LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
   LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
@@ -46,14 +45,12 @@ public class ManipulatorPresetFactory {
       Gripper gripper_,
       TeleopDrive teleopDrive_,
       Drivetrain driveTrain_,
-      ManipulatorPanel manipulatorPanel_,
-      LEDs leds_) {
+      ManipulatorPanel manipulatorPanel_) {
     manipulator = manipulator_;
     gripper = gripper_;
     driveTrain = driveTrain_;
     teleopDrive = teleopDrive_;
     manipulatorPanel = manipulatorPanel_;
-    leds = leds_;
   }
 
   public Optional<Translation2d> whereShouldIBe() {
@@ -157,14 +154,14 @@ public class ManipulatorPresetFactory {
               }
 
               if (manipulator.isInPosition()) {
-                leds.setColor(Color.kGreen);
+                LEDs.getInstance().setColor(Color.kGreen);
               } else {
-                leds.setColor(Color.kRed);
+                LEDs.getInstance().setColor(Color.kRed);
               }
             },
             () -> {
               gripper.setGripper(0);
-              leds.setColor(Color.kRed);
+              LEDs.getInstance().setColor(Color.kRed);
             },
             manipulator,
             gripper)

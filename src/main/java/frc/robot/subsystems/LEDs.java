@@ -26,7 +26,7 @@ public class LEDs extends PeriodicRunnable {
   boolean solidColor = true;
   Color color = Color.kRed;
 
-  public LEDs() {
+  private LEDs() {
     super(); // Super call adds it to the registry, which calls the periodic method every tick
     leds = new AddressableLED(5);
     ledBuff =
@@ -50,6 +50,12 @@ public class LEDs extends PeriodicRunnable {
         ledBuff.setHSV(i, 130, 255, 255);
       }
     }
+  }
+
+  static LEDs inst = new LEDs();
+
+  public static LEDs getInstance() {
+    return inst;
   }
 
   @Override
