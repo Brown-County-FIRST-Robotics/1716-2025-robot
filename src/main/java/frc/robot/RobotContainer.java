@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.GoToPoseQM;
 import frc.robot.commands.ManipulatorPresetFactory;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
@@ -307,6 +308,9 @@ public class RobotContainer {
   private void configureCompBindings() {
     // Manipulator Presets
     manipulator.setDefaultCommand(presetFactory.retracted());
+    driverController
+        .b()
+        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(0, 0, Rotation2d.fromDegrees(20))));
 
     // manipulator.setDefaultCommand(
     //     Commands.run(
