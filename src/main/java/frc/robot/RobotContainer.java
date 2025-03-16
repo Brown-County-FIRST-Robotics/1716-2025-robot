@@ -8,7 +8,6 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -26,7 +25,6 @@ import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
@@ -65,7 +63,6 @@ public class RobotContainer {
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
-  private final LEDs leds = new LEDs();
   private final LoggedDashboardChooser<Command> autoChooser;
   private AutoFactory autoFactory;
   private final Manipulator manipulator;
@@ -256,8 +253,7 @@ public class RobotContainer {
     // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     presetFactory =
-        new ManipulatorPresetFactory(
-            manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
+        new ManipulatorPresetFactory(manipulator, gripper, teleopDrive, driveSys, manipulatorPanel);
     autoChooser.addOption(
         "Crappy 1 coral",
         Commands.runEnd(
