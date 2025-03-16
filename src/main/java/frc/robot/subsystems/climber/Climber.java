@@ -11,7 +11,6 @@ public class Climber extends SubsystemBase {
 
   private double positionOffset;
   private boolean isDown = false;
-  // private boolean isZeroed = false;
 
   // Constructor
   public Climber(ClimberIO io) {
@@ -28,19 +27,16 @@ public class Climber extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
 
-    // if (inputs.limitSwitch) {
-    //   isZeroed = true;
-    //   positionOffset = inputs.position;
-    // }
     Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
 
-    // if (isZeroed) {
     if (isDown) {
-      io.setPosition(80 + positionOffset);
+      io.setPosition(
+          80 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
+      // estimated to be 92 and 0.6
+      // TESTME
     } else {
       io.setPosition(0.5 + positionOffset);
     }
-    // }
   }
 
   public void setPosition(boolean down) { // up or down
@@ -56,10 +52,6 @@ public class Climber extends SubsystemBase {
 
     positionOffset = inputs.position;
   }
-
-  // public boolean atLimit() {
-  //   return inputs.limitSwitch;
-  // }
 
   public void setServo(boolean allowDown) {
     io.setServo(allowDown ? 0 : 180); // NEEDS REAL VALUES
