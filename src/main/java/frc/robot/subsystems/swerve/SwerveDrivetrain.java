@@ -14,13 +14,13 @@ import org.littletonrobotics.junction.Logger;
 
 /** The swerve drivetrain subsystem */
 public class SwerveDrivetrain implements Drivetrain {
-  private static final double D = 21 * 0.0254; // TODO: Rename this
+  private static final double WHEEL_SPACING = 21 * 0.0254;
   private static final SwerveDriveKinematics KINEMATICS =
       new SwerveDriveKinematics(
-          new Translation2d(D / 2, D / 2),
-          new Translation2d(D / 2, -D / 2),
-          new Translation2d(-D / 2, D / 2),
-          new Translation2d(-D / 2, -D / 2));
+          new Translation2d(WHEEL_SPACING / 2, WHEEL_SPACING / 2),
+          new Translation2d(WHEEL_SPACING / 2, -WHEEL_SPACING / 2),
+          new Translation2d(-WHEEL_SPACING / 2, WHEEL_SPACING / 2),
+          new Translation2d(-WHEEL_SPACING / 2, -WHEEL_SPACING / 2));
   private static final double MAX_WHEEL_SPEED = 5.0;
   final Module fl;
   final Module fr;

@@ -146,54 +146,57 @@ tasks.register('checkSim',JavaExec) {
 
 def writeGitData =tasks.create("writeGitData") {
     doLast(){
-        // Define an output stream to write to instead of terminal
         def userstdout = new ByteArrayOutputStream()
-        def rawtime= new Date();
-        def mstr=(rawtime.toCalendar().get(Calendar.MONTH)+1).toString()
-        def dstr=rawtime.toCalendar().get(Calendar.DAY_OF_MONTH).toString()
-        def hrstr=rawtime.toCalendar().get(Calendar.HOUR_OF_DAY).toString()
-        def minstr=rawtime.toCalendar().get(Calendar.MINUTE).toString()
-        def secstr=rawtime.toCalendar().get(Calendar.SECOND).toString()
-        def iso8601=rawtime.toCalendar().get(Calendar.YEAR).toString()+(mstr.length()==2?mstr:("0"+mstr))+(dstr.length()==2?dstr:("0"+dstr))+"_"+(hrstr.length()==2?hrstr:("0"+hrstr))+(minstr.length()==2?minstr:("0"+minstr))+(secstr.length()==2?secstr:("0"+secstr))
+        def rawtime= new Date()
+        def month=(rawtime.toCalendar().get(Calendar.MONTH)+1).toString()
+        def day=rawtime.toCalendar().get(Calendar.DAY_OF_MONTH).toString()
+        def hour=rawtime.toCalendar().get(Calendar.HOUR_OF_DAY).toString()
+        def minute=rawtime.toCalendar().get(Calendar.MINUTE).toString()
+        def second=rawtime.toCalendar().get(Calendar.SECOND).toString()
+        def dateString=rawtime.toCalendar().get(Calendar.YEAR).toString()+(month.length()==2?month:("0"+month))+(day.length()==2?day:("0"+day))+"_"+(hour.length()==2?hour:("0"+hour))+(minute.length()==2?minute:("0"+minute))+(second.length()==2?second:("0"+second)) // Uses YYYYMMDD_HHmmss, or ISO 860
 
+        // This is the best cross-platform way to get username
         exec {
             commandLine "git", "config", "--get", "user.name"
-            // Write to the output stream instead of terminal
-            standardOutput = userstdout
+            standardOutput = userstdout // Captures output instead of using stdout
         }
-        def tagname="zzzz_"+userstdout.toString().trim()+"_"+iso8601+"_deploy"
+        // "zzzz_" is added to fall to the bottom of any sorted list
+        def tagname="zzzz_"+userstdout.toString().trim()+"_"+dateString+"_deploy"
+
+        // Create two commits, one with the staged changes, and the other with the unstaged changes
+        // This way, we can revert them in a specific way to preserve staged vs unstaged changes
         exec {
-            commandLine "git", "commit", "--allow-empty", "-m", "Staged changes during deploy at "+iso8601
+            commandLine "git", "commit", "--allow-empty", "-m", "Staged changes during deploy at "+dateString
         }
         exec {
             commandLine "git", "add", "."
         }
         exec {
-            commandLine "git", "commit", "--allow-empty", "-m", "Unstaged changes during deploy at "+iso8601
+            commandLine "git", "commit", "--allow-empty", "-m", "Unstaged changes during deploy at "+dateString
         }
         exec {
             commandLine "git", "tag", tagname
         }
         exec {
+            // This will move the head back one commit, keeping the changes as staged changes
+            // This does not delete the commit, as we have already attached a tag to it
             commandLine "git", "reset", "--soft", "HEAD^1"
         }
         exec {
+            // Since the second commit was the unstaged changes, and `git reset` stages the changes, we need to unstage them
             commandLine "git", "restore", "--staged", "."
         }
         exec {
+            // Lastly, bring back the staged changes
             commandLine "git", "reset", "--soft", "HEAD^1"
         }
-        // Create a new file
+        // This will make two files, one for the git tag name and one for the deployer's name
         new File(
-                // Join project directory and deploy directory
                 projectDir.toString() + "/src/main/deploy",
-                // File name to write to
                 "git_tag.txt"
                 ).text = tagname
         new File(
-                // Join project directory and deploy directory
                 projectDir.toString() + "/src/main/deploy",
-                // File name to write to
                 "deployer.txt"
                 ).text = userstdout.toString().trim()
     }}
