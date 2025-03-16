@@ -250,7 +250,6 @@ public class RobotContainer {
     gripper = new Gripper(gripperIO);
     climber = new Climber(climberIO);
 
-    // TODO: add appendage backups here
     TeleopDrive teleopDrive = configureSharedBindings();
     presetFactory =
         new ManipulatorPresetFactory(
