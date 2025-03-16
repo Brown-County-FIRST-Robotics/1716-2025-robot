@@ -11,6 +11,7 @@ public class VisionSLAMIOQuest implements VisionSLAMIO {
   DoubleArraySubscriber questPosition =
       table.getDoubleArrayTopic("position").subscribe(new double[] {});
   IntegerSubscriber questFrames = table.getIntegerTopic("frameCount").subscribe(0);
+  DoubleSubscriber battery = table.getDoubleTopic("batteryPercent").subscribe(0);
 
   @Override
   public void updateInputs(VisionSLAMIOInputs inputs) {
@@ -25,5 +26,6 @@ public class VisionSLAMIOQuest implements VisionSLAMIO {
     } else {
       inputs.present = false;
     }
+    inputs.battPercent = battery.get();
   }
 }
