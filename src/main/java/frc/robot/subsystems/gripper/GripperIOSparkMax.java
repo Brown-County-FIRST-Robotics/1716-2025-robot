@@ -18,22 +18,17 @@ public class GripperIOSparkMax implements GripperIO {
   private final RelativeEncoder topEncoder;
   private final SparkMax bottom;
   private final RelativeEncoder bottomEncoder;
-  private final SparkMax rear;
-  private final RelativeEncoder rearEncoder;
   private final SparkMaxConfig config;
   private final LaserCan coralLaserCan;
   private final LaserCan algaeLaserCan;
   private LaserCan.Measurement coralMeasurement;
   private LaserCan.Measurement algaeMeasurement;
 
-  public GripperIOSparkMax(
-      int topID, int bottomID, int rearID, int coralLaserID, int algaeLaserID) {
+  public GripperIOSparkMax(int topID, int bottomID, int coralLaserID, int algaeLaserID) {
     top = new SparkMax(topID, MotorType.kBrushless);
     topEncoder = top.getEncoder();
     bottom = new SparkMax(bottomID, MotorType.kBrushless);
     bottomEncoder = bottom.getEncoder();
-    rear = new SparkMax(rearID, MotorType.kBrushless);
-    rearEncoder = rear.getEncoder();
 
     config = new SparkMaxConfig();
 
@@ -49,7 +44,6 @@ public class GripperIOSparkMax implements GripperIO {
 
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rear.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     top.setInverted(true);
 
@@ -84,8 +78,6 @@ public class GripperIOSparkMax implements GripperIO {
     inputs.topVelocity = topEncoder.getVelocity();
     inputs.bottomPosition = bottomEncoder.getPosition();
     inputs.bottomVelocity = bottomEncoder.getVelocity();
-    inputs.rearPosition = rearEncoder.getPosition();
-    inputs.rearVelocity = rearEncoder.getVelocity();
 
     inputs.topAppliedOutput = top.getAppliedOutput();
     inputs.topTemperature = top.getMotorTemperature();
@@ -93,9 +85,6 @@ public class GripperIOSparkMax implements GripperIO {
     inputs.bottomAppliedOutput = bottom.getAppliedOutput();
     inputs.bottomTemperature = bottom.getMotorTemperature();
     inputs.bottomCurrent = bottom.getOutputCurrent();
-    inputs.rearAppliedOutput = rear.getAppliedOutput();
-    inputs.rearTemperature = rear.getMotorTemperature();
-    inputs.rearCurrent = rear.getOutputCurrent();
 
     coralMeasurement = coralLaserCan.getMeasurement();
     algaeMeasurement = algaeLaserCan.getMeasurement();
@@ -117,10 +106,8 @@ public class GripperIOSparkMax implements GripperIO {
     }
   }
 
-  public void setVelocities(
-      double topCommandVelocity, double bottomCommandVelocity, double rearCommandVelocity) {
+  public void setVelocities(double topCommandVelocity, double bottomCommandVelocity) {
     top.getClosedLoopController().setReference(topCommandVelocity, ControlType.kVelocity);
     bottom.getClosedLoopController().setReference(bottomCommandVelocity, ControlType.kVelocity);
-    rear.getClosedLoopController().setReference(rearCommandVelocity, ControlType.kVelocity);
   }
 }
