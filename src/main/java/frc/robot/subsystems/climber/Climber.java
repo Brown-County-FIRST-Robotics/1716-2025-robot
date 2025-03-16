@@ -6,8 +6,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   // subsystem components such as motors:
-  ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-  ClimberIO io;
+  final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+  final ClimberIO io;
 
   private double positionOffset;
   private boolean isDown = false;

@@ -15,13 +15,12 @@ import frc.robot.Constants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
   private final SparkFlex elevator;
-  private final SparkMaxConfig elevatorConfig;
   private final RelativeEncoder elevatorEncoder;
   private final SparkLimitSwitch limitSwitch;
 
   public ElevatorIOSparkMax(int id, int limitSwitchID) {
     elevator = new SparkFlex(id, MotorType.kBrushless);
-    elevatorConfig = new SparkMaxConfig();
+    SparkMaxConfig elevatorConfig = new SparkMaxConfig();
     elevatorEncoder = elevator.getEncoder();
     limitSwitch = elevator.getReverseLimitSwitch();
 

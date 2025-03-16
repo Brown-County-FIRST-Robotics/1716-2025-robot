@@ -14,31 +14,31 @@ import frc.robot.utils.buttonbox.ManipulatorPanel;
 import java.util.Optional;
 
 public class ManipulatorPresetFactory {
-  Manipulator manipulator;
-  Gripper gripper;
-  TeleopDrive teleopDrive;
-  Drivetrain driveTrain;
-  ManipulatorPanel manipulatorPanel;
-  LEDs leds;
+  final Manipulator manipulator;
+  final Gripper gripper;
+  final TeleopDrive teleopDrive;
+  final Drivetrain driveTrain;
+  final ManipulatorPanel manipulatorPanel;
+  final LEDs leds;
 
-  LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
-  LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
-  LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
-  LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
-  LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
-  LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
+  final LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
+  final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
+  final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
+  final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
+  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
+  final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
+  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
+  final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
   LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
   LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
-  LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
-  LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
-  LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
-  LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
-  LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
-  LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
-  LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
-  LoggedTunableNumber wristIntakeDescending =
+  final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
+  final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
+  final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
+  final LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
+  final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
+  final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
+  final LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
+  final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
 
   public ManipulatorPresetFactory(

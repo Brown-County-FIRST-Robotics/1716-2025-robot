@@ -55,7 +55,7 @@ public class ModuleIOSparkFX implements ModuleIO {
   final LoggedTunableNumber steerKV = new LoggedTunableNumber("Steer KV", 1.0 / STEER_FREE_RPM);
   final LoggedTunableNumber offsetTun;
   double off;
-  SparkMaxConfig steerConfig = new SparkMaxConfig();
+  final SparkMaxConfig steerConfig = new SparkMaxConfig();
 
   /**
    * Makes a new instance using CAN IDs

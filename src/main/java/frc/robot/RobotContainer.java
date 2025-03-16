@@ -62,9 +62,7 @@ public class RobotContainer {
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
   private final Drivetrain driveSys;
-  private final LEDs leds = new LEDs();
   private final LoggedDashboardChooser<Command> autoChooser;
-  private AutoFactory autoFactory;
   private final Manipulator manipulator;
   private final Gripper gripper;
   public final Climber climber;
@@ -164,7 +162,8 @@ public class RobotContainer {
       }
     }
 
-    autoFactory =
+    // TODO: don't do this (ie: give fake function)
+    AutoFactory autoFactory =
         new AutoFactory(
             driveSys::getPosition,
             driveSys::setPosition, // TODO: don't do this (ie: give fake function)
@@ -251,6 +250,7 @@ public class RobotContainer {
     climber = new Climber(climberIO);
 
     TeleopDrive teleopDrive = configureSharedBindings();
+    LEDs leds = new LEDs();
     presetFactory =
         new ManipulatorPresetFactory(
             manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);

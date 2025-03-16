@@ -14,13 +14,12 @@ import frc.robot.Constants;
 
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
-  private final SparkBaseConfig wristConfig;
   private final AbsoluteEncoder encoder;
   private final double offset = 0.5043; // TESTME
 
   public WristIOSparkFlex(int id) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
-    wristConfig = new SparkFlexConfig().inverted(true);
+    SparkBaseConfig wristConfig = new SparkFlexConfig().inverted(true);
     encoder = wrist.getAbsoluteEncoder();
     double scaling = 20.0 * (73.0 / 18.0);
     wristConfig.closedLoop.velocityFF(scaling / 6700.0).p(1.0 / 3000.0).maxOutput(1).minOutput(-1);

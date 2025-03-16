@@ -11,7 +11,6 @@ public class Manipulator extends SubsystemBase {
 
   private double elevatorCommandedPosition = 0.0;
   private double elevatorPositionOffset;
-  private double wristCommandedAngle = 0.0;
 
   public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
@@ -90,7 +89,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public boolean wristIsInPosiion() {
-    return Math.abs(wristInputs.angle - wristCommandedAngle) < 0.05;
+    return Math.abs(wristInputs.angle) < 0.05;
   }
 
   public void resetElevator() {

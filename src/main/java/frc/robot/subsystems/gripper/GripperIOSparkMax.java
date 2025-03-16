@@ -18,7 +18,6 @@ public class GripperIOSparkMax implements GripperIO {
   private final RelativeEncoder topEncoder;
   private final SparkMax bottom;
   private final RelativeEncoder bottomEncoder;
-  private final SparkMaxConfig config;
   private final LaserCan coralLaserCan;
   private final LaserCan algaeLaserCan;
   private LaserCan.Measurement coralMeasurement;
@@ -30,7 +29,7 @@ public class GripperIOSparkMax implements GripperIO {
     bottom = new SparkMax(bottomID, MotorType.kBrushless);
     bottomEncoder = bottom.getEncoder();
 
-    config = new SparkMaxConfig();
+    SparkMaxConfig config = new SparkMaxConfig();
 
     coralLaserCan = new LaserCan(coralLaserID);
     algaeLaserCan = new LaserCan(algaeLaserID);

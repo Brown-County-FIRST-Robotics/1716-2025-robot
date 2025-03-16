@@ -34,7 +34,7 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   private final XboxController driverController = new XboxController(0);
-  private boolean hasRumbledMatchTime = false; // hasStarted, hasEnded
+  private final boolean hasRumbledMatchTime = false; // hasStarted, hasEnded
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

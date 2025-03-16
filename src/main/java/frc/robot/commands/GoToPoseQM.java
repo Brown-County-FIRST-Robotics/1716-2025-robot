@@ -12,8 +12,8 @@ public class GoToPoseQM extends Command {
       new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
-  Drivetrain drivetrain;
-  Pose2d target;
+  final Drivetrain drivetrain;
+  final Pose2d target;
 
   public GoToPoseQM(Drivetrain drivetrain, Pose2d target) {
     this.drivetrain = drivetrain;

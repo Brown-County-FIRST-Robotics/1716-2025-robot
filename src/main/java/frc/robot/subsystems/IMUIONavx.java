@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 /** The abstraction for the Kauai labs Navx2 IMU */
 public class IMUIONavx implements IMUIO {
   final AHRS imu;
-  Rotation3d basRotation3d;
+  final Rotation3d basRotation3d;
 
   /** Constructs a Navx that uses SPI */
   public IMUIONavx() {

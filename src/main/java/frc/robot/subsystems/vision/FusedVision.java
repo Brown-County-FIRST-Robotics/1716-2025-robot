@@ -12,16 +12,16 @@ import org.littletonrobotics.junction.Logger;
 /** The vision subsystem */
 public class FusedVision extends PeriodicRunnable {
   final VisionIO io;
-  public VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
-  Drivetrain drivetrain;
+  public final VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
+  final Drivetrain drivetrain;
 
   final CustomAlerts.TimeoutAlert visionWatchDog =
       new CustomAlerts.TimeoutAlert(Alert.AlertType.WARNING, 10, "Vision timeout");
   OverridePanel overridePanel;
 
-  VisionSLAMIO slamio;
-  VisionSLAMIOInputsAutoLogged slamInputs = new VisionSLAMIOInputsAutoLogged();
-  Transform3d slamPose;
+  final VisionSLAMIO slamio;
+  final VisionSLAMIOInputsAutoLogged slamInputs = new VisionSLAMIOInputsAutoLogged();
+  final Transform3d slamPose;
   Pose3d zero = Pose3d.kZero;
   Pose3d lastHeadsetPoseSeen = Pose3d.kZero;
   boolean seen = false;
@@ -41,7 +41,7 @@ public class FusedVision extends PeriodicRunnable {
     new CustomAlerts.CustomAlert(
         Alert.AlertType.WARNING,
         () -> slamInputs.battPercent < 20.0,
-        () -> "Quest battery is at " + Double.toString(slamInputs.battPercent) + "%");
+        () -> "Quest battery is at " + slamInputs.battPercent + "%");
   }
 
   public Pose2d getSlamPose() {

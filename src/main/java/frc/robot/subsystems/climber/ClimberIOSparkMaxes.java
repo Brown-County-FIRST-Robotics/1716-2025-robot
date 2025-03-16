@@ -12,12 +12,11 @@ import frc.robot.Constants;
 
 public class ClimberIOSparkMaxes implements ClimberIO {
   private final SparkMax climber;
-  private final SparkMaxConfig climberConfig;
   private final Servo servo;
 
   public ClimberIOSparkMaxes(int motorID, int servoID) {
     climber = new SparkMax(motorID, MotorType.kBrushless);
-    climberConfig = new SparkMaxConfig();
+    SparkMaxConfig climberConfig = new SparkMaxConfig();
     climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(1.5 / 6500.0);
     climberConfig
         .closedLoop

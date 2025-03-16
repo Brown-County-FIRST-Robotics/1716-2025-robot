@@ -5,13 +5,13 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
 
 public class VisionSLAMIOQuest implements VisionSLAMIO {
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("questnav");
-  DoubleArraySubscriber questRot =
+  final NetworkTable table = NetworkTableInstance.getDefault().getTable("questnav");
+  final DoubleArraySubscriber questRot =
       table.getDoubleArrayTopic("quaternion").subscribe(new double[] {});
-  DoubleArraySubscriber questPosition =
+  final DoubleArraySubscriber questPosition =
       table.getDoubleArrayTopic("position").subscribe(new double[] {});
-  IntegerSubscriber questFrames = table.getIntegerTopic("frameCount").subscribe(0);
-  DoubleSubscriber battery = table.getDoubleTopic("batteryPercent").subscribe(0);
+  final IntegerSubscriber questFrames = table.getIntegerTopic("frameCount").subscribe(0);
+  final DoubleSubscriber battery = table.getDoubleTopic("batteryPercent").subscribe(0);
 
   @Override
   public void updateInputs(VisionSLAMIOInputs inputs) {
