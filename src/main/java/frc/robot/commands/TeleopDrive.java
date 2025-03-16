@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -97,11 +98,27 @@ public class TeleopDrive extends Command {
     customAngleModifier =
         customRotation
             .map(
-                rotation2d ->
-                    HolonomicTrajectoryFollower.getExt(
-                        rotation2d,
-                        drivetrain.getPosition().getRotation(),
-                        drivetrain.getVelocity().omegaRadiansPerSecond))
+                rotation2d -> {
+                  Rotation2d currentRotation = drivetrain.getPosition().getRotation();
+                  double goal = rotation2d.getRadians();
+                  if (Math.abs(currentRotation.getRadians() - goal) > Math.PI) {
+                    goal -= 2 * Math.PI;
+                    if (Math.abs(currentRotation.getRadians() - goal) > Math.PI) {
+                      goal += 4 * Math.PI;
+                    }
+                  }
+                  var tp = new TrapezoidProfile(new TrapezoidProfile.Constraints(10, 10));
+                  double fvel =
+                      tp.calculate(
+                              0.02,
+                              new TrapezoidProfile.State(
+                                  currentRotation.getRadians(),
+                                  drivetrain.getVelocity().omegaRadiansPerSecond),
+                              new TrapezoidProfile.State(goal, 0))
+                          .velocity;
+
+                  return tp.totalTime() > 0.02 ? fvel : 0;
+                })
             .orElse(0.0); // The velocity added to the rotation to apply the custom angle
 
     Logger.recordOutput("TeleopDrive/ext", customAngleModifier);
