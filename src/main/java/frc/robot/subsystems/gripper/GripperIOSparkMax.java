@@ -19,7 +19,7 @@ public class GripperIOSparkMax implements GripperIO {
   private final SparkMax bottom;
   private final RelativeEncoder bottomEncoder;
   private final LaserCan coralLaserCan;
-  private final LaserCan algaeLaserCan;
+  // private final LaserCan algaeLaserCan;
   private LaserCan.Measurement coralMeasurement;
   private LaserCan.Measurement algaeMeasurement;
 
@@ -32,7 +32,7 @@ public class GripperIOSparkMax implements GripperIO {
     SparkMaxConfig config = new SparkMaxConfig();
 
     coralLaserCan = new LaserCan(coralLaserID);
-    algaeLaserCan = new LaserCan(algaeLaserID);
+    // algaeLaserCan = new LaserCan(algaeLaserID);
     coralMeasurement = null; // set in UpdateInputs
     algaeMeasurement = null;
 
@@ -59,17 +59,19 @@ public class GripperIOSparkMax implements GripperIO {
       new Alert(" Coral LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
     }
 
-    try {
-      algaeLaserCan.setRangingMode(LaserCan.RangingMode.SHORT);
-      // Configures which of the sensor diodes in the 16x16 sensor array are enabled
-      algaeLaserCan.setRegionOfInterest(
-          new LaserCan.RegionOfInterest(
-              8, 8, 16, 16)); // Defines a 16x16 rectangle at (8, 8), the center
-      algaeLaserCan.setTimingBudget(
-          LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates slower
-    } catch (ConfigurationFailedException e) {
-      new Alert(" Algae LaserCan failed to start", frc.robot.utils.Alert.AlertType.ERROR).set(true);
-    }
+    // try {
+    //   algaeLaserCan.setRangingMode(LaserCan.RangingMode.SHORT);
+    //   // Configures which of the sensor diodes in the 16x16 sensor array are enabled
+    //   algaeLaserCan.setRegionOfInterest(
+    //       new LaserCan.RegionOfInterest(
+    //           8, 8, 16, 16)); // Defines a 16x16 rectangle at (8, 8), the center
+    //   algaeLaserCan.setTimingBudget(
+    //       LaserCan.TimingBudget.TIMING_BUDGET_33MS); // Higher is more accurate but updates
+    // slower
+    // } catch (ConfigurationFailedException e) {
+    //   new Alert(" Algae LaserCan failed to start",
+    // frc.robot.utils.Alert.AlertType.ERROR).set(true);
+    // }
   }
 
   public void updateInputs(GripperIOInputs inputs) {
@@ -86,7 +88,7 @@ public class GripperIOSparkMax implements GripperIO {
     inputs.bottomCurrent = bottom.getOutputCurrent();
 
     coralMeasurement = coralLaserCan.getMeasurement();
-    algaeMeasurement = algaeLaserCan.getMeasurement();
+    // algaeMeasurement = algaeLaserCan.getMeasurement();
     // check if lasercan currently has a valid measurment
     if (coralMeasurement != null
         && coralMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
@@ -96,13 +98,13 @@ public class GripperIOSparkMax implements GripperIO {
       inputs.hasCoralLaserMeasurement = false;
     }
 
-    if (algaeLaserCan != null
-        && algaeMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      inputs.hasAlgaeLaserMeasurement = true;
-      inputs.algaeLaserDistance = algaeMeasurement.distance_mm / 1000.0;
-    } else {
-      inputs.hasAlgaeLaserMeasurement = false;
-    }
+    // if (algaeLaserCan != null
+    //     && algaeMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+    //   inputs.hasAlgaeLaserMeasurement = true;
+    //   inputs.algaeLaserDistance = algaeMeasurement.distance_mm / 1000.0;
+    // } else {
+    //   inputs.hasAlgaeLaserMeasurement = false;
+    // }
   }
 
   public void setVelocities(double topCommandVelocity, double bottomCommandVelocity) {
