@@ -15,21 +15,29 @@ import frc.robot.Constants;
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
   private final AbsoluteEncoder encoder;
-  private final double offset = 0.5043; // TESTME
+  private final double offset = 0.82;
 
   public WristIOSparkFlex(int id) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
-    SparkBaseConfig wristConfig = new SparkFlexConfig().inverted(true);
+    SparkBaseConfig wristConfig = new SparkFlexConfig().inverted(false);
     encoder = wrist.getAbsoluteEncoder();
     double scaling = 20.0 * (73.0 / 18.0);
-    wristConfig.closedLoop.velocityFF(scaling / 6700.0).p(1.0 / 3000.0).maxOutput(1).minOutput(-1);
+    wristConfig
+        .closedLoop
+        .velocityFF(5.0 / (6700.0 / scaling))
+        .p(1.0 / (6700.0 / scaling))
+        .maxOutput(1)
+        .minOutput(-1);
     wristConfig
         .closedLoop
         .smartMotion
         .maxAcceleration(2.0 * scaling / 6700.0)
         .maxVelocity(0.16 * scaling / 6700.0); // TESTME
-    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kBrake);
-    wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kCoast);
+    wristConfig
+        .closedLoop
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .positionWrappingEnabled(false);
 
     wrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -44,8 +52,6 @@ public class WristIOSparkFlex implements WristIO {
   }
 
   public void setPosition(double commandPosition, double arbFF) {
-    wrist
-        .getClosedLoopController()
-        .setReference(commandPosition + offset, ControlType.kSmartMotion);
+    wrist.getClosedLoopController().setReference(.5, ControlType.kSmartMotion);
   }
 }
