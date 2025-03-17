@@ -15,7 +15,7 @@ import frc.robot.Constants;
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
   private final AbsoluteEncoder encoder;
-  private final double offset = 0.5043; // TESTME
+  private final double offset = 0.0;
 
   public WristIOSparkFlex(int id) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
