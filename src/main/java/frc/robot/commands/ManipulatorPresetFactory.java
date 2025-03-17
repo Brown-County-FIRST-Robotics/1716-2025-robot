@@ -22,7 +22,7 @@ public class ManipulatorPresetFactory {
   final LEDs leds;
 
   final LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
-  final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
+  final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.38);
   final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
   final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
   final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
