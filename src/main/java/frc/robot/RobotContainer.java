@@ -116,13 +116,13 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(4, 1, 0, 2);
+          gripperIO = new GripperIOSparkMax(3, 1, 0, 2);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
           elevatorIO = new ElevatorIOSparkMax(53, 0);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(36, 0);
+          climberIO = new ClimberIOSparkMaxes(54, 0);
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
           wristIO = new WristIOSparkFlex(55);
