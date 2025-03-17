@@ -15,7 +15,7 @@ import frc.robot.Constants;
 public class WristIOSparkFlex implements WristIO {
   private final SparkFlex wrist;
   private final AbsoluteEncoder encoder;
-  private final double offset = 0.5043; // TESTME
+  private final double offset = 0.6;
 
   public WristIOSparkFlex(int id) {
     wrist = new SparkFlex(id, MotorType.kBrushless);
@@ -28,14 +28,14 @@ public class WristIOSparkFlex implements WristIO {
         .smartMotion
         .maxAcceleration(2.0 * scaling / 6700.0)
         .maxVelocity(0.16 * scaling / 6700.0); // TESTME
-    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kBrake);
+    wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kCoast);
     wristConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
     wrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.angle = encoder.getPosition() - offset;
+    inputs.angle = (encoder.getPosition() + offset) - Math.floor(encoder.getPosition() + offset);
     inputs.omega = encoder.getVelocity();
 
     inputs.appliedOutput = wrist.getAppliedOutput();
