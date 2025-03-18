@@ -102,13 +102,14 @@ public class RobotContainer {
               new FusedVision(
                   driveSys,
                   new Transform3d(
-                      new Translation3d(0.5, 0, 0),
-                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 0.0 * Math.PI / 180.0)),
+                      new Translation3d(-0.18, 0.245, 0),
+                      new Rotation3d(90.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
                   new VisionSLAMIOQuest(),
                   new VisionIOPhotonVision(
                       "TH_CAM0",
                       new Transform3d(
-                          new Translation3d(-0.5, 0, 0), new Rotation3d(0, 0, Math.PI))));
+                          new Translation3d(-12 * 0.0254, -9.5 * 0.0254, 0),
+                          new Rotation3d(0, 0, Math.PI))));
 
           break;
         default:
@@ -303,9 +304,10 @@ public class RobotContainer {
   private void configureCompBindings() {
     // Manipulator Presets
     manipulator.setDefaultCommand(presetFactory.retracted());
+
     driverController
         .b()
-        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(0, 0, Rotation2d.fromDegrees(20))));
+        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(3.28, 3.86, Rotation2d.fromDegrees(0))));
 
     // manipulator.setDefaultCommand(
     //     Commands.run(
