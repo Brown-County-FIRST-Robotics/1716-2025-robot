@@ -9,9 +9,9 @@ import frc.robot.subsystems.Drivetrain;
 
 public class GoToPoseQM extends Command {
   private final ProfiledPIDController driveController =
-      new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
+      new ProfiledPIDController(1.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
+      new ProfiledPIDController(1.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
   final Drivetrain drivetrain;
   final Pose2d target;
 
