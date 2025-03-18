@@ -102,13 +102,14 @@ public class RobotContainer {
               new FusedVision(
                   driveSys,
                   new Transform3d(
-                      new Translation3d(0.5, 0, 0),
-                      new Rotation3d(0.0 * Math.PI / 180.0, 0, 0.0 * Math.PI / 180.0)),
+                      new Translation3d(-0.18, 0.245, 0),
+                      new Rotation3d(90.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
                   new VisionSLAMIOQuest(),
                   new VisionIOPhotonVision(
                       "TH_CAM0",
                       new Transform3d(
-                          new Translation3d(-0.5, 0, 0), new Rotation3d(0, 0, Math.PI))));
+                          new Translation3d(-12 * 0.0254, -9.5 * 0.0254, 0),
+                          new Rotation3d(0, 0, Math.PI))));
 
           break;
         default:
@@ -302,26 +303,27 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Manipulator Presets
-    manipulator.setDefaultCommand(presetFactory.retracted());
+    // manipulator.setDefaultCommand(presetFactory.retracted());
+
     driverController
         .b()
-        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(0, 0, Rotation2d.fromDegrees(20))));
+        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(3.11, 3.86, Rotation2d.fromDegrees(0))));
 
-    // manipulator.setDefaultCommand(
-    //     Commands.run(
-    //         new Runnable() {
+    manipulator.setDefaultCommand(
+        Commands.run(
+            new Runnable() {
 
-    //           public void run() {
-    //             // manipulator.setWristReference(
-    //             //     manipulator.getWrist() + driverController.getHID().getRightY());
-    //             manipulator.setElevatorReference(
-    //                 manipulator.getElevator()
-    //                     + 50
-    //                         * (-driverController.getLeftTriggerAxis()
-    //                             + driverController.getRightTriggerAxis()));
-    //           }
-    //         },
-    //         manipulator));
+              public void run() {
+                // manipulator.setWristReference(
+                //     manipulator.getWrist() + driverController.getHID().getRightY());
+                manipulator.setElevatorReference(
+                    manipulator.getElevator()
+                        + 50
+                            * (-driverController.getLeftTriggerAxis()
+                                + driverController.getRightTriggerAxis()));
+              }
+            },
+            manipulator));
 
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
@@ -346,12 +348,13 @@ public class RobotContainer {
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
-    driverController
-        .rightTrigger(0.2)
-        .or(driverController.leftTrigger(0.2))
-        .or(manipulatorPanel.eject())
-        .whileTrue(
-            Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
+    // driverController
+    //     .rightTrigger(0.2)
+    //     .or(driverController.leftTrigger(0.2))
+    //     .or(manipulatorPanel.eject())
+    //     .whileTrue(
+    //         Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0),
+    // gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
 
