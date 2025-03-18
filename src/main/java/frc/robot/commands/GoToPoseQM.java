@@ -6,12 +6,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
+import org.littletonrobotics.junction.Logger;
 
 public class GoToPoseQM extends Command {
   private final ProfiledPIDController driveController =
-      new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
+      new ProfiledPIDController(1.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
+      new ProfiledPIDController(1.0, 0.0, 0.0, new TrapezoidProfile.Constraints(3.0, 7.0), 0.02);
   final Drivetrain drivetrain;
   final Pose2d target;
 
@@ -36,9 +37,11 @@ public class GoToPoseQM extends Command {
             .getTranslation()
             .div(thrustDirection.getTranslation().getNorm())
             .times(thrustTranslationPower);
+    Logger.recordOutput("sadf", thrustDirection);
     double rotationThrust =
         thetaController.calculate(thrustDirection.getRotation().getRotations(), 0);
-    drivetrain.humanDrive(new ChassisSpeeds(thrustVec.getX(), thrustVec.getY(), rotationThrust));
+    System.out.println(rotationThrust);
+    drivetrain.humanDrive(new ChassisSpeeds(-thrustVec.getX(), -thrustVec.getY(), rotationThrust));
   }
 
   @Override
