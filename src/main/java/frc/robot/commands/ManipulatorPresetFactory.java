@@ -174,7 +174,7 @@ public class ManipulatorPresetFactory {
                     .getCoralDistanceReading()
                     .filter(
                         (Double d) -> {
-                          return d < 0.1;
+                          return d < 0.04;
                         })
                     .isPresent());
   }
