@@ -22,7 +22,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
         .closedLoop
         .smartMotion
         .maxAcceleration(1200)
-        .maxVelocity(5000); // placeholder, will be replaced with actual acceleration
+        .maxVelocity(20); // placeholder, will be replaced with actual acceleration
     climberConfig.smartCurrentLimit(
         Constants.CurrentLimits.NEO_VORTEX); // sets the limits based on the NEO motors
     climberConfig.idleMode(IdleMode.kCoast);
