@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import frc.robot.Constants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
   private final SparkFlex elevator;
@@ -27,18 +26,18 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevatorConfig
         .closedLoop
         .smartMotion
-        .maxAcceleration(2000)
-        .maxVelocity(10000)
+        .maxAcceleration(6000)
+        .maxVelocity(6000)
         .minOutputVelocity(0); // placeholder
     elevatorConfig
         .closedLoop
         .velocityFF(1.0 / 6700.0)
-        .p(1.0 / 6700.0)
+        .p(1.5 / 6700.0)
         .maxOutput(1)
-        .minOutput(-1)
+        .minOutput(-.5)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     elevatorConfig
-        .smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX)
+        .smartCurrentLimit(60) // Constants.CurrentLimits.NEO_VORTEX)
         .inverted(false)
         .idleMode(IdleMode.kBrake);
     // elevatorConfig.softLimit.forwardSoftLimitEnabled(false).forwardSoftLimit(182.0);
