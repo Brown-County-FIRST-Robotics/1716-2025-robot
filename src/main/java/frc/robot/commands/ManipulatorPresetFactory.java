@@ -27,10 +27,10 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
   final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
   final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
+  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 120);
   final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
-  LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
+  // LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
+  // LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
   final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
   final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
   final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
@@ -174,7 +174,7 @@ public class ManipulatorPresetFactory {
                     .getCoralDistanceReading()
                     .filter(
                         (Double d) -> {
-                          return d < 0.1;
+                          return d < 0.04;
                         })
                     .isPresent());
   }
