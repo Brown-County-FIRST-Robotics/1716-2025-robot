@@ -80,7 +80,7 @@ public class FusedVision extends PeriodicRunnable {
               -slamInputs.questTranslation.getY(),
               headsetRotation);
       var robotHeadsetPos = headsetPos.plus(slamPose.inverse());
-      if (new XboxController(0).getAButtonPressed()) {
+      if (new XboxController(0).getXButtonPressed()) {
         seen = false;
       }
 
