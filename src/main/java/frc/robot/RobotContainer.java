@@ -169,7 +169,7 @@ public class RobotContainer {
             driveSys::getPosition,
             driveSys::setPosition, // TODO: don't do this (ie: give fake function)
             driveSys::followTrajectory,
-            true,
+            false,
             driveSys,
             new AutoFactory.AutoBindings());
     autoChooser.addDefaultOption("Nothing", Commands.none());
@@ -191,8 +191,8 @@ public class RobotContainer {
     AutoTrajectory lAlign = lAuto.trajectory("L-Auto", 0);
     AutoTrajectory lPickup = lAuto.trajectory("L-Auto", 1);
 
-    AutoTrajectory mAlign = mAuto.trajectory("M-Auto", 0);
-    AutoTrajectory mPickup = mAuto.trajectory("M-Auto", 1);
+    AutoTrajectory mAlign = mAuto.trajectory("M-Auto2", 0);
+    AutoTrajectory mPickup = mAuto.trajectory("M-Auto2", 1);
 
     AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
     AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
@@ -363,17 +363,18 @@ public class RobotContainer {
         .or(driverController.povDown())
         .or(driverController.povDownLeft())
         .or(driverController.povDownRight())
-        .onTrue(
+        .whileTrue(
             Commands.runOnce(() -> climber.setServo(true), climber)
                 .andThen(
                     Commands.waitSeconds(1)
-                        .andThen(Commands.runOnce(() -> climber.setPosition(true), climber))));
+                        .andThen(Commands.run(() -> climber.setPosition(true), climber)))
+                .finallyDo(() -> climber.setPosition(false)));
     driverController
         .y()
         .or(driverController.povUp())
         .or(driverController.povUpLeft())
         .or(driverController.povUpRight())
-        .onTrue(
+        .whileTrue(
             Commands.runOnce(() -> climber.setServo(false), climber)
                 .andThen(
                     Commands.waitSeconds(1)

@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.vision.FusedVision;
 import java.util.Optional;
@@ -24,11 +23,11 @@ public class PoseEstimator {
   }
 
   public void feed() {
-    if (new XboxController(0).getAButtonPressed()) {
+    if (new XboxController(0).getXButtonPressed()) {
       usedVis = false;
     }
     if (pt.isPresent()) {
-      if (DriverStation.isDisabled() && !usedVis && pt.get().isActive()) {
+      if (!usedVis && pt.get().isActive()) {
         if (pt.get().inputs.pose.isPresent()) {
           pt.get().setpos(pt.get().inputs.pose.get().toPose2d());
           usedVis = true;
