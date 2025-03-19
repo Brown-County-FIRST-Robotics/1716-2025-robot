@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utils.*;
 import frc.robot.utils.buttonbox.OverridePanel;
@@ -80,9 +79,6 @@ public class FusedVision extends PeriodicRunnable {
               -slamInputs.questTranslation.getY(),
               headsetRotation);
       var robotHeadsetPos = headsetPos.plus(slamPose.inverse());
-      if (new XboxController(0).getXButtonPressed()) {
-        seen = false;
-      }
 
       if (!seen) {
         seen = true;
