@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
 
     if (isDown) {
       io.setPosition(
-          80 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
+          92 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
       // estimated to be 92 and 0.6
       // TESTME
     } else {
