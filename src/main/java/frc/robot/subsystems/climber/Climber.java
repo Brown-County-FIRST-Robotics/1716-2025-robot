@@ -1,6 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
@@ -32,7 +31,6 @@ public class Climber extends SubsystemBase {
     Logger.processInputs("Climber", inputs);
 
     Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
-    io.setServo(new XboxController(0).getLeftTriggerAxis() * 180.0);
     lnn.set(inputs.servoPosition);
     if (isDown) {
       io.setPosition(
