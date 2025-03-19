@@ -76,7 +76,7 @@ public class Manipulator extends SubsystemBase {
 
     Logger.recordOutput("Wrist/CommandReference", reference);
     Logger.recordOutput("Wrist/ActualReference", convertedReference);
-    wrist.setPosition(convertedReference, 0);
+    wrist.setPosition(convertedReference, -0.1 * Math.sin(getWrist() - (-0.158)));
   }
 
   // Whether the arm is at the reference position (within some tolerance)
