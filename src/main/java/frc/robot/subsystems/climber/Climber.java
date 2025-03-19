@@ -1,8 +1,10 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Climber extends SubsystemBase {
   // subsystem components such as motors:
@@ -22,16 +24,19 @@ public class Climber extends SubsystemBase {
     positionOffset = inputs.position;
   }
 
+  LoggedNetworkNumber lnn = new LoggedNetworkNumber("SmartDashboard/sdf", 0.0);
+
   @Override
   public void periodic() { // runs every frame (useful for data logging)
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
 
     Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
-
+    io.setServo(new XboxController(0).getLeftTriggerAxis() * 180.0);
+    lnn.set(inputs.servoPosition);
     if (isDown) {
       io.setPosition(
-          80 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
+          92 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
       // estimated to be 92 and 0.6
       // TESTME
     } else {
