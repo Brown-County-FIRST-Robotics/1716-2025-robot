@@ -138,7 +138,7 @@ public class ModuleIOSparkFX implements ModuleIO {
         .closedLoop
         .smartMotion
         .maxVelocity(5767)
-        .maxAcceleration(10000)
+        .maxAcceleration(5000)
         .allowedClosedLoopError(0.0025);
     steerConfig.voltageCompensation(12.0);
     steer.configure(steerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

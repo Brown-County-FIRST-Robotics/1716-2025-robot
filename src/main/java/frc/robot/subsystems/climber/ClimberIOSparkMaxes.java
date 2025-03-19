@@ -17,7 +17,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
   public ClimberIOSparkMaxes(int motorID, int servoID) {
     climber = new SparkMax(motorID, MotorType.kBrushless);
     SparkMaxConfig climberConfig = new SparkMaxConfig();
-    climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(1.5 / 6500.0);
+    climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(6.0 / 6500.0);
     climberConfig
         .closedLoop
         .smartMotion
@@ -25,7 +25,7 @@ public class ClimberIOSparkMaxes implements ClimberIO {
         .maxVelocity(5000); // placeholder, will be replaced with actual acceleration
     climberConfig.smartCurrentLimit(
         Constants.CurrentLimits.NEO_VORTEX); // sets the limits based on the NEO motors
-    climberConfig.idleMode(IdleMode.kBrake);
+    climberConfig.idleMode(IdleMode.kCoast);
 
     climber
         .configure( // persist mode keeps the last data value even after the robot is shut off, in
