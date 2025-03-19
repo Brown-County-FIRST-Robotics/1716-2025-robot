@@ -168,8 +168,12 @@ public class SwerveDrivetrain implements Drivetrain {
 
   @Override
   public void followTrajectory(SwerveSample sample) {
+    var sleepy = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading)).log(getPosition());
     humanDrive(
         new ChassisSpeeds(
-            sample.vx, sample.vy, sample.omega)); // TODO: probably use PID or something
+            sample.vx + xPid.calculate(sleepy.dx, 0),
+            sample.vy + yPid.calculate(sleepy.dy, 0),
+            sample.omega
+                + thPid.calculate(sleepy.dtheta, 0))); // TODO: probably use PID or something
   }
 }
