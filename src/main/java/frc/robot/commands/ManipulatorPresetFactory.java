@@ -38,6 +38,7 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
   final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
   final LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
+  final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
   final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
 
@@ -87,30 +88,39 @@ public class ManipulatorPresetFactory {
   }
 
   public Command trough() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorTrough.get());
-          manipulator.setWristReference(wristTrough.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorTrough.get());
+                  manipulator.setWristReference(wristTrough.get());
+                },
+                manipulator));
   }
 
   public Command level2() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorLevel2.get());
-          manipulator.setWristReference(wristLevel2.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorLevel2.get());
+                  manipulator.setWristReference(wristLevel2.get());
+                },
+                manipulator));
   }
 
   public Command level3() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorLevel3.get());
-          manipulator.setWristReference(wristLevel3.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorLevel3.get());
+                  manipulator.setWristReference(wristLevel3.get());
+                },
+                manipulator));
   }
 
   public Command level4() {
@@ -125,22 +135,28 @@ public class ManipulatorPresetFactory {
 
   public Command algaeLow() {
     // return Commands.none();
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeLow.get());
-          manipulator.setWristReference(wristAlgae.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorAlgaeLow.get());
+                  manipulator.setWristReference(wristAlgae.get());
+                },
+                manipulator));
   }
 
   public Command algaeHigh() {
     // return Commands.none();
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeHigh.get());
-          manipulator.setWristReference(wristAlgae.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorAlgaeHigh.get());
+                  manipulator.setWristReference(wristAlgae.get());
+                },
+                manipulator));
   }
 
   public Command intake() {
