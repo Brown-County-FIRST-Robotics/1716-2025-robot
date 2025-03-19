@@ -87,12 +87,15 @@ public class ManipulatorPresetFactory {
   }
 
   public Command trough() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorTrough.get());
-          manipulator.setWristReference(wristTrough.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(.55), manipulator)
+        .until(manipulator::wristIsInPosiion)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorTrough.get());
+                  manipulator.setWristReference(wristTrough.get());
+                },
+                manipulator));
   }
 
   public Command level2() {
