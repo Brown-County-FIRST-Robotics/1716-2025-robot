@@ -38,6 +38,7 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
   final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
   final LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
+  final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
   final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
 
@@ -86,13 +87,32 @@ public class ManipulatorPresetFactory {
         manipulator);
   }
 
+  public Command genericLevel(double elevatorPosition, double wristPosition) {
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorPosition);
+                  manipulator.setWristReference(wristPosition);
+                },
+                manipulator));
+  }
+
   public Command trough() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorTrough.get());
-          manipulator.setWristReference(wristTrough.get());
-        },
-        manipulator);
+    return genericLevel(elevatorTrough.get(), wristTrough.get());
+  }
+
+  public Command trough2() {
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> Math.abs(manipulator.getWrist() - safeWrist.get()) < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorTrough.get());
+                  manipulator.setWristReference(wristTrough.get());
+                },
+                manipulator));
   }
 
   public Command level2() {
