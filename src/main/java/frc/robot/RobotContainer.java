@@ -409,18 +409,17 @@ public class RobotContainer {
         .or(driverController.povDown())
         .or(driverController.povDownLeft())
         .or(driverController.povDownRight())
-        .whileTrue(
+        .onTrue(
             Commands.runOnce(() -> climber.setServo(true), climber)
                 .andThen(
                     Commands.waitSeconds(1)
-                        .andThen(Commands.run(() -> climber.setPosition(true), climber)))
-                .finallyDo(() -> climber.setPosition(false)));
+                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
     driverController
         .y()
         .or(driverController.povUp())
         .or(driverController.povUpLeft())
         .or(driverController.povUpRight())
-        .whileTrue(
+        .onTrue(
             Commands.runOnce(() -> climber.setServo(false), climber)
                 .andThen(
                     Commands.waitSeconds(1)
