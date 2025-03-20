@@ -235,6 +235,7 @@ public class RobotContainer {
 
       // This configures the actual commands that end up being run. It uses trajectories as well as
       // other cmds
+      /*
       lAuto
           .active()
           .onTrue(
@@ -249,7 +250,8 @@ public class RobotContainer {
                                   .cmd()
                                   .alongWith(
                                       Commands.waitSeconds(0.5)
-                                          .andThen(presetFactory.retracted())))));
+                                          .andThen(presetFactory.retracted())))));*/
+      lAuto.active().onTrue(lAlign.cmd());
       mAuto
           .active()
           .onTrue(
@@ -291,22 +293,22 @@ public class RobotContainer {
     // Make the routines
     // They will drive to the nearest station, middle has an auto to go to either station
     // It reuses the first segment of the main autos
-    AutoRoutine fLineup = autoFactory.newRoutine("L-Lineup");
+    AutoRoutine lLineup = autoFactory.newRoutine("L-Lineup");
     AutoRoutine mLineup = autoFactory.newRoutine("M-Lineup");
     AutoRoutine rLineup = autoFactory.newRoutine("R-Lineup");
 
     // Load all the trajectories
-    AutoTrajectory lAlign = fLineup.trajectory("L-Auto", 0);
+    AutoTrajectory lAlign = lLineup.trajectory("L-Auto", 0);
     AutoTrajectory mAlign = mLineup.trajectory("M-Auto", 0);
     AutoTrajectory rAlign = rLineup.trajectory("R-Auto", 0);
 
     // Merge all the commands into the auto routines
-    fLineup.active().onTrue(lAlign.cmd());
+    lLineup.active().onTrue(lAlign.cmd());
     mLineup.active().onTrue(mAlign.cmd());
     rLineup.active().onTrue(rAlign.cmd());
 
     // Add the new paths to the auto chooser
-    autoChooser.addOption("Left lineup - Choreo", fLineup.cmd());
+    autoChooser.addOption("Left lineup - Choreo", lLineup.cmd());
     autoChooser.addOption("Middle lineup - Choreo", mLineup.cmd());
     autoChooser.addOption("Right lineup - Choreo", rLineup.cmd());
 
@@ -409,18 +411,17 @@ public class RobotContainer {
         .or(driverController.povDown())
         .or(driverController.povDownLeft())
         .or(driverController.povDownRight())
-        .whileTrue(
+        .onTrue(
             Commands.runOnce(() -> climber.setServo(true), climber)
                 .andThen(
-                    Commands.waitSeconds(1)
-                        .andThen(Commands.run(() -> climber.setPosition(true), climber)))
-                .finallyDo(() -> climber.setPosition(false)));
+                    Commands.waitSeconds(.25)
+                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
     driverController
         .y()
         .or(driverController.povUp())
         .or(driverController.povUpLeft())
         .or(driverController.povUpRight())
-        .whileTrue(
+        .onTrue(
             Commands.runOnce(() -> climber.setServo(false), climber)
                 .andThen(
                     Commands.waitSeconds(1)
