@@ -14,13 +14,13 @@ import org.littletonrobotics.junction.Logger;
 
 /** The swerve drivetrain subsystem */
 public class SwerveDrivetrain implements Drivetrain {
-  private static final double D = 21 * 0.0254; // TODO: Rename this
+  private static final double WHEEL_SPACING = 21 * 0.0254;
   private static final SwerveDriveKinematics KINEMATICS =
       new SwerveDriveKinematics(
-          new Translation2d(D / 2, D / 2),
-          new Translation2d(D / 2, -D / 2),
-          new Translation2d(-D / 2, D / 2),
-          new Translation2d(-D / 2, -D / 2));
+          new Translation2d(WHEEL_SPACING / 2, WHEEL_SPACING / 2),
+          new Translation2d(WHEEL_SPACING / 2, -WHEEL_SPACING / 2),
+          new Translation2d(-WHEEL_SPACING / 2, WHEEL_SPACING / 2),
+          new Translation2d(-WHEEL_SPACING / 2, -WHEEL_SPACING / 2));
   private static final double MAX_WHEEL_SPEED = 5.0;
   final Module fl;
   final Module fr;
@@ -162,12 +162,14 @@ public class SwerveDrivetrain implements Drivetrain {
     return poseEstimator;
   }
 
-  PIDController xPid = new PIDController(0.1, 0.0, 0.0);
-  PIDController yPid = new PIDController(0.1, 0.0, 0.0);
-  PIDController thPid = new PIDController(0.1, 0.0, 0.0);
+  PIDController xPid = new PIDController(1.0, 0.0, 0.0);
+  PIDController yPid = new PIDController(1.0, 0.0, 0.0);
+  PIDController thPid = new PIDController(1.0, 0.0, 0.0);
 
   @Override
   public void followTrajectory(SwerveSample sample) {
+    // var sleepy = new Pose2d(sample.x, sample.y, new
+    // Rotation2d(sample.heading)).log(getPosition());
     humanDrive(
         new ChassisSpeeds(
             sample.vx, sample.vy, sample.omega)); // TODO: probably use PID or something

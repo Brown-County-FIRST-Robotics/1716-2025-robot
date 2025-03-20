@@ -36,7 +36,6 @@ public class SwerveSimManager {
 
   private Pose2d realPose = new Pose2d();
   private final double[] thrustPos = {0, 0, 0, 0};
-  private double[] lastThrustPos = {0, 0, 0, 0};
   private final double[] thrustVel = {0, 0, 0, 0};
   private final double thrustMaxAccel = 5;
   private final double thrustBrakeAccel = 30;
@@ -132,7 +131,7 @@ public class SwerveSimManager {
           (new TrapezoidProfile(new TrapezoidProfile.Constraints(5, 20)))
               .calculate(0.02, new TrapezoidProfile.State(cmdSteerPos[ind], 0), steerStates[ind]);
       steerStates[ind].position = ((steerStates[ind].position % 1.0) + 1.0) % 1.0;
-      lastThrustPos = thrustPos.clone();
+      double[] lastThrustPos = thrustPos.clone();
       thrustPos[ind] += thrustVel[ind] * 0.02;
     }
     realPose =

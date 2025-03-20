@@ -1,8 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,13 +36,15 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   private final XboxController driverController = new XboxController(0);
-  private boolean hasRumbledMatchTime = false; // hasStarted, hasEnded
+  private final boolean hasRumbledMatchTime = false; // hasStarted, hasEnded
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    var capture = CameraServer.startAutomaticCapture();
+    Shuffleboard.getTab("Teleop").add(capture).withSize(6, 5).withPosition(3, 0);
     // Record metadata
     Logger.recordMetadata("ProjectName", "2025");
     File deployDir = Filesystem.getDeployDirectory();
@@ -136,8 +140,7 @@ public class Robot extends LoggedRobot {
                 () -> robotContainer.climber.setSpeedFORZERO(0),
                 robotContainer.climber)
             .raceWith(Commands.waitSeconds(10)),
-        Commands.runOnce(() -> robotContainer.climber.zero()),
-        Commands.runOnce(() -> robotContainer.climber.setServo(true), robotContainer.climber));
+        Commands.runOnce(() -> robotContainer.climber.zero()));
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 

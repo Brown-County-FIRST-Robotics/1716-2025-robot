@@ -6,14 +6,14 @@ import java.util.List;
 import org.littletonrobotics.junction.networktables.*;
 
 public class ButtonBox {
-  List<ButtonBoxPanel> panels = new ArrayList<>();
-  GenericHID wrapped;
-  List<LoggedNetworkBoolean> dash = new ArrayList<>();
+  final List<ButtonBoxPanel> panels = new ArrayList<>();
+  final GenericHID wrapped;
+  final List<LoggedNetworkBoolean> dash = new ArrayList<>();
 
   public ButtonBox(int index) {
     wrapped = new GenericHID(index);
     for (int i = 0; i < 50; i++) {
-      dash.add(new LoggedNetworkBoolean("Shuffleboard/buttonbox/" + Integer.toString(i)));
+      dash.add(new LoggedNetworkBoolean("Shuffleboard/buttonbox/" + i));
     }
   }
 
@@ -29,10 +29,6 @@ public class ButtonBox {
   }
 
   private boolean getButton(int ind) {
-    boolean useDash = false;
-    if (useDash) {
-      return dash.get(ind).get();
-    }
     int digital_outputs = 21;
     int pov_bits = 3;
     int analog_bits = 8;

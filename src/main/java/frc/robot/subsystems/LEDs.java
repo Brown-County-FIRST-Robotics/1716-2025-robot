@@ -7,11 +7,11 @@ import frc.robot.utils.PeriodicRunnable;
 import java.util.Random;
 
 public class LEDs extends PeriodicRunnable {
-  AddressableLED leds;
-  AddressableLEDBuffer ledBuff; // length of LEDS on robot [85]
+  final AddressableLED leds;
+  final AddressableLEDBuffer ledBuff; // length of LEDS on robot [85]
 
-  Random random = new Random();
-  int raindrop[] = new int[180]; // how many random numbers are we creating
+  final Random random = new Random();
+  final int[] raindrop = new int[180]; // how many random numbers are we creating
 
   int timespeed;
   int time;
@@ -19,11 +19,11 @@ public class LEDs extends PeriodicRunnable {
   int value2;
   int x; // used to change value in stuff
 
-  boolean mode1;
-  boolean mode2;
-  boolean mode3;
+  final boolean mode1;
+  final boolean mode2;
+  final boolean mode3;
 
-  boolean solidColor = true;
+  final boolean solidColor = true;
   Color color = Color.kRed;
 
   public LEDs() {
@@ -78,7 +78,7 @@ public class LEDs extends PeriodicRunnable {
         // ledBuff.setHSV(i, 130, 255, 255);
       }
 
-      if (mode1 == true) { // /////////////////////////////////////////////START OF MODE 1
+      if (mode1) { // /////////////////////////////////////////////START OF MODE 1
         x = 95;
         for (var i = value; i < 1 + value; i++) { // This will creat random leds
           ledBuff.setHSV(i, raindrop[i], 255, 255);
@@ -96,13 +96,12 @@ public class LEDs extends PeriodicRunnable {
         }
       } ///////////////////////////////////////////////////////// END OF MODE 1
 
-      if (mode2 == true) { // ///////////////////////////////////////START OF MODE 2
+      if (mode2) { // ///////////////////////////////////////START OF MODE 2
         x = 85;
         ledBuff.setHSV(value, raindrop[value2], 255, 255);
       }
 
-      if (mode3
-          == true) { ///////////////////////////////////////// START OF MODE 3 THIS DOES NOT WORK
+      if (mode3) { ///////////////////////////////////////// START OF MODE 3 THIS DOES NOT WORK
         // CURRENTLY
         x = 43;
         for (var i = value + 42; i < value + 43; i++) ledBuff.setHSV(i, raindrop[value2], 255, 255);

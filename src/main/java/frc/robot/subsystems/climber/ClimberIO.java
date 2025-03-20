@@ -10,10 +10,7 @@ public interface ClimberIO {
     double temperature = 0.0;
     double current = 0.0;
     double appliedOutput = 0.0;
-
     double servoPosition = 0.0;
-
-    // boolean limitSwitch = false;
   }
 
   default void updateInputs(ClimberIOInputs inputs) {}

@@ -60,7 +60,6 @@ def getTODOS():
     return res
 
 
-# TODO: add function context?
 def genMarkdown(todos):
     res=""
     for fname,file_todos in todos.items():

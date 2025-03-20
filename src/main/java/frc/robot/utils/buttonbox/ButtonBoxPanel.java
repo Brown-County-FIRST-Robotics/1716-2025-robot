@@ -1,7 +1,7 @@
 package frc.robot.utils.buttonbox;
 
 public abstract class ButtonBoxPanel {
-  ButtonBox bb;
+  final ButtonBox bb;
   public int panel_index;
 
   public ButtonBoxPanel(ButtonBox bb) {

@@ -14,31 +14,32 @@ import frc.robot.utils.buttonbox.ManipulatorPanel;
 import java.util.Optional;
 
 public class ManipulatorPresetFactory {
-  Manipulator manipulator;
-  Gripper gripper;
-  TeleopDrive teleopDrive;
-  Drivetrain driveTrain;
-  ManipulatorPanel manipulatorPanel;
-  LEDs leds;
+  final Manipulator manipulator;
+  final Gripper gripper;
+  final TeleopDrive teleopDrive;
+  final Drivetrain driveTrain;
+  final ManipulatorPanel manipulatorPanel;
+  final LEDs leds;
 
-  LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
-  LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
-  LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 25);
-  LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
-  LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 115);
-  LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
-  LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
-  LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
-  LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
-  LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
-  LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
-  LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
-  LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
-  LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
-  LoggedTunableNumber wristIntakeDescending =
+  final LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
+  final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
+  final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 30);
+  final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
+  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 70);
+  final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
+  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 120);
+  final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
+  // LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
+  // LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
+  final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
+  final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
+  final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
+  final LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
+  final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
+  final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 10.0);
+  final LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
+  final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
+  final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
 
   public ManipulatorPresetFactory(
@@ -87,30 +88,39 @@ public class ManipulatorPresetFactory {
   }
 
   public Command trough() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorTrough.get());
-          manipulator.setWristReference(wristTrough.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorTrough.get());
+                  manipulator.setWristReference(wristTrough.get());
+                },
+                manipulator));
   }
 
   public Command level2() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorLevel2.get());
-          manipulator.setWristReference(wristLevel2.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorLevel2.get());
+                  manipulator.setWristReference(wristLevel2.get());
+                },
+                manipulator));
   }
 
   public Command level3() {
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorLevel3.get());
-          manipulator.setWristReference(wristLevel3.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorLevel3.get());
+                  manipulator.setWristReference(wristLevel3.get());
+                },
+                manipulator));
   }
 
   public Command level4() {
@@ -123,24 +133,43 @@ public class ManipulatorPresetFactory {
     //     manipulator);
   }
 
+  public Command level(int level) {
+    switch (level) {
+      case 1:
+        return trough();
+      case 2:
+        return level2();
+      case 3:
+        return level3();
+      default:
+        return Commands.none();
+    }
+  }
+
   public Command algaeLow() {
     // return Commands.none();
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeLow.get());
-          manipulator.setWristReference(wristAlgae.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorAlgaeLow.get());
+                  manipulator.setWristReference(wristAlgae.get());
+                },
+                manipulator));
   }
 
   public Command algaeHigh() {
     // return Commands.none();
-    return Commands.run(
-        () -> {
-          manipulator.setElevatorReference(elevatorAlgaeHigh.get());
-          manipulator.setWristReference(wristAlgae.get());
-        },
-        manipulator);
+    return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
+        .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
+        .andThen(
+            Commands.run(
+                () -> {
+                  manipulator.setElevatorReference(elevatorAlgaeHigh.get());
+                  manipulator.setWristReference(wristAlgae.get());
+                },
+                manipulator));
   }
 
   public Command intake() {
@@ -174,7 +203,7 @@ public class ManipulatorPresetFactory {
                     .getCoralDistanceReading()
                     .filter(
                         (Double d) -> {
-                          return d < 0.1;
+                          return d < 0.04;
                         })
                     .isPresent());
   }

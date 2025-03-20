@@ -67,5 +67,4 @@ public interface Drivetrain extends Subsystem {
   ChassisSpeeds getVelocity();
 
   default void followTrajectory(SwerveSample sample) {}
-  ;
 }
