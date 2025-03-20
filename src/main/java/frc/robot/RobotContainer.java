@@ -186,7 +186,6 @@ public class RobotContainer {
         new ManipulatorPresetFactory(
             manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
 
-    // TODO: don't do this (ie: give fake function)
     AutoFactory autoFactory =
         new AutoFactory(
             driveSys::getPosition,
@@ -274,28 +273,20 @@ public class RobotContainer {
     // ************ DRIVE TO CORAL STATION ************
     // Make the routines
     // They will drive to the nearest station, middle has an auto to go to either station
-    AutoRoutine fToStation = autoFactory.newRoutine("L-ToStation");
-    AutoRoutine mToStationL = autoFactory.newRoutine("M-ToStationL");
-    AutoRoutine mToStationR = autoFactory.newRoutine("M-ToStationR");
-    AutoRoutine rToStation = autoFactory.newRoutine("R-ToStation");
-
-    // Get all of the trajectories from Choreo
-    AutoTrajectory lToStationTraj = fToStation.trajectory("L-ToStation");
-    AutoTrajectory mToStationTrajL = fToStation.trajectory("M-ToStationL");
-    AutoTrajectory mToStationTrajR = fToStation.trajectory("M-ToStationR");
-    AutoTrajectory rToStationTraj = fToStation.trajectory("R-ToStation");
+    // It reuses the first segment of the main autos
+    AutoRoutine fLineup = autoFactory.newRoutine("L-Lineup");
+    AutoRoutine mLineup = autoFactory.newRoutine("M-Lineup");
+    AutoRoutine rLineup = autoFactory.newRoutine("R-Lineup");
 
     // Merge all the commands into the auto routines
-    fToStation.active().onTrue(lToStationTraj.cmd());
-    mToStationL.active().onTrue(mToStationTrajL.cmd());
-    mToStationR.active().onTrue(mToStationTrajR.cmd());
-    rToStation.active().onTrue(rToStationTraj.cmd());
+    fLineup.active().onTrue(lAlign.cmd());
+    mLineup.active().onTrue(mAlign.cmd());
+    rLineup.active().onTrue(rAlign.cmd());
 
     // Add the new paths to the auto chooser
-    autoChooser.addOption("Left to station - Choreo", fToStation.cmd());
-    autoChooser.addOption("Middle to left station - Choreo", mToStationL.cmd());
-    autoChooser.addOption("Middle to right station - Choreo", mToStationR.cmd());
-    autoChooser.addOption("Right to station - Choreo", rToStation.cmd());
+    autoChooser.addOption("Left lineup - Choreo", fLineup.cmd());
+    autoChooser.addOption("Middle lineup - Choreo", mLineup.cmd());
+    autoChooser.addOption("Right lineup - Choreo", rLineup.cmd());
 
     autoChooser.addOption(
         "Crappy 1 coral",
