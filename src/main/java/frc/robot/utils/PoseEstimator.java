@@ -29,7 +29,7 @@ public class PoseEstimator {
     if (pt.isPresent()) {
       if (!usedVis && pt.get().isActive()) {
         if (pt.get().inputs.pose.isPresent()) {
-          pt.get().setpos(pt.get().inputs.pose.get().toPose2d());
+          // pt.get().setpos(pt.get().inputs.pose.get().toPose2d());
           usedVis = true;
         }
       }
