@@ -133,6 +133,19 @@ public class ManipulatorPresetFactory {
     //     manipulator);
   }
 
+  public Command level(int level) {
+    switch (level) {
+      case 1:
+        return trough();
+      case 2:
+        return level2();
+      case 3:
+        return level3();
+      default:
+        return Commands.none();
+    }
+  }
+
   public Command algaeLow() {
     // return Commands.none();
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)

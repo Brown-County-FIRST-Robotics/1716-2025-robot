@@ -8,7 +8,11 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,10 +35,6 @@ import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
 import frc.robot.subsystems.manipulator.*;
-import frc.robot.subsystems.manipulator.ElevatorIO;
-import frc.robot.subsystems.manipulator.ElevatorIOSparkMax;
-import frc.robot.subsystems.manipulator.Manipulator;
-import frc.robot.subsystems.manipulator.WristIO;
 import frc.robot.subsystems.mecanum.MecanumDrivetrain;
 import frc.robot.subsystems.mecanum.MecanumIO;
 import frc.robot.subsystems.mecanum.MecanumIOSpark;
@@ -163,6 +163,29 @@ public class RobotContainer {
       }
     }
 
+    if (gripperIO == null) {
+      gripperIO = new GripperIO() {};
+    }
+    if (wristIO == null) {
+      wristIO = new WristIO() {};
+    }
+    if (elevatorIO == null) {
+      elevatorIO = new ElevatorIO() {};
+    }
+    if (climberIO == null) {
+      climberIO = new ClimberIO() {};
+    }
+
+    manipulator = new Manipulator(elevatorIO, wristIO);
+    gripper = new Gripper(gripperIO);
+    climber = new Climber(climberIO);
+
+    TeleopDrive teleopDrive = configureSharedBindings();
+    LEDs leds = new LEDs();
+    presetFactory =
+        new ManipulatorPresetFactory(
+            manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
+
     // TODO: don't do this (ie: give fake function)
     AutoFactory autoFactory =
         new AutoFactory(
@@ -197,15 +220,56 @@ public class RobotContainer {
     AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
     AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
 
-    // Commands that start when auto routines are called
-    lAuto.active().onTrue(lAlign.cmd().andThen(lPickup.cmd()));
-    mAuto.active().onTrue(mAlign.cmd().andThen(mPickup.cmd()));
-    rAuto.active().onTrue(rAlign.cmd().andThen(rPickup.cmd()));
+    // This is the command to drop the current coral
+    Command dropCoral =
+        Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
+            .until(() -> !gripper.hasGamepiece());
 
-    // Add paths to the auto chooser
-    autoChooser.addOption("Left (Friendly) - Choreo", lAuto.cmd());
-    autoChooser.addOption("Middle - Choreo", mAuto.cmd());
-    autoChooser.addOption("Right (Opponent) - Choreo", rAuto.cmd());
+    // Level represents the height of the elevator preset
+    for (int level = 1; level <= 3; level++) {
+      // Commands that start when auto routines are called
+      lAuto
+          .active()
+          .onTrue(
+              lAlign
+                  .cmd()
+                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                  .andThen(
+                      dropCoral.andThen(
+                          lPickup
+                              .cmd()
+                              .alongWith(
+                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+      mAuto
+          .active()
+          .onTrue(
+              mAlign
+                  .cmd()
+                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                  .andThen(
+                      dropCoral.andThen(
+                          mPickup
+                              .cmd()
+                              .alongWith(
+                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+      rAuto
+          .active()
+          .onTrue(
+              rAlign
+                  .cmd()
+                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                  .andThen(
+                      dropCoral.andThen(
+                          rPickup
+                              .cmd()
+                              .alongWith(
+                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+
+      // Add paths to the auto chooser
+      autoChooser.addOption("Left 1 Coral Lvl " + level + " - Choreo", lAuto.cmd());
+      autoChooser.addOption("Middle 1 Coral Lvl " + level + " - Choreo", mAuto.cmd());
+      autoChooser.addOption("Right 1 Coral Lvl " + level + " - Choreo", rAuto.cmd());
+    }
 
     // ************ DRIVE TO CORAL STATION ************
     // Make the routines
@@ -233,28 +297,6 @@ public class RobotContainer {
     autoChooser.addOption("Middle to right station - Choreo", mToStationR.cmd());
     autoChooser.addOption("Right to station - Choreo", rToStation.cmd());
 
-    if (gripperIO == null) {
-      gripperIO = new GripperIO() {};
-    }
-    if (wristIO == null) {
-      wristIO = new WristIO() {};
-    }
-    if (elevatorIO == null) {
-      elevatorIO = new ElevatorIO() {};
-    }
-    if (climberIO == null) {
-      climberIO = new ClimberIO() {};
-    }
-
-    manipulator = new Manipulator(elevatorIO, wristIO);
-    gripper = new Gripper(gripperIO);
-    climber = new Climber(climberIO);
-
-    TeleopDrive teleopDrive = configureSharedBindings();
-    LEDs leds = new LEDs();
-    presetFactory =
-        new ManipulatorPresetFactory(
-            manipulator, gripper, teleopDrive, driveSys, manipulatorPanel, leds);
     autoChooser.addOption(
         "Crappy 1 coral",
         Commands.runEnd(
