@@ -140,8 +140,7 @@ public class Robot extends LoggedRobot {
                 () -> robotContainer.climber.setSpeedFORZERO(0),
                 robotContainer.climber)
             .raceWith(Commands.waitSeconds(10)),
-        Commands.runOnce(() -> robotContainer.climber.zero()),
-        Commands.runOnce(() -> robotContainer.climber.setServo(true), robotContainer.climber));
+        Commands.runOnce(() -> robotContainer.climber.zero()));
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 
