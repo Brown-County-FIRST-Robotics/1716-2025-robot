@@ -47,6 +47,7 @@ import frc.robot.subsystems.vision.*;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -203,30 +204,37 @@ public class RobotContainer {
                 driveSys)
             .raceWith(Commands.waitSeconds(3)));
 
-    // ************ SCORE 1 CORAL AND RETURN TO STATION ************
-    // Routines for all 3 starting positions
-    AutoRoutine lAuto = autoFactory.newRoutine("L-Auto");
-    AutoRoutine mAuto = autoFactory.newRoutine("M-Auto");
-    AutoRoutine rAuto = autoFactory.newRoutine("R-Auto");
-
-    // Add all of the trajectories
-    AutoTrajectory lAlign = lAuto.trajectory("L-Auto", 0);
-    AutoTrajectory lPickup = lAuto.trajectory("L-Auto", 1);
-
-    AutoTrajectory mAlign = mAuto.trajectory("M-Auto", 0);
-    AutoTrajectory mPickup = mAuto.trajectory("M-Auto", 1);
-
-    AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
-    AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
-
-    // This is the command to drop the current coral
-    Command dropCoral =
-        Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
-            .until(() -> !gripper.hasGamepiece());
-
     // Level represents the height of the elevator preset
     for (int level = 1; level <= 3; level++) {
-      // Commands that start when auto routines are called
+      // ************ SCORE 1 CORAL AND RETURN TO STATION ************
+      // Routines for all 3 starting positions
+      AutoRoutine lAuto = autoFactory.newRoutine("L-Auto");
+      AutoRoutine mAuto = autoFactory.newRoutine("M-Auto");
+      AutoRoutine rAuto = autoFactory.newRoutine("R-Auto");
+
+      // Add all of the trajectories
+      AutoTrajectory lAlign = lAuto.trajectory("L-Auto", 0);
+      AutoTrajectory lPickup = lAuto.trajectory("L-Auto", 1);
+
+      AutoTrajectory mAlign = mAuto.trajectory("M-Auto", 0);
+      AutoTrajectory mPickup = mAuto.trajectory("M-Auto", 1);
+
+      AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
+      AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
+
+      AutoRoutine temp = autoFactory.newRoutine("test");
+      AutoTrajectory tempTraj = temp.trajectory("R-Auto", 0);
+      temp.active().onTrue(tempTraj.cmd());
+      autoChooser.addOption("Test", temp.cmd());
+
+      // This is the command to drop the current coral
+      Supplier<Command> dropCoral =
+          () ->
+              Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
+                  .raceWith(Commands.waitSeconds(2));
+
+      // This configures the actual commands that end up being run. It uses trajectories as well as
+      // other cmds
       lAuto
           .active()
           .onTrue(
@@ -234,11 +242,14 @@ public class RobotContainer {
                   .cmd()
                   .alongWith(new ScheduleCommand(presetFactory.level(level)))
                   .andThen(
-                      dropCoral.andThen(
-                          lPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+                      dropCoral
+                          .get()
+                          .andThen(
+                              lPickup
+                                  .cmd()
+                                  .alongWith(
+                                      Commands.waitSeconds(0.5)
+                                          .andThen(presetFactory.retracted())))));
       mAuto
           .active()
           .onTrue(
@@ -246,11 +257,14 @@ public class RobotContainer {
                   .cmd()
                   .alongWith(new ScheduleCommand(presetFactory.level(level)))
                   .andThen(
-                      dropCoral.andThen(
-                          mPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+                      dropCoral
+                          .get()
+                          .andThen(
+                              mPickup
+                                  .cmd()
+                                  .alongWith(
+                                      Commands.waitSeconds(0.5)
+                                          .andThen(presetFactory.retracted())))));
       rAuto
           .active()
           .onTrue(
@@ -258,11 +272,14 @@ public class RobotContainer {
                   .cmd()
                   .alongWith(new ScheduleCommand(presetFactory.level(level)))
                   .andThen(
-                      dropCoral.andThen(
-                          rPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+                      dropCoral
+                          .get()
+                          .andThen(
+                              rPickup
+                                  .cmd()
+                                  .alongWith(
+                                      Commands.waitSeconds(0.5)
+                                          .andThen(presetFactory.retracted())))));
 
       // Add paths to the auto chooser
       autoChooser.addOption("Left 1 Coral Lvl " + level + " - Choreo", lAuto.cmd());
@@ -277,6 +294,11 @@ public class RobotContainer {
     AutoRoutine fLineup = autoFactory.newRoutine("L-Lineup");
     AutoRoutine mLineup = autoFactory.newRoutine("M-Lineup");
     AutoRoutine rLineup = autoFactory.newRoutine("R-Lineup");
+
+    // Load all the trajectories
+    AutoTrajectory lAlign = fLineup.trajectory("L-Auto", 0);
+    AutoTrajectory mAlign = mLineup.trajectory("M-Auto", 0);
+    AutoTrajectory rAlign = rLineup.trajectory("R-Auto", 0);
 
     // Merge all the commands into the auto routines
     fLineup.active().onTrue(lAlign.cmd());
@@ -294,27 +316,18 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds(1, 0, 0)),
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
-            .alongWith(presetFactory.retracted())
-            .raceWith(Commands.waitSeconds(2.0))
+            .alongWith(presetFactory.trough())
+            .raceWith(Commands.waitSeconds(3.0))
             .andThen(
-                presetFactory
-                    .level2()
-                    .alongWith(
-                        Commands.waitSeconds(3)
-                            .andThen(
-                                Commands.runEnd(
-                                        () -> gripper.setGripper(-4000),
-                                        () -> gripper.setGripper(0),
-                                        gripper)
-                                    .raceWith(Commands.waitSeconds(2))
-                                    .andThen(
-                                        Commands.runEnd(
-                                                () ->
-                                                    driveSys.humanDrive(
-                                                        new ChassisSpeeds(-.5, 0, 0)),
-                                                () -> driveSys.humanDrive(new ChassisSpeeds()),
-                                                driveSys)
-                                            .raceWith(Commands.waitSeconds(1.5)))))));
+                Commands.runEnd(
+                        () -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
+                    .raceWith(Commands.waitSeconds(2))
+                    .andThen(
+                        Commands.runEnd(
+                                () -> driveSys.humanDrive(new ChassisSpeeds(-.5, 0, 0)),
+                                () -> driveSys.humanDrive(new ChassisSpeeds()),
+                                driveSys)
+                            .raceWith(Commands.waitSeconds(1.5)))));
 
     if (WhoAmI.isDemoMode) {
       configureDemoBindings(teleopDrive);
