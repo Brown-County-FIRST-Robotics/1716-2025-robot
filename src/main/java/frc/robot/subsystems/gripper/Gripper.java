@@ -44,7 +44,7 @@ public class Gripper extends SubsystemBase {
   }
 
   // Whether the algae sensor can see anything close enough to be considered a gamepiece
-  // NEEDS TESTING FOR CORAL PLACEMENT
+  // TODO: NEEDS TESTING FOR CORAL PLACEMENT
   public boolean hasGamepiece() {
     return getAlgaeDistanceReading()
         .filter(
