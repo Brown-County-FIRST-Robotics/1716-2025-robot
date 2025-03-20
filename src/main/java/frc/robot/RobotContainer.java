@@ -47,6 +47,7 @@ import frc.robot.subsystems.vision.*;
 import frc.robot.utils.buttonbox.ButtonBox;
 import frc.robot.utils.buttonbox.ManipulatorPanel;
 import frc.robot.utils.buttonbox.OverridePanel;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -219,56 +220,72 @@ public class RobotContainer {
     AutoTrajectory rAlign = rAuto.trajectory("R-Auto", 0);
     AutoTrajectory rPickup = rAuto.trajectory("R-Auto", 1);
 
+    AutoRoutine temp = autoFactory.newRoutine("test");
+    AutoTrajectory tempTraj = temp.trajectory("R-Auto", 0);
+    temp.active().onTrue(tempTraj.cmd());
+    autoChooser.addOption("Test", temp.cmd());
+
     // This is the command to drop the current coral
-    Command dropCoral =
-        Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
-            .until(() -> !gripper.hasGamepiece());
+    Supplier<Command> dropCoral =
+        () ->
+            Commands.runEnd(() -> gripper.setGripper(-4000), () -> gripper.setGripper(0), gripper)
+                .raceWith(Commands.waitSeconds(2));
 
     // Level represents the height of the elevator preset
-    for (int level = 1; level <= 3; level++) {
-      // Commands that start when auto routines are called
-      lAuto
-          .active()
-          .onTrue(
-              lAlign
-                  .cmd()
-                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
-                  .andThen(
-                      dropCoral.andThen(
-                          lPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
-      mAuto
-          .active()
-          .onTrue(
-              mAlign
-                  .cmd()
-                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
-                  .andThen(
-                      dropCoral.andThen(
-                          mPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
-      rAuto
-          .active()
-          .onTrue(
-              rAlign
-                  .cmd()
-                  .alongWith(new ScheduleCommand(presetFactory.level(level)))
-                  .andThen(
-                      dropCoral.andThen(
-                          rPickup
-                              .cmd()
-                              .alongWith(
-                                  Commands.waitSeconds(0.5).andThen(presetFactory.retracted())))));
+    // for (int level = 1; level <= 3; level++) {
+    int level = 1;
+    // Commands that start when auto routines are called
+    lAuto
+        .active()
+        .onTrue(
+            lAlign
+                .cmd()
+                .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                .andThen(
+                    dropCoral
+                        .get()
+                        .andThen(
+                            lPickup
+                                .cmd()
+                                .alongWith(
+                                    Commands.waitSeconds(0.5)
+                                        .andThen(presetFactory.retracted())))));
+    mAuto
+        .active()
+        .onTrue(
+            mAlign
+                .cmd()
+                .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                .andThen(
+                    dropCoral
+                        .get()
+                        .andThen(
+                            mPickup
+                                .cmd()
+                                .alongWith(
+                                    Commands.waitSeconds(0.5)
+                                        .andThen(presetFactory.retracted())))));
+    rAuto
+        .active()
+        .onTrue(
+            rAlign
+                .cmd()
+                .alongWith(new ScheduleCommand(presetFactory.level(level)))
+                .andThen(
+                    dropCoral
+                        .get()
+                        .andThen(
+                            rPickup
+                                .cmd()
+                                .alongWith(
+                                    Commands.waitSeconds(0.5)
+                                        .andThen(presetFactory.retracted())))));
 
-      // Add paths to the auto chooser
-      autoChooser.addOption("Left 1 Coral Lvl " + level + " - Choreo", lAuto.cmd());
-      autoChooser.addOption("Middle 1 Coral Lvl " + level + " - Choreo", mAuto.cmd());
-      autoChooser.addOption("Right 1 Coral Lvl " + level + " - Choreo", rAuto.cmd());
-    }
+    // Add paths to the auto chooser
+    autoChooser.addOption("Left 1 Coral Lvl " + level + " - Choreo", lAuto.cmd());
+    autoChooser.addOption("Middle 1 Coral Lvl " + level + " - Choreo", mAuto.cmd());
+    autoChooser.addOption("Right 1 Coral Lvl " + level + " - Choreo", rAuto.cmd());
+    // }
 
     // ************ DRIVE TO CORAL STATION ************
     // Make the routines
@@ -294,11 +311,11 @@ public class RobotContainer {
                 () -> driveSys.humanDrive(new ChassisSpeeds(1, 0, 0)),
                 () -> driveSys.humanDrive(new ChassisSpeeds()),
                 driveSys)
-            .alongWith(presetFactory.retracted())
-            .raceWith(Commands.waitSeconds(2.0))
+            .alongWith(presetFactory.trough())
+            .raceWith(Commands.waitSeconds(3.0))
             .andThen(
                 presetFactory
-                    .level2()
+                    .trough()
                     .alongWith(
                         Commands.waitSeconds(3)
                             .andThen(
