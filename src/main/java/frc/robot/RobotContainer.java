@@ -291,22 +291,22 @@ public class RobotContainer {
     // Make the routines
     // They will drive to the nearest station, middle has an auto to go to either station
     // It reuses the first segment of the main autos
-    AutoRoutine fLineup = autoFactory.newRoutine("L-Lineup");
+    AutoRoutine lLineup = autoFactory.newRoutine("L-Lineup");
     AutoRoutine mLineup = autoFactory.newRoutine("M-Lineup");
     AutoRoutine rLineup = autoFactory.newRoutine("R-Lineup");
 
     // Load all the trajectories
-    AutoTrajectory lAlign = fLineup.trajectory("L-Auto", 0);
+    AutoTrajectory lAlign = lLineup.trajectory("L-Auto", 0);
     AutoTrajectory mAlign = mLineup.trajectory("M-Auto", 0);
     AutoTrajectory rAlign = rLineup.trajectory("R-Auto", 0);
 
     // Merge all the commands into the auto routines
-    fLineup.active().onTrue(lAlign.cmd());
+    lLineup.active().onTrue(lAlign.cmd());
     mLineup.active().onTrue(mAlign.cmd());
     rLineup.active().onTrue(rAlign.cmd());
 
     // Add the new paths to the auto chooser
-    autoChooser.addOption("Left lineup - Choreo", fLineup.cmd());
+    autoChooser.addOption("Left lineup - Choreo", lLineup.cmd());
     autoChooser.addOption("Middle lineup - Choreo", mLineup.cmd());
     autoChooser.addOption("Right lineup - Choreo", rLineup.cmd());
 
