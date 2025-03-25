@@ -350,7 +350,16 @@ public class RobotContainer {
   private void configureCompBindings() {
     // Manipulator Presets
     manipulator.setDefaultCommand(presetFactory.retracted());
-
+    manipulatorPanel
+        .leftPole()
+        .whileTrue(
+            new GoToPoseQM(
+                driveSys, new Pose2d(FieldConstants.getPole(0, true), Rotation2d.kZero)));
+    manipulatorPanel
+        .rightPole()
+        .whileTrue(
+            new GoToPoseQM(
+                driveSys, new Pose2d(FieldConstants.getPole(0, false), Rotation2d.kZero)));
     driverController
         .b()
         .whileTrue(new GoToPoseQM(driveSys, new Pose2d(3.28, 3.86, Rotation2d.fromDegrees(0))));
