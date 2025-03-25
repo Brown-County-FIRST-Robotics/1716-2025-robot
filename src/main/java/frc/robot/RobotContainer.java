@@ -98,7 +98,7 @@ public class RobotContainer {
                   new Module(new ModuleIOSparkFX(23, 19, "FR"), 1),
                   new Module(new ModuleIOSparkFX(20, 40, "BL"), 2),
                   new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
-                  new IMUIO() {});
+                  new IMUIONavx());
           var vision =
               new FusedVision(
                   driveSys,
@@ -110,8 +110,7 @@ public class RobotContainer {
                       "TH_CAM0",
                       new Transform3d(
                           new Translation3d(-12 * 0.0254, -9.5 * 0.0254, 0),
-                          new Rotation3d(0, 0, Math.PI))),
-                  new IMUIONavx());
+                          new Rotation3d(0, 0, Math.PI))));
 
           break;
         default:
@@ -158,8 +157,7 @@ public class RobotContainer {
                       new Translation3d(),
                       new Rotation3d(0.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
                   new VisionSLAMIO() {},
-                  new VisionIO() {},
-                  new IMUIO() {});
+                  new VisionIO() {});
           break;
         default:
           driveSys = new MecanumDrivetrain(new MecanumIO() {}, new IMUIO() {});

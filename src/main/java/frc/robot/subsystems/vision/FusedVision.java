@@ -3,8 +3,6 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.IMUIO;
-import frc.robot.subsystems.IMUIOInputsAutoLogged;
 import frc.robot.utils.*;
 import frc.robot.utils.buttonbox.OverridePanel;
 import java.util.Optional;
@@ -22,8 +20,6 @@ public class FusedVision extends PeriodicRunnable {
 
   final VisionSLAMIO slamio;
   final VisionSLAMIOInputsAutoLogged slamInputs = new VisionSLAMIOInputsAutoLogged();
-  IMUIO imuio;
-  IMUIOInputsAutoLogged imuInputs = new IMUIOInputsAutoLogged();
   final Transform3d slamPose;
   Pose3d zero = Pose3d.kZero;
   Pose3d lastHeadsetPoseSeen = Pose3d.kZero;
@@ -35,16 +31,11 @@ public class FusedVision extends PeriodicRunnable {
   }
 
   public FusedVision(
-      Drivetrain drivetrain,
-      Transform3d slamPose,
-      VisionSLAMIO slamio,
-      VisionIO visionIO,
-      IMUIO imuio) {
+      Drivetrain drivetrain, Transform3d slamPose, VisionSLAMIO slamio, VisionIO visionIO) {
     this.drivetrain = drivetrain;
     this.slamPose = slamPose;
     this.slamio = slamio;
     drivetrain.getPE().pt = Optional.of(this);
-    this.imuio = imuio;
     this.io = visionIO;
     new CustomAlerts.CustomAlert(
         Alert.AlertType.WARNING,
@@ -68,14 +59,12 @@ public class FusedVision extends PeriodicRunnable {
   public void periodic() {
     slamio.updateInputs(slamInputs);
     Logger.processInputs("Vision/SLAM", slamInputs);
-    imuio.updateInputs(imuInputs);
-    Logger.processInputs("IMU", imuInputs);
 
     frameTimeDelta = slamInputs.frames - lastFrame;
     lastFrame = slamInputs.frames;
     Logger.recordOutput("Vision/QuestConnected", isActive());
 
-    if (slamInputs.present && (2 + 2 == 5)) {
+    if (slamInputs.present) {
       var questRotVec = slamInputs.questQuat.toRotationVector(); // In quest coordinate system
       var headsetRotation =
           new Rotation3d(
@@ -91,18 +80,14 @@ public class FusedVision extends PeriodicRunnable {
               headsetRotation);
       var robotHeadsetPos = headsetPos.plus(slamPose.inverse());
 
-      Logger.recordOutput("asdf", Pose3d.kZero.plus(robotHeadsetPos.minus(zero)));
-
-      lastHeadsetPoseSeen = robotHeadsetPos;
-    } else {
-      var robotHeadsetPos =
-          new Pose3d(new Translation3d(), imuInputs.rotation)
-              .transformBy(new Transform3d(0, 0, 0, new Rotation3d(0, -Math.PI / 2, 0)));
       if (!seen) {
         seen = true;
         lastHeadsetPoseSeen = robotHeadsetPos;
         zero = robotHeadsetPos;
       }
+
+      Logger.recordOutput("asdf", Pose3d.kZero.plus(robotHeadsetPos.minus(zero)));
+
       lastHeadsetPoseSeen = robotHeadsetPos;
     }
     io.updateInputs(inputs);
