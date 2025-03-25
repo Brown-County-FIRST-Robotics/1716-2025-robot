@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -21,7 +22,7 @@ public class GoToPoseQM extends Command {
 
   public GoToPoseQM(Drivetrain drivetrain, Pose2d target) {
     this.drivetrain = drivetrain;
-    this.target = new Pose2d(14.32, 3.87, Rotation2d.k180deg);
+    this.target = new Pose2d(FieldConstants.getPole(0, true), Rotation2d.kZero);
     addRequirements(drivetrain);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
