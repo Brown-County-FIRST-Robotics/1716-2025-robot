@@ -21,7 +21,7 @@ public class GoToPoseQM extends Command {
 
   public GoToPoseQM(Drivetrain drivetrain, Pose2d target) {
     this.drivetrain = drivetrain;
-    this.target = new Pose2d(14.32, 3.87, Rotation2d.k180deg);
+    this.target = target;
     addRequirements(drivetrain);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
