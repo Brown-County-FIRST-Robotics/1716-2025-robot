@@ -55,8 +55,7 @@ public class FieldConstants {
   public static Translation2d getPole(int index, boolean isLeft) {
     return getFace(index)
         .transformBy(
-            new Transform2d(
-                -1.12533 * 0.0254, 6.469 * 0.0254 * (isLeft ? -1.0 : 1.0), Rotation2d.kZero))
+            new Transform2d(-0.0254 * 16.0, 0.1559 * (isLeft ? -1.0 : 1.0), Rotation2d.kZero))
         .getTranslation();
   }
 
@@ -71,7 +70,7 @@ public class FieldConstants {
         DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
                 == DriverStation.Alliance.Blue
             ? inp.getX()
-            : 16.541242 - inp.getX(),
+            : 17.548 - inp.getX(),
         inp.getY(),
         inp.getZ());
   }
