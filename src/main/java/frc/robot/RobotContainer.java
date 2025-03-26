@@ -110,7 +110,7 @@ public class RobotContainer {
                       "TH_CAM0",
                       new Transform3d(
                           new Translation3d(-12 * 0.0254, -9.5 * 0.0254, 0),
-                          new Rotation3d(0, 0, Math.PI))));
+                          new Rotation3d(4.0 * Math.PI / 180.0, 0, Math.PI))));
 
           break;
         default:
@@ -350,10 +350,26 @@ public class RobotContainer {
   private void configureCompBindings() {
     // Manipulator Presets
     manipulator.setDefaultCommand(presetFactory.retracted());
-
+    manipulatorPanel
+        .leftPole()
+        .whileTrue(
+            new GoToPoseQM(
+                driveSys,
+                () ->
+                    new Pose2d(
+                        FieldConstants.getPole(0, true), FieldConstants.flip(Rotation2d.kZero))));
+    manipulatorPanel
+        .rightPole()
+        .whileTrue(
+            new GoToPoseQM(
+                driveSys,
+                () ->
+                    new Pose2d(
+                        FieldConstants.getPole(0, false), FieldConstants.flip(Rotation2d.kZero))));
     driverController
         .b()
-        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(3.28, 3.86, Rotation2d.fromDegrees(0))));
+        .whileTrue(
+            new GoToPoseQM(driveSys, () -> new Pose2d(3.28, 3.86, Rotation2d.fromDegrees(0))));
 
     // manipulator.setDefaultCommand(
     //     Commands.run(
