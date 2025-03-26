@@ -12,6 +12,13 @@ public class VisionSLAMIOQuest implements VisionSLAMIO {
       table.getDoubleArrayTopic("position").subscribe(new double[] {});
   final IntegerSubscriber questFrames = table.getIntegerTopic("frameCount").subscribe(0);
   final DoubleSubscriber battery = table.getDoubleTopic("batteryPercent").subscribe(0);
+  private double lastProcessedHeartbeatId = 0;
+  /** Subscriber for heartbeat requests */
+  private final DoubleSubscriber heartbeatRequestSub =
+      table.getDoubleTopic("heartbeat/quest_to_robot").subscribe(0.0);
+  /** Publisher for heartbeat responses */
+  private final DoublePublisher heartbeatResponsePub =
+      table.getDoubleTopic("heartbeat/robot_to_quest").publish();
 
   @Override
   public void updateInputs(VisionSLAMIOInputs inputs) {
@@ -27,5 +34,15 @@ public class VisionSLAMIOQuest implements VisionSLAMIO {
       inputs.present = false;
     }
     inputs.battPercent = battery.get();
+  }
+
+  /** Process heartbeat requests from Quest and respond with the same ID */
+  public void processHeartbeat() {
+    double requestId = heartbeatRequestSub.get();
+    // Only respond to new requests to avoid flooding
+    if (requestId > 0 && requestId != lastProcessedHeartbeatId) {
+      heartbeatResponsePub.set(requestId);
+      lastProcessedHeartbeatId = requestId;
+    }
   }
 }
