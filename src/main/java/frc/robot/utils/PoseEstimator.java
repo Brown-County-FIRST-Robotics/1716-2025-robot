@@ -1,9 +1,13 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.vision.FusedVision;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 /** A pose estimator that fuses vision and odometry updates */
 public class PoseEstimator {
@@ -25,6 +29,11 @@ public class PoseEstimator {
   public void feed() {
     if (new XboxController(0).getXButtonPressed()) {
       usedVis = false;
+      Pose2d face = FieldConstants.getFace(0);
+      Pose2d plus = face.plus(new Transform2d(16.0 * 0.0254, 0, Rotation2d.k180deg));
+      Logger.recordOutput("dsffsddfs", plus);
+      setPose(
+          FieldConstants.getFace(0).plus(new Transform2d(16.0 * 0.0254, 0, Rotation2d.k180deg)));
     }
     if (pt.isPresent()) {
       if (!usedVis && pt.get().isActive()) {
