@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 /** Field positions of game components */
 public class FieldConstants {
@@ -44,6 +45,7 @@ public class FieldConstants {
         });
   }
 
+  @AutoLogOutput
   public static Rectangle2d getBox(int boxID) {
     double rectLength = 2.0;
     return new Rectangle2d(
@@ -52,12 +54,10 @@ public class FieldConstants {
         Units.inchesToMeters(36.792600));
   }
 
-  public static Translation2d getPole(int index, boolean isLeft) {
+  public static Pose2d getPole(int index, boolean isLeft) {
     return getFace(index)
         .transformBy(
-            new Transform2d(
-                -1.12533 * 0.0254, 6.469 * 0.0254 * (isLeft ? -1.0 : 1.0), Rotation2d.kZero))
-        .getTranslation();
+            new Transform2d(0.0254 * 16.0, 0.1559 * (isLeft ? -1.0 : 1.0), Rotation2d.k180deg));
   }
 
   /**
@@ -71,7 +71,7 @@ public class FieldConstants {
         DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
                 == DriverStation.Alliance.Blue
             ? inp.getX()
-            : 16.541242 - inp.getX(),
+            : 17.548 - inp.getX(),
         inp.getY(),
         inp.getZ());
   }
