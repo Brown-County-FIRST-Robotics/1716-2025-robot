@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -57,25 +57,14 @@ public class ManipulatorPresetFactory {
     leds = leds_;
   }
 
-  public Optional<Translation2d> whereShouldIBe() {
+  public Optional<Pose2d> whereShouldIBe() {
     var position = driveTrain.getPosition();
     for (int i = 0; i < 6; i++) {
-      if (FieldConstants.getBox(i).intersects(position.getTranslation())) {
+      if (FieldConstants.getBox(i).contains(position.getTranslation())) {
         return Optional.of(FieldConstants.getPole(i, manipulatorPanel.leftPole().getAsBoolean()));
       }
     }
     return Optional.empty();
-  }
-
-  public Command aim() {
-    return Commands.runEnd(
-        () ->
-            teleopDrive.setCustomRotation(
-                whereShouldIBe()
-                    .map(
-                        (Translation2d translate) ->
-                            driveTrain.getPosition().getTranslation().minus(translate).getAngle())),
-        () -> teleopDrive.setCustomRotation(Optional.empty()));
   }
 
   public Command retracted() {
