@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
 
@@ -14,7 +15,8 @@ public class IMUIONavx implements IMUIO {
   /** Constructs a Navx that uses SPI */
   public IMUIONavx() {
     imu = new AHRS(AHRS.NavXComType.kMXP_SPI);
-    while (!imu.isConnected()) {
+    var startTime = RobotController.getFPGATime();
+    while (!imu.isConnected() && RobotController.getFPGATime() - startTime < 5000000) {
       imu.isConnected();
     }
     basRotation3d = imu.getRotation3d();
