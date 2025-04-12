@@ -30,8 +30,6 @@ public class TeleopDrive extends Command {
   final DualRateLimiter rotationLimiter =
       new DualRateLimiter(8, 100); // angular velocity limiter (omega)
 
-  Optional<Rotation2d> customRotation =
-      Optional.empty(); // used for auto align; if empty, no target is set
 
   private static final double deadbandSize = 0.08;
   public boolean isKidMode = false;
@@ -87,7 +85,6 @@ public class TeleopDrive extends Command {
   public void initialize() {
     translationLimiter.reset(0);
     rotationLimiter.reset(0);
-    customRotation = Optional.empty();
   }
 
   @Override
@@ -95,33 +92,6 @@ public class TeleopDrive extends Command {
     isKidMode = overridePanel.kidMode().getAsBoolean();
     Logger.recordOutput("kidmode", isKidMode);
     Logger.recordOutput("kidmodespeed", kidModeSpeed);
-    customAngleModifier =
-        customRotation
-            .map(
-                rotation2d -> {
-                  Rotation2d currentRotation = drivetrain.getPosition().getRotation();
-                  double goal = rotation2d.getRadians();
-                  if (Math.abs(currentRotation.getRadians() - goal) > Math.PI) {
-                    goal -= 2 * Math.PI;
-                    if (Math.abs(currentRotation.getRadians() - goal) > Math.PI) {
-                      goal += 4 * Math.PI;
-                    }
-                  }
-                  var tp = new TrapezoidProfile(new TrapezoidProfile.Constraints(10, 10));
-                  double fvel =
-                      tp.calculate(
-                              0.02,
-                              new TrapezoidProfile.State(
-                                  currentRotation.getRadians(),
-                                  drivetrain.getVelocity().omegaRadiansPerSecond),
-                              new TrapezoidProfile.State(goal, 0))
-                          .velocity;
-
-                  return tp.totalTime() > 0.02 ? fvel : 0;
-                })
-            .orElse(0.0); // The velocity added to the rotation to apply the custom angle
-
-    Logger.recordOutput("TeleopDrive/ext", customAngleModifier);
     slowModeSpeedModifier = controller.getHID().getLeftBumper() ? 0.2 : 1.0;
     if (isKidMode
         && secondController.isPresent()
@@ -255,10 +225,6 @@ public class TeleopDrive extends Command {
   @Override
   public void end(boolean interrupted) {
     drivetrain.humanDrive(new ChassisSpeeds());
-  }
-
-  public void setCustomRotation(Optional<Rotation2d> customRotation) {
-    this.customRotation = customRotation;
   }
 
   /**
