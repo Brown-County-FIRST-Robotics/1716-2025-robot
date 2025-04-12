@@ -9,7 +9,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -103,14 +102,14 @@ public class RobotContainer {
               new FusedVision(
                   driveSys,
                   new Transform3d(
-                      new Translation3d(-0.18, 0.245, 0),
-                      new Rotation3d(90.0 * Math.PI / 180.0, 0, 90.0 * Math.PI / 180.0)),
+                      new Translation3d(0.095, 0.025, 0),
+                      new Rotation3d(00.0 * Math.PI / 180.0, 0, 00.0 * Math.PI / 180.0)),
                   new VisionSLAMIOQuest(),
                   new VisionIOPhotonVision(
                       "TH_CAM0",
                       new Transform3d(
                           new Translation3d(-12 * 0.0254, -9.5 * 0.0254, 0),
-                          new Rotation3d(0, 0, Math.PI))));
+                          new Rotation3d(-4.0 * Math.PI / 180.0, 0, Math.PI))));
 
           break;
         default:
@@ -350,10 +349,14 @@ public class RobotContainer {
   private void configureCompBindings() {
     // Manipulator Presets
     manipulator.setDefaultCommand(presetFactory.retracted());
-
-    driverController
-        .b()
-        .whileTrue(new GoToPoseQM(driveSys, new Pose2d(3.28, 3.86, Rotation2d.fromDegrees(0))));
+    manipulatorPanel
+        .leftPole()
+        .whileTrue(
+            new GoToPoseQM(driveSys, () -> presetFactory.whereShouldIBe().orElse(new Pose2d())));
+    manipulatorPanel
+        .rightPole()
+        .whileTrue(
+            new GoToPoseQM(driveSys, () -> presetFactory.whereShouldIBe().orElse(new Pose2d())));
 
     // manipulator.setDefaultCommand(
     //     Commands.run(
@@ -384,8 +387,6 @@ public class RobotContainer {
 
     manipulatorPanel.intake().onTrue(presetFactory.intake());
     manipulatorPanel.processor().whileTrue(presetFactory.processor());
-
-    manipulatorPanel.leftPole().or(manipulatorPanel.rightPole()).whileTrue(presetFactory.aim());
 
     manipulatorPanel
         .leftPole()
