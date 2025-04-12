@@ -13,15 +13,16 @@ import org.littletonrobotics.junction.Logger;
 
 public class GoToPoseQM extends Command {
   private final ProfiledPIDController driveController =
-      new ProfiledPIDController(0.7, 0.0, 0.0, new TrapezoidProfile.Constraints(1.0, 3.0), 0.02);
+      new ProfiledPIDController(0.7, 0.01, 0.0, new TrapezoidProfile.Constraints(1.0, 3.0), 0.02);
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(0.7, 0.0, 0.0, new TrapezoidProfile.Constraints(1.0, 3.0), 0.02);
+      new ProfiledPIDController(0.7, 0.01, 0.0, new TrapezoidProfile.Constraints(1.0, 3.0), 0.02);
   final Drivetrain drivetrain;
-  final Pose2d target;
+  final Supplier<Pose2d> targeter;
+  Pose2d target;
 
-  public GoToPoseQM(Drivetrain drivetrain, Pose2d target) {
+  public GoToPoseQM(Drivetrain drivetrain, Supplier<Pose2d> targeter) {
     this.drivetrain = drivetrain;
-    this.target = new Pose2d(14.32, 3.87, Rotation2d.k180deg);
+    this.targeter = targeter;
     addRequirements(drivetrain);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -33,7 +34,7 @@ public class GoToPoseQM extends Command {
   private static final double driveMaxAcceleration = 3.0;
   private static final double thetaMaxVelocity = 6.28;
   private static final double thetaMaxAcceleration = 8.0;
-  private static final double driveTolerance = 0.01;
+  private static final double driveTolerance = 0.001;
   private static final double thetaTolerance = 1.0 * 6.28 / 360.0;
   private static final double ffMinRadius = 0.05;
   private static final double ffMaxRadius = 0.1;
@@ -48,6 +49,7 @@ public class GoToPoseQM extends Command {
 
   @Override
   public void initialize() {
+    target = targeter.get();
     Pose2d currentPose = drivetrain.getPosition();
     ChassisSpeeds fieldVelocity = drivetrain.getVelocity();
     Translation2d linearFieldVelocity =
