@@ -29,7 +29,6 @@ public class TeleopDrive extends Command {
   final DualRateLimiter rotationLimiter =
       new DualRateLimiter(8, 100); // angular velocity limiter (omega)
 
-
   private static final double deadbandSize = 0.08;
   public boolean isKidMode = false;
 
@@ -103,9 +102,12 @@ public class TeleopDrive extends Command {
             deadScale(controller.getLeftY()),
             deadScale(controller.getLeftX()),
             rotationLimiter.calculate(
-                    deadScale(controller.getRightX())
-                        * Constants.Driver.MAX_THETA_SPEED*slowModeSpeedModifier
-                        * (isKidMode ? 0.2 : 1))); // This needs to be a different type, the speeds need to be
+                deadScale(controller.getRightX())
+                    * Constants.Driver.MAX_THETA_SPEED
+                    * slowModeSpeedModifier
+                    * (isKidMode
+                        ? 0.2
+                        : 1))); // This needs to be a different type, the speeds need to be
     // percentage at this step, not velocity
 
     if (doFieldOriented) {
