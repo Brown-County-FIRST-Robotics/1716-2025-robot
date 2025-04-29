@@ -11,8 +11,6 @@ public class OverridePanel extends ButtonBoxPanel {
     return new Trigger(() -> getButton(1));
   }
 
-
-
   public Trigger kidMode() {
     // TODO: this will be on another panel in the future
     return new Trigger(() -> getButton(4));

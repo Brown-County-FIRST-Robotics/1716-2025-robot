@@ -166,13 +166,13 @@ def writeGitData =tasks.create("writeGitData") {
         // Create two commits, one with the staged changes, and the other with the unstaged changes
         // This way, we can revert them in a specific way to preserve staged vs unstaged changes
         exec {
-            commandLine "git", "commit", "--allow-empty", "--no-sign", "-m", "Staged changes during deploy at "+dateString
+            commandLine "git", "commit", "--allow-empty", "--no-gpg-sign", "-m", "Staged changes during deploy at "+dateString
         }
         exec {
             commandLine "git", "add", "."
         }
         exec {
-            commandLine "git", "commit", "--allow-empty", "--no-sign", "-m", "Unstaged changes during deploy at "+dateString
+            commandLine "git", "commit", "--allow-empty", "--no-gpg-sign", "-m", "Unstaged changes during deploy at "+dateString
         }
         exec {
             commandLine "git", "tag", "--no-sign", tagname
