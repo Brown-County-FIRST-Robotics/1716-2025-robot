@@ -33,9 +33,7 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
     if (isDown) {
       io.setPosition(
-          92 + positionOffset); // TEMP: these need new values for the new gear ratio. They are
-      // estimated to be 92 and 0.6
-      // TESTME
+          92 + positionOffset);
     } else {
       io.setPosition(0.5 + positionOffset);
     }
