@@ -7,21 +7,11 @@ public class OverridePanel extends ButtonBoxPanel {
     super(bb);
   }
 
-  public Trigger disableVision() {
-    return new Trigger(() -> getButton(0));
-  }
-
   public Trigger disableFOC() {
     return new Trigger(() -> getButton(1));
   }
 
-  public Trigger disableOdo() {
-    return new Trigger(() -> getButton(2));
-  }
 
-  public Trigger disableIMU() {
-    return new Trigger(() -> getButton(3));
-  }
 
   public Trigger kidMode() {
     // TODO: this will be on another panel in the future

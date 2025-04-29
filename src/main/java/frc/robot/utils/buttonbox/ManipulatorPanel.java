@@ -69,7 +69,7 @@ public class ManipulatorPanel extends ButtonBoxPanel {
 
   @Override
   int getButtons() {
-    return 7;
+    return 10;
   }
 
   @Override
