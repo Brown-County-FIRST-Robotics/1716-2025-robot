@@ -3,15 +3,15 @@ package frc.robot.subsystems.climber;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Climber extends SubsystemBase {
   // subsystem components such as motors:
-  ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-  ClimberIO io;
+  final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+  final ClimberIO io;
 
   private double positionOffset;
   private boolean isDown = false;
-  // private boolean isZeroed = false;
 
   // Constructor
   public Climber(ClimberIO io) {
@@ -23,24 +23,20 @@ public class Climber extends SubsystemBase {
     positionOffset = inputs.position;
   }
 
+  LoggedNetworkNumber lnn = new LoggedNetworkNumber("SmartDashboard/sdf", 0.0);
+
   @Override
   public void periodic() { // runs every frame (useful for data logging)
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
 
-    // if (inputs.limitSwitch) {
-    //   isZeroed = true;
-    //   positionOffset = inputs.position;
-    // }
     Logger.recordOutput("Climber/ActualPosition", inputs.position - positionOffset);
-
-    // if (isZeroed) {
     if (isDown) {
-      io.setPosition(80 + positionOffset);
+      io.setPosition(
+          92 + positionOffset);
     } else {
       io.setPosition(0.5 + positionOffset);
     }
-    // }
   }
 
   public void setPosition(boolean down) { // up or down
@@ -57,11 +53,7 @@ public class Climber extends SubsystemBase {
     positionOffset = inputs.position;
   }
 
-  // public boolean atLimit() {
-  //   return inputs.limitSwitch;
-  // }
-
   public void setServo(boolean allowDown) {
-    io.setServo(allowDown ? 0 : 180); // NEEDS REAL VALUES
+    io.setServo(allowDown ? 180 : 0); // NEEDS REAL VALUES   // NO IT DOESNT
   }
 }

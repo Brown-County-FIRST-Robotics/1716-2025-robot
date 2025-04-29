@@ -24,15 +24,7 @@ public class Gripper extends SubsystemBase {
   public void setGripper(double speed) {
     Logger.recordOutput("Gripper/TopReference", speed);
     Logger.recordOutput("Gripper/BottomReference", speed);
-    Logger.recordOutput("Gripper/RearReference", speed);
-    gripperIO.setVelocities(speed, speed, speed);
-  }
-
-  public void setFront(double speed) {
-    Logger.recordOutput("Gripper/TopReference", speed);
-    Logger.recordOutput("Gripper/BottomReference", speed);
-    Logger.recordOutput("Gripper/RearReference", speed);
-    gripperIO.setVelocities(speed, speed, 0);
+    gripperIO.setVelocities(speed, speed);
   }
 
   public Optional<Double> getCoralDistanceReading() {
@@ -65,7 +57,7 @@ public class Gripper extends SubsystemBase {
   public Command holdAlgae() {
     return Commands.runEnd(
             () -> {
-              setFront(4500);
+              setGripper(4500);
               if (getAlgaeDistanceReading()
                   .filter(
                       (Double d) -> {
@@ -76,7 +68,7 @@ public class Gripper extends SubsystemBase {
                 Logger.recordOutput("Gripper/HasAlgae", true);
               }
             },
-            () -> setFront(0),
+            () -> setGripper(0),
             this)
         .finallyDo(
             () -> {

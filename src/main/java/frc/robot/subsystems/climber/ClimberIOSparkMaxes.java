@@ -8,27 +8,22 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.Servo;
-import frc.robot.Constants;
 
 public class ClimberIOSparkMaxes implements ClimberIO {
   private final SparkMax climber;
-  // private final SparkLimitSwitch limitSwitch;
-  private final SparkMaxConfig climberConfig;
   private final Servo servo;
 
   public ClimberIOSparkMaxes(int motorID, int servoID) {
     climber = new SparkMax(motorID, MotorType.kBrushless);
-    // limitSwitch = climber.getForwardLimitSwitch();
-    climberConfig = new SparkMaxConfig();
-    climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(1.5 / 6500.0);
+    SparkMaxConfig climberConfig = new SparkMaxConfig();
+    climberConfig.closedLoop.velocityFF(1.0 / 6500.0).p(3.0 / 6500.0);
     climberConfig
         .closedLoop
         .smartMotion
         .maxAcceleration(1200)
         .maxVelocity(5000); // placeholder, will be replaced with actual acceleration
-    climberConfig.smartCurrentLimit(
-        Constants.CurrentLimits.NEO_VORTEX); // sets the limits based on the NEO motors
-    climberConfig.idleMode(IdleMode.kBrake);
+    climberConfig.smartCurrentLimit(100); // sets the limits based on the NEO motors
+    climberConfig.idleMode(IdleMode.kCoast);
 
     climber
         .configure( // persist mode keeps the last data value even after the robot is shut off, in
@@ -47,8 +42,6 @@ public class ClimberIOSparkMaxes implements ClimberIO {
     inputs.appliedOutput = climber.getAppliedOutput();
 
     inputs.servoPosition = servo.getAngle();
-
-    // inputs.limitSwitch = limitSwitch.isPressed();
   }
 
   @Override
