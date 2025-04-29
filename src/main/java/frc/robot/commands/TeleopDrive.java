@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -47,7 +46,6 @@ public class TeleopDrive extends Command {
   private double kidModeSpeed = 1.0;
 
   double slowModeSpeedModifier = 0.0;
-  double customAngleModifier = 0.0;
   ChassisSpeeds commandedSpeeds = new ChassisSpeeds(0, 0, 0);
   ChassisSpeeds finalSpeeds = new ChassisSpeeds(0, 0, 0);
 
@@ -106,9 +104,8 @@ public class TeleopDrive extends Command {
             deadScale(controller.getLeftX()),
             rotationLimiter.calculate(
                     deadScale(controller.getRightX())
-                        * Constants.Driver.MAX_THETA_SPEED
-                        * (isKidMode ? 0.2 : 1))
-                - customAngleModifier); // This needs to be a different type, the speeds need to be
+                        * Constants.Driver.MAX_THETA_SPEED*slowModeSpeedModifier
+                        * (isKidMode ? 0.2 : 1))); // This needs to be a different type, the speeds need to be
     // percentage at this step, not velocity
 
     if (doFieldOriented) {
