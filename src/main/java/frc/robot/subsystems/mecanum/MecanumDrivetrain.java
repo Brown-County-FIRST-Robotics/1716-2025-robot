@@ -68,9 +68,7 @@ public class MecanumDrivetrain implements Drivetrain {
             driveInputs.vel.rearRightMetersPerSecond, Rotation2d.fromDegrees(-45)));
     Twist2d odoTwist = KINEMATICS.toTwist2d(driveInputs.pos, lastPositions);
     if (!Overrides.disableIMU.get()) {
-      odoTwist =
-          new Twist2d(
-              odoTwist.dx, odoTwist.dy, getGyro().toRotation2d().minus(lastIMU).getRadians());
+      getGyro().toRotation2d().minus(lastIMU).getRadians();
     }
     lastIMU = getGyro().toRotation2d();
     lastPositions = driveInputs.pos;

@@ -35,7 +35,7 @@ public class GoToPoseQM extends Command {
   private static final double thetaMaxVelocity = 6.28;
   private static final double thetaMaxAcceleration = 8.0;
   private static final double driveTolerance = 0.001;
-  private static final double thetaTolerance = 1.0 * 6.28 / 360.0;
+  private static final double thetaTolerance = 6.28 / 360.0;
   private static final double ffMinRadius = 0.05;
   private static final double ffMaxRadius = 0.1;
 
@@ -44,8 +44,8 @@ public class GoToPoseQM extends Command {
   private double thetaErrorAbs = 0.0;
   private boolean running = false;
 
-  private Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
-  private DoubleSupplier omegaFF = () -> 0.0;
+  private final Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
+  private final DoubleSupplier omegaFF = () -> 0.0;
 
   @Override
   public void initialize() {

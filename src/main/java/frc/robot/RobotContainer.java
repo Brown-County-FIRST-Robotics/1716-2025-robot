@@ -350,7 +350,6 @@ public class RobotContainer {
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
     manipulatorPanel.level3().whileTrue(presetFactory.level3());
-    manipulatorPanel.level4().whileTrue(presetFactory.level4());
     manipulatorPanel
         .algaeLow()
         .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
@@ -364,7 +363,7 @@ public class RobotContainer {
     manipulatorPanel
         .leftPole()
         .and(manipulatorPanel.rightPole())
-        .onTrue(Commands.runOnce(() -> manipulator.resetElevator()));
+        .onTrue(Commands.runOnce(manipulator::resetElevator));
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
@@ -401,21 +400,9 @@ public class RobotContainer {
   }
 
   private TeleopDrive configureSharedBindings() {
-    // var teleopDrive = new TeleopDrive(driveSys, driverController, secondController,
-    // overridePanel);
     var teleopDrive = new TeleopDrive(driveSys, driverController, overridePanel);
 
     driveSys.setDefaultCommand(teleopDrive);
-    // secondController
-    //     .povUp()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
-    // secondController
-    //     .povDown()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
 
     return teleopDrive;
   }

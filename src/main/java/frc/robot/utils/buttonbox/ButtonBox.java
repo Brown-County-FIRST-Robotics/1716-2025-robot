@@ -19,7 +19,7 @@ public class ButtonBox {
   }
 
   boolean getBitFromFloat(float f, int ind) {
-    int val = 0;
+    int val;
     if (f < 0) {
       val = (int) f * 128;
     } else {

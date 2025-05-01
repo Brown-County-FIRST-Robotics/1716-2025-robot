@@ -134,28 +134,13 @@ public class ManipulatorPresetFactory {
                 manipulator));
   }
 
-  @Deprecated
-  public Command level4() {
-    return Commands.none();
-    // return Commands.run(
-    //     () -> {
-    //       manipulator.setElevatorReference(elevatorLevel4.get());
-    //       manipulator.setWristReference(wristLevel4.get());
-    //     },
-    //     manipulator);
-  }
-
   public Command level(int level) {
-    switch (level) {
-      case 1:
-        return trough();
-      case 2:
-        return level2();
-      case 3:
-        return level3();
-      default:
-        return Commands.none();
-    }
+    return switch (level) {
+      case 1 -> trough();
+      case 2 -> level2();
+      case 3 -> level3();
+      default -> Commands.none();
+    };
   }
   /**
    * Returns a command to go to a safe position, then the lower algae position on the reef
@@ -223,15 +208,7 @@ public class ManipulatorPresetFactory {
             },
             manipulator,
             gripper)
-        .until(
-            () ->
-                gripper
-                    .getCoralDistanceReading()
-                    .filter(
-                        (Double d) -> {
-                          return d < 0.04;
-                        })
-                    .isPresent());
+        .until(() -> gripper.getCoralDistanceReading().filter((Double d) -> d < 0.04).isPresent());
   }
   /**
    * Returns a command to go to the processor
