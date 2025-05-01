@@ -3,7 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation3d;
 import org.littletonrobotics.junction.AutoLog;
 
-/** The IO layer for an IMU */
+/** The IO layer for an IMU. Moving to use quest instead. */
+@Deprecated(forRemoval = true, since = "20250501")
 public interface IMUIO {
   /** The inputs from the IMU. Access using <code>IMUInputsAutoLogged</code>. */
   @AutoLog

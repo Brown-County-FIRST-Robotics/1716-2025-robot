@@ -29,8 +29,6 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
   final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 120);
   final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  // LoggedTunableNumber elevatorLevel4 = new LoggedTunableNumber("Elevator Level 4", 187);
-  // LoggedTunableNumber wristLevel4 = new LoggedTunableNumber("Wrist Level 4", -.38);
   final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 85);
   final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 127);
   final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
@@ -57,7 +55,12 @@ public class ManipulatorPresetFactory {
     leds = leds_;
   }
 
-  public Optional<Pose2d> whereShouldIBe() {
+  /**
+   * Gets the pole the robot should drive to, based on location and L/R button
+   *
+   * @return The pose of the pole the robot should drive to
+   */
+  public Optional<Pose2d> targetPole() {
     var position = driveTrain.getPosition();
     for (int i = 0; i < 6; i++) {
       if (FieldConstants.getBox(i).contains(position.getTranslation())) {
@@ -67,6 +70,11 @@ public class ManipulatorPresetFactory {
     return Optional.empty();
   }
 
+  /**
+   * Returns a command to retract the manipulator
+   *
+   * @return A command to retract the manipulator
+   */
   public Command retracted() {
     return Commands.run(
         () -> {
@@ -76,6 +84,11 @@ public class ManipulatorPresetFactory {
         manipulator);
   }
 
+  /**
+   * Returns a command to go to a safe position, then the trough
+   *
+   * @return A command to go to a safe position, then the trough
+   */
   public Command trough() {
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
         .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
@@ -88,6 +101,11 @@ public class ManipulatorPresetFactory {
                 manipulator));
   }
 
+  /**
+   * Returns a command to go to a safe position, then level 2
+   *
+   * @return A command to go to a safe position, then level 2
+   */
   public Command level2() {
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
         .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
@@ -99,7 +117,11 @@ public class ManipulatorPresetFactory {
                 },
                 manipulator));
   }
-
+  /**
+   * Returns a command to a safe position, then level 3
+   *
+   * @return A command to a safe position, then level 3
+   */
   public Command level3() {
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
         .until(() -> manipulator.getWrist() - safeWrist.get() < 0.05)
@@ -112,6 +134,7 @@ public class ManipulatorPresetFactory {
                 manipulator));
   }
 
+  @Deprecated
   public Command level4() {
     return Commands.none();
     // return Commands.run(
@@ -134,7 +157,11 @@ public class ManipulatorPresetFactory {
         return Commands.none();
     }
   }
-
+  /**
+   * Returns a command to go to a safe position, then the lower algae position on the reef
+   *
+   * @return A command to go to a safe position, then the lower algae position on the reef
+   */
   public Command algaeLow() {
     // return Commands.none();
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
@@ -147,7 +174,11 @@ public class ManipulatorPresetFactory {
                 },
                 manipulator));
   }
-
+  /**
+   * Returns a command to go to a safe position, then the high algae position on the reef
+   *
+   * @return A command to go to a safe position, then the high algae position on the reef
+   */
   public Command algaeHigh() {
     // return Commands.none();
     return Commands.run(() -> manipulator.setWristReference(safeWrist.get()), manipulator)
@@ -160,7 +191,13 @@ public class ManipulatorPresetFactory {
                 },
                 manipulator));
   }
-
+  /**
+   * Returns a modal command to go to intake position, spin up the gripper, and set the leds when in
+   * position.
+   *
+   * @return A modal command to go to intake position, spin up the gripper, and set the leds when in
+   *     position.
+   */
   public Command intake() {
     return Commands.runEnd(
             () -> {
@@ -196,7 +233,11 @@ public class ManipulatorPresetFactory {
                         })
                     .isPresent());
   }
-
+  /**
+   * Returns a command to go to the processor
+   *
+   * @return A command to go to the processor
+   */
   public Command processor() {
     // return Commands.none();
     return Commands.run(

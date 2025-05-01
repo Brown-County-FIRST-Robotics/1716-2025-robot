@@ -21,6 +21,11 @@ public class Gripper extends SubsystemBase {
     Logger.processInputs("Gripper", gripperInputs);
   }
 
+  /**
+   * Commands a speed to both motors
+   *
+   * @param speed The commanded speed in RPM
+   */
   public void setGripper(double speed) {
     Logger.recordOutput("Gripper/TopReference", speed);
     Logger.recordOutput("Gripper/BottomReference", speed);
@@ -54,6 +59,11 @@ public class Gripper extends SubsystemBase {
         .isPresent();
   }
 
+  /**
+   * Returns a command to keep holding the algae
+   *
+   * @return Said command
+   */
   public Command holdAlgae() {
     return Commands.runEnd(
             () -> {

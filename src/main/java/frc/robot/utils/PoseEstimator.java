@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.vision.FusedVision;
 import java.util.Optional;
-import org.littletonrobotics.junction.Logger;
+
+// TODO:Re-evalulate this file
 
 /** A pose estimator that fuses vision and odometry updates */
 public class PoseEstimator {
@@ -28,12 +29,10 @@ public class PoseEstimator {
 
   public void feed() {
     if (new XboxController(0).getXButtonPressed()) {
-      //      usedVis = false;
       Pose2d face = FieldConstants.getFace(0);
       Pose2d plus =
           face.plus(new Transform2d(0, -19.0 * 0.0254, new Rotation2d()))
               .plus(new Transform2d(16.0 * 0.0254, 16.0 * 0.0254, Rotation2d.kZero));
-      Logger.recordOutput("dsffsddfs", plus);
       setPose(plus);
     }
     usedVis = true;

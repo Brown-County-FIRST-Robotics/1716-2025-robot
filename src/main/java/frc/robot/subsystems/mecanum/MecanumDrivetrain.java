@@ -12,6 +12,7 @@ import frc.robot.utils.PoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
 /** The mecanum drivetrain subsystem */
+@Deprecated(forRemoval = true, since = "20250501")
 public class MecanumDrivetrain implements Drivetrain {
   static final MecanumDriveKinematics KINEMATICS =
       new MecanumDriveKinematics(
