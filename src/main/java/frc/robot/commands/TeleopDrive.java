@@ -25,9 +25,10 @@ public class TeleopDrive extends Command {
   boolean doFieldOriented = true;
   boolean locked = false; // point wheels towards center in x pattern
   final DualRateLimiter translationLimiter =
-      new DualRateLimiter(6, 100); // translational velocity limiter
+      new DualRateLimiter(6, 100); // translational velocity rate limiter (ie:acceleration limiter)
   final DualRateLimiter rotationLimiter =
-      new DualRateLimiter(8, 100); // angular velocity limiter (omega)
+      new DualRateLimiter(
+          8, 100); // angular velocity limiter (omega) (ie:angular acceleration limiter)
 
   private static final double deadbandSize = 0.08;
   public boolean isKidMode = false;
@@ -44,29 +45,13 @@ public class TeleopDrive extends Command {
 
   private double kidModeSpeed = 1.0;
 
+  // These are class fields instead of local variables for Garbage collector reasons, although I
+  // doubt it is a big deal
+
   double slowModeSpeedModifier = 0.0;
   ChassisSpeeds commandedSpeeds = new ChassisSpeeds(0, 0, 0);
   ChassisSpeeds finalSpeeds = new ChassisSpeeds(0, 0, 0);
-
-  Vector previousCommand = new Vector();
-
-  /**
-   * Constructs a new command with a given controller and drivetrain
-   *
-   * @param drivetrain The drivetrain subsystem
-   * @param controller The driver controller, used for various inputs
-   */
-  public TeleopDrive(
-      Drivetrain drivetrain,
-      CommandXboxController controller,
-      CommandXboxController secondController,
-      OverridePanel overridePanel_) {
-    this.drivetrain = drivetrain;
-    this.controller = controller;
-    this.secondController = Optional.of(secondController);
-    this.overridePanel = overridePanel_;
-    addRequirements(this.drivetrain);
-  }
+  Vector previousCommand = Vector.zeroVector();
 
   public TeleopDrive(
       Drivetrain drivetrain, CommandXboxController controller, OverridePanel overridePanel_) {
@@ -77,7 +62,6 @@ public class TeleopDrive extends Command {
     addRequirements(this.drivetrain);
   }
 
-  /** The initial subroutine of a command. Called once when the command is initially scheduled. */
   @Override
   public void initialize() {
     translationLimiter.reset(0);
@@ -87,15 +71,15 @@ public class TeleopDrive extends Command {
   @Override
   public void execute() {
     isKidMode = overridePanel.kidMode().getAsBoolean();
-    Logger.recordOutput("kidmode", isKidMode);
+    Logger.recordOutput("iskidmode", isKidMode);
     Logger.recordOutput("kidmodespeed", kidModeSpeed);
-    slowModeSpeedModifier = controller.getHID().getLeftBumper() ? 0.2 : 1.0;
+    slowModeSpeedModifier = controller.getHID().getLeftBumperButton() ? 0.2 : 1.0;
     if (isKidMode
         && secondController.isPresent()
         && secondController.get().rightTrigger().getAsBoolean()) {
       slowModeSpeedModifier = 0;
     }
-    doFieldOriented = !controller.getHID().getRightBumper() && !isKidMode;
+    doFieldOriented = !controller.getHID().getRightBumperButton() && !isKidMode;
     locked = false;
     commandedSpeeds =
         new ChassisSpeeds(
@@ -109,6 +93,7 @@ public class TeleopDrive extends Command {
                         ? 0.2
                         : 1))); // This needs to be a different type, the speeds need to be
     // percentage at this step, not velocity
+    // TODO: figure out what I meant by that
 
     if (doFieldOriented) {
       Rotation2d currentRotation =
@@ -136,7 +121,7 @@ public class TeleopDrive extends Command {
     }
 
     Vector commandedVector =
-        new Vector(commandedSpeeds.vxMetersPerSecond, commandedSpeeds.vyMetersPerSecond);
+        Vector.fromCartesian(commandedSpeeds.vxMetersPerSecond, commandedSpeeds.vyMetersPerSecond);
 
     double angle = commandedVector.getAngle().getDegrees();
     int angleLockDegrees = 5;
@@ -160,12 +145,12 @@ public class TeleopDrive extends Command {
 
     // make sure command never gets too far from reality
     Vector realVelocity =
-        new Vector(
+        Vector.fromCartesian(
             drivetrain.getVelocity().vxMetersPerSecond, drivetrain.getVelocity().vyMetersPerSecond);
     Vector currentRealityDistortion = previousCommand.minus(realVelocity);
     Vector currentVector =
         realVelocity.plus(
-            new Vector(
+            Vector.fromPolar(
                 clamp(currentRealityDistortion.getNorm(), Constants.Driver.MAX_SPEED / 5.0),
                 currentRealityDistortion.getAngle()));
 
@@ -175,7 +160,7 @@ public class TeleopDrive extends Command {
             velocityChange.getNorm(),
             Constants.Driver.MAX_FRICTION_ACCELERATION / 50); // TODO: CHANGE NAME
     Vector cappedAcceleration =
-        new Vector(frictionClampedVelocityChange, velocityChange.getAngle());
+        Vector.fromPolar(frictionClampedVelocityChange, velocityChange.getAngle());
     commandedVector = currentVector.plus(cappedAcceleration);
 
     double jeff = commandedVector.getNorm() - currentVector.getNorm();
@@ -213,14 +198,6 @@ public class TeleopDrive extends Command {
     Logger.recordOutput("TeleopDrive/foc", doFieldOriented);
   }
 
-  /**
-   * The action to take when the command ends. Called when either the command finishes normally --
-   * that it is called when {@link #isFinished()} returns true -- or when it is
-   * interrupted/canceled. This is where you may want to wrap up loose ends, like shutting off a
-   * motor that was being used in the command.
-   *
-   * @param interrupted whether the command was interrupted/canceled
-   */
   @Override
   public void end(boolean interrupted) {
     drivetrain.humanDrive(new ChassisSpeeds());

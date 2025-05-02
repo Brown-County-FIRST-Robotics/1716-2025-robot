@@ -4,7 +4,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utils.*;
-import frc.robot.utils.buttonbox.OverridePanel;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -13,10 +12,6 @@ public class FusedVision extends PeriodicRunnable {
   final VisionIO io;
   public final VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
   final Drivetrain drivetrain;
-
-  final CustomAlerts.TimeoutAlert visionWatchDog =
-      new CustomAlerts.TimeoutAlert(Alert.AlertType.WARNING, 10, "Vision timeout");
-  OverridePanel overridePanel;
 
   final VisionSLAMIO slamio;
   final VisionSLAMIOInputsAutoLogged slamInputs = new VisionSLAMIOInputsAutoLogged();

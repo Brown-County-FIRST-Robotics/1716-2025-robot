@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import org.littletonrobotics.junction.AutoLog;
 
 /** The IO interface for mecanum motors */
+@Deprecated(forRemoval = true, since = "20250501")
 public interface MecanumIO {
   /** Inputs from mecanum motors. Access using <code>MecanumIOInputsAutoLogged</code> */
   @AutoLog

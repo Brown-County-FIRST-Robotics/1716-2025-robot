@@ -3,9 +3,9 @@ package frc.robot.subsystems.climber;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ClimberIO {
-  @AutoLog // needed for logging
+  @AutoLog
   class ClimberIOInputs {
-    double position = 0.0; // this is all the info needed for climber logs
+    double position = 0.0;
     double velocity = 0.0;
     double temperature = 0.0;
     double current = 0.0;

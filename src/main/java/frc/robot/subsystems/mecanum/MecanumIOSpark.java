@@ -15,6 +15,7 @@ import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /** The mecanum IO implementation for 4 SPARKMAX motor controllers */
+@Deprecated(forRemoval = true, since = "20250501")
 public class MecanumIOSpark implements MecanumIO {
   static final double EFFECTIVE_WHEEL_DIAMETER = 0.05411255411255412;
   final SparkMax fl;

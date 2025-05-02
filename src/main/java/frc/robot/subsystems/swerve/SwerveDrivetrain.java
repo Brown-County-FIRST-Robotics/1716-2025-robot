@@ -77,7 +77,7 @@ public class SwerveDrivetrain implements Drivetrain {
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
     Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());
     if (!Overrides.disableIMU.get()) {
-      odoTwist = new Twist2d(odoTwist.dx, odoTwist.dy, -getGyro().minus(lastIMU).getX());
+      getGyro().minus(lastIMU).getX();
     }
     lastPositions = getPositions();
     lastIMU = getGyro();
@@ -168,8 +168,6 @@ public class SwerveDrivetrain implements Drivetrain {
 
   @Override
   public void followTrajectory(SwerveSample sample) {
-    // var sleepy = new Pose2d(sample.x, sample.y, new
-    // Rotation2d(sample.heading)).log(getPosition());
     humanDrive(
         new ChassisSpeeds(
             sample.vx, sample.vy, sample.omega)); // TODO: probably use PID or something

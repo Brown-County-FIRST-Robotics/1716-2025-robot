@@ -25,7 +25,9 @@ import edu.wpi.first.units.measure.Temperature;
 import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-/** IO layer for a SDS MK4i L2 swerve module using a Falcon 500 as thrust, and a Neo as steering */
+/**
+ * IO layer for a SDS MK4i L2 swerve module using a Falcon 500 as thrust, and a Neo V1.1 as steering
+ */
 public class ModuleIOSparkFX implements ModuleIO {
   private final double THRUST_DISTANCE_PER_TICK = .0254 * 4.0 * Math.PI / 6.75;
   private static final double STEER_FREE_RPM = 5676.0;

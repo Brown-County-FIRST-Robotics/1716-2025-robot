@@ -3,19 +3,17 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.networktables.*;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
-/** The IO layer for one SecondSight camera */
+/** The IO layer for one PhotonVision camera */
 public class VisionIOPhotonVision implements VisionIO {
   final PhotonCamera cam;
 
-  // Construct PhotonPoseEstimator
   final PhotonPoseEstimator photonPoseEstimator;
   /**
-   * Constructs a new <code>VisionIOPhotonVision</code> from a NT path
+   * Constructs a new <code>VisionIOPhotonVision</code> from a camera name and pose
    *
    * @param cam_name The name of the camera
    */
@@ -23,7 +21,7 @@ public class VisionIOPhotonVision implements VisionIO {
     cam = new PhotonCamera(cam_name);
     photonPoseEstimator =
         new PhotonPoseEstimator(
-            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded), // TODO: Fix
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded),
             PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             camPose);
   }

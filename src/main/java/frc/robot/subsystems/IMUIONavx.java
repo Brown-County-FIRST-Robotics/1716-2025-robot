@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
 
-/** The abstraction for the Kauai labs Navx2 IMU */
+/** The abstraction for the Kauai labs Navx2 IMU. Moving to use quest instead. */
+@Deprecated(forRemoval = true, since = "20250501")
 public class IMUIONavx implements IMUIO {
   final AHRS imu;
   final Rotation3d basRotation3d;

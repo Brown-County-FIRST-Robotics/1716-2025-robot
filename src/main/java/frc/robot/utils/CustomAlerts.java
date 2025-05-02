@@ -131,6 +131,15 @@ public class CustomAlerts {
                 + "). Prolonged usage could permanently damage the motor");
   }
 
+  /**
+   * Makes a `CustomAlert`(An alert that activates if the given function is true) that will be a
+   * warning over a certain temperature, and an error above a second temperature
+   *
+   * @param tempSupplier Provides the temperature in Celsius
+   * @param errTemp The minimum temperature that will cause the alert to be an error
+   * @param warnTemp The minimum temperature that will cause the alert to be a warning
+   * @param deviceName The name of the device this alert is for
+   */
   public static void makeOverTempAlert(
       DoubleSupplier tempSupplier, double errTemp, double warnTemp, String deviceName) {
     makeOverTempAlert(tempSupplier, errTemp, deviceName);

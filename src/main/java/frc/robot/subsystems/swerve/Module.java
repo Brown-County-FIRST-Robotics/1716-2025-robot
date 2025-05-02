@@ -9,7 +9,7 @@ import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-/** A wrapper class for a Swerve module */
+/** A class representing a single Swerve module */
 public class Module {
   private static final LoggedTunableNumber minNoMotionTime =
       new LoggedTunableNumber("Min no motion time", 5);
@@ -121,7 +121,6 @@ public class Module {
    */
   public void setState(SwerveModuleState state) {
     state.optimize(getChassisRelativeRotation());
-    // state.angle=Rotation2d.fromRotations(new XboxController(0).getRightY());
     state.speedMetersPerSecond *= getChassisRelativeRotation().minus(state.angle).getCos();
     Rotation2d cmdPosForRelativeEncoder =
         state.angle.plus(chassisOffset).minus(relativeSensorZeroPosition);

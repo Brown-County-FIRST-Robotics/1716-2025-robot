@@ -21,6 +21,11 @@ public class Gripper extends SubsystemBase {
     Logger.processInputs("Gripper", gripperInputs);
   }
 
+  /**
+   * Commands a speed to both motors
+   *
+   * @param speed The commanded speed in RPM
+   */
   public void setGripper(double speed) {
     Logger.recordOutput("Gripper/TopReference", speed);
     Logger.recordOutput("Gripper/BottomReference", speed);
@@ -46,24 +51,19 @@ public class Gripper extends SubsystemBase {
   // Whether the algae sensor can see anything close enough to be considered a gamepiece
   // NEEDS TESTING FOR CORAL PLACEMENT
   public boolean hasGamepiece() {
-    return getAlgaeDistanceReading()
-        .filter(
-            (Double d) -> {
-              return d < 0.15;
-            })
-        .isPresent();
+    return getAlgaeDistanceReading().filter((Double d) -> d < 0.15).isPresent();
   }
 
+  /**
+   * Returns a command to keep holding the algae
+   *
+   * @return Said command
+   */
   public Command holdAlgae() {
     return Commands.runEnd(
             () -> {
               setGripper(4500);
-              if (getAlgaeDistanceReading()
-                  .filter(
-                      (Double d) -> {
-                        return d < 0.15;
-                      })
-                  .isPresent()) {
+              if (getAlgaeDistanceReading().filter((Double d) -> d < 0.15).isPresent()) {
                 hasAlgae = true;
                 Logger.recordOutput("Gripper/HasAlgae", true);
               }
@@ -76,13 +76,6 @@ public class Gripper extends SubsystemBase {
               Logger.recordOutput("Gripper/HasAlgae", false);
             })
         .until(
-            () ->
-                hasAlgae
-                    && getAlgaeDistanceReading()
-                        .filter(
-                            (Double d) -> {
-                              return d < 0.15;
-                            })
-                        .isEmpty());
+            () -> hasAlgae && getAlgaeDistanceReading().filter((Double d) -> d < 0.15).isEmpty());
   }
 }
