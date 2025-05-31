@@ -17,7 +17,7 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   private final RelativeEncoder elevatorEncoder;
   private final SparkLimitSwitch limitSwitch;
 
-  public ElevatorIOSparkMax(int id, int limitSwitchID) {
+  public ElevatorIOSparkMax(int id) {
     elevator = new SparkFlex(id, MotorType.kBrushless);
     SparkMaxConfig elevatorConfig = new SparkMaxConfig();
     elevatorEncoder = elevator.getEncoder();
@@ -28,7 +28,7 @@ public class ElevatorIOSparkMax implements ElevatorIO {
         .smartMotion
         .maxAcceleration(6000)
         .maxVelocity(6000)
-        .minOutputVelocity(0); // placeholder
+        .minOutputVelocity(0);
     elevatorConfig
         .closedLoop
         .velocityFF(1.0 / 6700.0)
@@ -37,10 +37,10 @@ public class ElevatorIOSparkMax implements ElevatorIO {
         .minOutput(-.5)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     elevatorConfig
-        .smartCurrentLimit(60) // Constants.CurrentLimits.NEO_VORTEX)
+        .smartCurrentLimit(
+            60) // Lesser current limit to prevent elevator mechanically falling apart
         .inverted(false)
         .idleMode(IdleMode.kBrake);
-    // elevatorConfig.softLimit.forwardSoftLimitEnabled(false).forwardSoftLimit(182.0);
     elevator.configure(
         elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

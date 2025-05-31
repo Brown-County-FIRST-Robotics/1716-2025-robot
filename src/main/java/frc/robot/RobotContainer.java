@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.GoToPoseQM;
 import frc.robot.commands.ManipulatorPresetFactory;
 import frc.robot.commands.TeleopDrive;
@@ -49,15 +48,8 @@ import frc.robot.utils.buttonbox.OverridePanel;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  // private final CommandXboxController secondController = new CommandXboxController(1);
   private final ButtonBox buttonBox = new ButtonBox(2);
   private final ManipulatorPanel manipulatorPanel = new ManipulatorPanel(buttonBox);
   private final OverridePanel overridePanel = new OverridePanel(buttonBox);
@@ -69,13 +61,12 @@ public class RobotContainer {
 
   private final ManipulatorPresetFactory presetFactory;
 
-  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     ElevatorIO elevatorIO = null;
     GripperIO gripperIO = null;
     WristIO wristIO = null;
     ClimberIO climberIO = null;
-    autoChooser = new LoggedDashboardChooser<Command>("Auto chooser");
+    autoChooser = new LoggedDashboardChooser<>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
         case MECHBASE:
@@ -117,10 +108,10 @@ public class RobotContainer {
       }
       for (var appendage : WhoAmI.appendages) {
         if (appendage == WhoAmI.Appendages.GRIPPER) {
-          gripperIO = new GripperIOSparkMax(3, 1, 0, 2);
+          gripperIO = new GripperIOSparkMax(3, 1, 0);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(53, 0);
+          elevatorIO = new ElevatorIOSparkMax(53);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
           climberIO = new ClimberIOSparkMaxes(54, 2);
@@ -351,33 +342,14 @@ public class RobotContainer {
     manipulator.setDefaultCommand(presetFactory.retracted());
     manipulatorPanel
         .leftPole()
-        .whileTrue(
-            new GoToPoseQM(driveSys, () -> presetFactory.whereShouldIBe().orElse(new Pose2d())));
+        .whileTrue(new GoToPoseQM(driveSys, () -> presetFactory.targetPole().orElse(new Pose2d())));
     manipulatorPanel
         .rightPole()
-        .whileTrue(
-            new GoToPoseQM(driveSys, () -> presetFactory.whereShouldIBe().orElse(new Pose2d())));
-
-    // manipulator.setDefaultCommand(
-    //     Commands.run(
-    //         new Runnable() {
-
-    //           public void run() {
-    //             // manipulator.setWristReference(
-    //             //     manipulator.getWrist() + driverController.getHID().getRightY());
-    //             manipulator.setElevatorReference(
-    //                 manipulator.getElevator()
-    //                     + 50
-    //                         * (-driverController.getLeftTriggerAxis()
-    //                             + driverController.getRightTriggerAxis()));
-    //           }
-    //         },
-    //         manipulator));
+        .whileTrue(new GoToPoseQM(driveSys, () -> presetFactory.targetPole().orElse(new Pose2d())));
 
     manipulatorPanel.trough().whileTrue(presetFactory.trough());
     manipulatorPanel.level2().whileTrue(presetFactory.level2());
     manipulatorPanel.level3().whileTrue(presetFactory.level3());
-    manipulatorPanel.level4().whileTrue(presetFactory.level4());
     manipulatorPanel
         .algaeLow()
         .whileTrue(presetFactory.algaeLow().alongWith(new ScheduleCommand(gripper.holdAlgae())));
@@ -391,7 +363,7 @@ public class RobotContainer {
     manipulatorPanel
         .leftPole()
         .and(manipulatorPanel.rightPole())
-        .onTrue(Commands.runOnce(() -> manipulator.resetElevator()));
+        .onTrue(Commands.runOnce(manipulator::resetElevator));
 
     // Eject control on gripper, used for deposition, algae removal, and emergencies
     // Available to either driver
@@ -427,40 +399,14 @@ public class RobotContainer {
                         .andThen(Commands.runOnce(() -> climber.setPosition(false), climber))));
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private TeleopDrive configureSharedBindings() {
-    // var teleopDrive = new TeleopDrive(driveSys, driverController, secondController,
-    // overridePanel);
     var teleopDrive = new TeleopDrive(driveSys, driverController, overridePanel);
 
     driveSys.setDefaultCommand(teleopDrive);
-    // secondController
-    //     .povUp()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() + 0.5)));
-    // secondController
-    //     .povDown()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> teleopDrive.setKidModeSpeed(teleopDrive.getKidModeSpeed() - 0.5)));
 
     return teleopDrive;
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }

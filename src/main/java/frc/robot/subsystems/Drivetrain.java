@@ -9,7 +9,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.utils.PoseEstimator;
 
-/** This interface represents a holonomic drivetrain */
+/** This interface represents a holonomic drivetrain Use <code>SwerveDrivetrain</code> instead */
+@Deprecated(forRemoval = true, since = "20250501")
 public interface Drivetrain extends Subsystem {
   /**
    * Gets the position from the pose estimator

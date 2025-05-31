@@ -27,7 +27,7 @@ public final class Constants {
     /** The maximum acceleration in m/s^2 (does not include deceleration) */
     public static final double MAX_ACCELERATION = MAX_SPEED;
     /** The maximum acceleration to prevent slipping in m/s^2 */
-    public static final double MAX_FRICTION_ACCELERATION = 9.8 * 1.0; // social studies carpet :0.5
+    public static final double MAX_FRICTION_ACCELERATION = 9.8; // social studies carpet :0.5
   }
 
   /** Current limits for different motors */

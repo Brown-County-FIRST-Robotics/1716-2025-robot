@@ -60,6 +60,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setWristReference(double reference) {
+    // TODO: IDK if this code still needs to be here
     // double maxExtent =
     //     -180 * Math.pow(0.58 * elevatorInputs.position, 2)
     //         + 150; // https://www.desmos.com/calculator/qrehndsfwy
@@ -81,15 +82,8 @@ public class Manipulator extends SubsystemBase {
 
   // Whether the arm is at the reference position (within some tolerance)
   public boolean isInPosition() {
-    return elevatorIsInPosition() && wristIsInPosiion();
-  }
-
-  public boolean elevatorIsInPosition() {
-    return Math.abs(elevatorInputs.position - elevatorCommandedPosition) < 2;
-  }
-
-  public boolean wristIsInPosiion() {
-    return Math.abs(wristInputs.angle) < 0.05;
+    return Math.abs(elevatorInputs.position - elevatorCommandedPosition) < 2
+        && Math.abs(wristInputs.angle) < 0.05;
   }
 
   public void resetElevator() {

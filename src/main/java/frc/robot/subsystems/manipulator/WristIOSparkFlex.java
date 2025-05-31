@@ -26,7 +26,6 @@ public class WristIOSparkFlex implements WristIO {
         .closedLoop
         .velocityFF(1.0 / (6700.0 / scaling))
         .p(0.25 / (6700.0 / scaling))
-        // .d(0.1)
         .maxOutput(1)
         .minOutput(-1);
     wristConfig
@@ -34,7 +33,7 @@ public class WristIOSparkFlex implements WristIO {
         .smartMotion
         .maxAcceleration(60)
         .maxVelocity(50)
-        .allowedClosedLoopError(1.0 / scaling); // TESTME
+        .allowedClosedLoopError(1.0 / scaling);
     wristConfig.smartCurrentLimit(Constants.CurrentLimits.NEO_VORTEX).idleMode(IdleMode.kCoast);
     wristConfig
         .closedLoop

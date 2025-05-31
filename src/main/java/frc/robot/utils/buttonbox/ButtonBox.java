@@ -12,13 +12,14 @@ public class ButtonBox {
 
   public ButtonBox(int index) {
     wrapped = new GenericHID(index);
+    // TODO: make this work
     for (int i = 0; i < 50; i++) {
       dash.add(new LoggedNetworkBoolean("Shuffleboard/buttonbox/" + i));
     }
   }
 
   boolean getBitFromFloat(float f, int ind) {
-    int val = 0;
+    int val;
     if (f < 0) {
       val = (int) f * 128;
     } else {

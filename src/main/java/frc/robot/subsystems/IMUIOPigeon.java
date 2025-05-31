@@ -9,7 +9,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.Temperature;
 
-/** The abstraction for the CTRE Pigeon 2 IMU */
+/** The abstraction for the CTRE Pigeon 2 IMU. Moving to use quest instead. */
+@Deprecated(forRemoval = true, since = "20250501")
 public class IMUIOPigeon implements IMUIO {
   final Pigeon2 imu;
   final StatusSignal<Double> qW;
