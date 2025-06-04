@@ -47,13 +47,19 @@ public interface Drivetrain extends Subsystem {
    *
    * @return The value from the gyro
    */
-  Rotation3d getGyro();
+  default Rotation3d getGyro() {
+    return Rotation3d.kZero;
+  }
+  ;
   /**
    * Gets the acceleration values from the IMU
    *
    * @return Array of accelerations (in MPS^2) as [x,y,z]
    */
-  double[] getAcceleration();
+  default double[] getAcceleration() {
+    return new double[] {0.0, 0.0, 0.0};
+  }
+  ;
 
   PoseEstimator getPE();
 
