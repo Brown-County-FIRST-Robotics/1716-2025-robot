@@ -6,22 +6,21 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
-  private final SparkFlex elevator;
+  private final SparkFlex elevator_primary;
+  private final SparkFlex elevator_follower;
   private final RelativeEncoder elevatorEncoder;
-  private final SparkLimitSwitch limitSwitch;
 
-  public ElevatorIOSparkMax(int id) {
-    elevator = new SparkFlex(id, MotorType.kBrushless);
+  public ElevatorIOSparkMax(int id, int follower_id) {
+    elevator_primary = new SparkFlex(id, MotorType.kBrushless);
+    elevator_follower = new SparkFlex(follower_id, MotorType.kBrushless);
     SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-    elevatorEncoder = elevator.getEncoder();
-    limitSwitch = elevator.getReverseLimitSwitch();
+    elevatorEncoder = elevator_primary.getEncoder();
 
     elevatorConfig
         .closedLoop
@@ -41,22 +40,30 @@ public class ElevatorIOSparkMax implements ElevatorIO {
             60) // Lesser current limit to prevent elevator mechanically falling apart
         .inverted(false)
         .idleMode(IdleMode.kBrake);
-    elevator.configure(
+    elevator_primary.configure(
         elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    SparkMaxConfig follower = new SparkMaxConfig();
+    follower.follow(elevator_primary);
+    follower
+        .smartCurrentLimit(60)
+        .inverted(!elevator_primary.configAccessor.getInverted())
+        .idleMode(IdleMode.kBrake);
+    elevator_follower.configure(
+        follower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.position = elevatorEncoder.getPosition();
     inputs.velocity = elevatorEncoder.getVelocity();
 
-    inputs.appliedOutput = elevator.getAppliedOutput();
-    inputs.temperature = elevator.getMotorTemperature();
-    inputs.current = elevator.getOutputCurrent();
-    inputs.limitSwitch = limitSwitch.isPressed();
+    inputs.appliedOutput = elevator_primary.getAppliedOutput();
+    inputs.temperature_1 = elevator_primary.getMotorTemperature();
+    inputs.temperature_2 = elevator_follower.getMotorTemperature();
+    inputs.current = elevator_primary.getOutputCurrent();
   }
 
   public void setPosition(double commandPosition, double arbFF) {
-    elevator
+    elevator_primary
         .getClosedLoopController()
         .setReference(commandPosition, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0, 0.2);
   }

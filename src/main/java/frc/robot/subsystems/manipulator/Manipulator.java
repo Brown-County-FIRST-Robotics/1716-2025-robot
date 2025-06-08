@@ -17,11 +17,14 @@ public class Manipulator extends SubsystemBase {
     this.wrist = wrist;
 
     elevator.updateInputs(elevatorInputs);
-    if (elevatorInputs.limitSwitch) {
-      elevatorPositionOffset = elevatorInputs.position;
-    } else {
-      elevatorPositionOffset = elevatorInputs.position - 182.0;
-    }
+    // TODO: add back in
+
+    //    if (elevatorInputs.limitSwitch) {
+    //      elevatorPositionOffset = elevatorInputs.position;
+    //    } else {
+    //      elevatorPositionOffset = elevatorInputs.position - 182.0;
+    //    }
+
   }
 
   public double getElevator() {
@@ -34,10 +37,11 @@ public class Manipulator extends SubsystemBase {
     wrist.updateInputs(wristInputs);
     Logger.processInputs("Elevator", elevatorInputs);
     Logger.processInputs("Wrist", wristInputs);
+    // TODO: add back in
 
-    if (elevatorInputs.limitSwitch) {
-      elevatorPositionOffset = elevatorInputs.position;
-    }
+    //    if (elevatorInputs.limitSwitch) {
+    //      elevatorPositionOffset = elevatorInputs.position;
+    //    }
     Logger.recordOutput(
         "Elevator/ActualPosition", elevatorInputs.position - elevatorPositionOffset);
   }
@@ -87,10 +91,12 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void resetElevator() {
-    if (elevatorInputs.limitSwitch) {
-      elevatorPositionOffset = elevatorInputs.position;
-    } else {
-      elevatorPositionOffset = elevatorInputs.position - 182.0;
-    }
+    // TODO: add back in
+
+    //    if (elevatorInputs.limitSwitch) {
+    //      elevatorPositionOffset = elevatorInputs.position;
+    //    } else {
+    //      elevatorPositionOffset = elevatorInputs.position - 182.0;
+    //    }
   }
 }
