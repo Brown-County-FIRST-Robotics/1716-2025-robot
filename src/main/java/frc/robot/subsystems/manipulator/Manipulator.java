@@ -1,6 +1,7 @@
 package frc.robot.subsystems.manipulator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.CustomAlerts;
 import org.littletonrobotics.junction.Logger;
 
 public class Manipulator extends SubsystemBase {
@@ -17,6 +18,11 @@ public class Manipulator extends SubsystemBase {
     this.wrist = wrist;
 
     elevator.updateInputs(elevatorInputs);
+    CustomAlerts.makeOverTempAlert(
+        () -> elevatorInputs.temperature_1, 80, 70, "Elevator primary motor");
+    CustomAlerts.makeOverTempAlert(
+        () -> elevatorInputs.temperature_2, 80, 70, "Elevator follower motor");
+
     // TODO: add back in
 
     //    if (elevatorInputs.limitSwitch) {
