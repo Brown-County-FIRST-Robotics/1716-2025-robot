@@ -370,6 +370,14 @@ public class RobotContainer {
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() + 0.01)));
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() - 0.01)));
 
     // Climber
     driverController
