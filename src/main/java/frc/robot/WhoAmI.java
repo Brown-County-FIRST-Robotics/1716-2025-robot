@@ -7,10 +7,10 @@ public final class WhoAmI {
   /** The mode of the robot */
   public static final Mode mode = Mode.REAL;
   /** The robot */
-  public static final RobotType bot = RobotType.SWERVEBASE;
+  public static final RobotType bot = RobotType.SIMSWERVEBASE;
   /** The appendages to the robot */
   public static final Appendages[] appendages = {
-    Appendages.ELEVATOR, Appendages.WRIST, Appendages.GRIPPER // , Appendages.CLIMBER
+    Appendages.ELEVATOR // , Appendages.WRIST, Appendages.GRIPPER // , Appendages.CLIMBER
   };
 
   public static final boolean isDemoMode = false;
@@ -66,7 +66,7 @@ public final class WhoAmI {
     if (mode != Mode.REAL) {
       throw new IllegalArgumentException("Cannot deploy code in Sim mode to the robot");
     }
-    boolean override = false; // Make true to override deploy checking
+    boolean override = true; // Make true to override deploy checking
     if (bot == RobotType.SIMSWERVEBASE && !override) {
       throw new IllegalArgumentException(
           "You are currently deploying code meant for the simulator to a real robot. ONLY DO THIS IF YOU ABSOLUTELY KNOW WHAT YOU ARE DOING. ");
