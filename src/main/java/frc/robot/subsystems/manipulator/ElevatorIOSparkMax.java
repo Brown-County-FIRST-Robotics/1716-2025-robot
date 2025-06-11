@@ -43,11 +43,8 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevator_primary.configure(
         elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     SparkMaxConfig follower = new SparkMaxConfig();
-    follower.follow(elevator_primary);
-    follower
-        .smartCurrentLimit(60)
-        .inverted(!elevator_primary.configAccessor.getInverted())
-        .idleMode(IdleMode.kBrake);
+    follower.follow(elevator_primary, true);
+    follower.smartCurrentLimit(60).idleMode(IdleMode.kBrake);
     elevator_follower.configure(
         follower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
