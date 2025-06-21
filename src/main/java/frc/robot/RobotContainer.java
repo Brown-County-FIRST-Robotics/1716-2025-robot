@@ -108,7 +108,7 @@ public class RobotContainer {
           gripperIO = new GripperIOSparkMax(3, 1, 0);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(53, -10000);
+          elevatorIO = new ElevatorIOSparkMax(53, 54);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
           climberIO = new ClimberIOSparkMaxes(54, 2);
@@ -370,6 +370,14 @@ public class RobotContainer {
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() + 0.1)));
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() - 0.1)));
 
     // Climber
     driverController
