@@ -14,6 +14,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 public class ElevatorIOSparkMax implements ElevatorIO {
   private final SparkFlex elevator_primary;
   private final SparkFlex elevator_follower;
+
+  public static final double scle = 0.0254 * 5.5 * 2.0 / 15.0; // m/Rotations // travel=29*0.0254
   private final RelativeEncoder elevatorEncoder;
 
   public ElevatorIOSparkMax(int id, int follower_id) {
@@ -38,23 +40,21 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevatorConfig
         .smartCurrentLimit(
             60) // Lesser current limit to prevent elevator mechanically falling apart
-        .inverted(false)
+        .inverted(true)
         .idleMode(IdleMode.kBrake);
     elevator_primary.configure(
         elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     SparkMaxConfig follower = new SparkMaxConfig();
-    follower.follow(elevator_primary);
-    follower
-        .smartCurrentLimit(60)
-        .inverted(!elevator_primary.configAccessor.getInverted())
-        .idleMode(IdleMode.kBrake);
+    follower.follow(elevator_primary, true);
+    follower.smartCurrentLimit(60).idleMode(IdleMode.kBrake);
     elevator_follower.configure(
         follower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorEncoder.setPosition(0.0);
   }
 
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.position = elevatorEncoder.getPosition();
-    inputs.velocity = elevatorEncoder.getVelocity();
+    inputs.position = elevatorEncoder.getPosition() * scle;
+    inputs.velocity = elevatorEncoder.getVelocity() * scle / 60.0;
 
     inputs.appliedOutput = elevator_primary.getAppliedOutput();
     inputs.temperature_1 = elevator_primary.getMotorTemperature();
@@ -65,6 +65,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
   public void setPosition(double commandPosition, double arbFF) {
     elevator_primary
         .getClosedLoopController()
-        .setReference(commandPosition, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0, 0.2);
+        .setReference(commandPosition / scle, ControlType.kSmartMotion, ClosedLoopSlot.kSlot0, 0.2);
   }
 }
