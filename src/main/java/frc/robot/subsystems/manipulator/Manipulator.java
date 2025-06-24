@@ -45,9 +45,9 @@ public class Manipulator extends SubsystemBase {
     Logger.processInputs("Wrist", wristInputs);
     // TODO: add back in
 
-    //    if (elevatorInputs.limitSwitch) {
-    //      elevatorPositionOffset = elevatorInputs.position;
-    //    }
+    if (elevatorInputs.limitSwitch) {
+      elevatorPositionOffset = elevatorInputs.position;
+    }
     Logger.recordOutput(
         "Elevator/ActualPosition", elevatorInputs.position - elevatorPositionOffset);
   }
