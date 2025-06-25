@@ -2,6 +2,7 @@ package frc.robot.subsystems.manipulator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.CustomAlerts;
+import java.util.OptionalDouble;
 import org.littletonrobotics.junction.Logger;
 
 public class Manipulator extends SubsystemBase {
@@ -11,7 +12,7 @@ public class Manipulator extends SubsystemBase {
   private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
   private double elevatorCommandedPosition = 0.0;
-  private double elevatorPositionOffset;
+  private OptionalDouble elevatorPositionOffset = OptionalDouble.empty();
 
   public Manipulator(ElevatorIO elevator, WristIO wrist) {
     this.elevator = elevator;
@@ -34,7 +35,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public double getElevator() {
-    return elevatorInputs.position - elevatorPositionOffset;
+    return elevatorInputs.position - elevatorPositionOffset.orElse(0.0);
   }
 
   @Override
@@ -45,21 +46,26 @@ public class Manipulator extends SubsystemBase {
     Logger.processInputs("Wrist", wristInputs);
     // TODO: add back in
 
-    //    if (elevatorInputs.limitSwitch) {
-    //      elevatorPositionOffset = elevatorInputs.position;
-    //    }
+    if (elevatorInputs.limitSwitch) {
+      elevatorPositionOffset = OptionalDouble.of(elevatorInputs.position);
+    }
     Logger.recordOutput(
-        "Elevator/ActualPosition", elevatorInputs.position - elevatorPositionOffset);
+        "Elevator/ActualPosition", elevatorInputs.position - elevatorPositionOffset.orElse(0.0));
   }
 
   public void setElevatorReference(double reference) {
     elevatorCommandedPosition = reference;
+    double convertedReference;
+    if (elevatorPositionOffset.isPresent()) {
+      convertedReference =
+          Math.max(Math.min(reference, 190.0), 0.0); // prevent from going out of bounds
 
-    double convertedReference =
-        Math.max(Math.min(reference, 190.0), 0.0); // prevent from going out of bounds
-    // TODO: Update these values to the actual max and min based on the position of the limit switch
-    convertedReference = convertedReference + elevatorPositionOffset;
-
+      // TODO: Update these values to the actual max and min based on the position of the limit
+      // switch
+      convertedReference = convertedReference + elevatorPositionOffset.getAsDouble();
+    } else {
+      convertedReference = reference;
+    }
     Logger.recordOutput("Elevator/CommandReference", reference);
     Logger.recordOutput("Elevator/ActualReference", convertedReference);
     elevator.setPosition(convertedReference, 0);

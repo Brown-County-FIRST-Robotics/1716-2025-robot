@@ -108,7 +108,7 @@ public class RobotContainer {
           gripperIO = new GripperIOSparkMax(3, 1, 0);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(53, -10000);
+          elevatorIO = new ElevatorIOSparkMax(53, 54, 2);
         }
         if (appendage == WhoAmI.Appendages.CLIMBER) {
           climberIO = new ClimberIOSparkMaxes(54, 2);
