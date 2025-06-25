@@ -12,6 +12,8 @@ public interface ElevatorIO {
     double temperature_1 = 0.0;
     double temperature_2 = 0.0;
     double current = 0.0;
+
+    boolean limitSwitch = false;
   }
 
   default void updateInputs(ElevatorIOInputs inputs) {}
