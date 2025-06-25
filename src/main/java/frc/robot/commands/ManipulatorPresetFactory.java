@@ -21,20 +21,24 @@ public class ManipulatorPresetFactory {
   final ManipulatorPanel manipulatorPanel;
   final LEDs leds;
 
-  final LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
+  final LoggedTunableNumber elevatorRetracted =
+      new LoggedTunableNumber("Elevator Retracted", 0.0); // TODO:DO
   final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
-  final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 0);
+  final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 0.2);
   final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 0);
+  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 0.5);
   final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 0);
+  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 0.9);
   final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 0);
-  final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 0);
+  final LoggedTunableNumber elevatorAlgaeLow =
+      new LoggedTunableNumber("Elevator Algae Low", 0); // TODO:DO
+  final LoggedTunableNumber elevatorAlgaeHigh =
+      new LoggedTunableNumber("Elevator Algae High", 0); // TODO:DO
   final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
-  final LoggedTunableNumber elevatorProcessor = new LoggedTunableNumber("Elevator Processor", 0);
+  final LoggedTunableNumber elevatorProcessor =
+      new LoggedTunableNumber("Elevator Processor", 0); // TODO:DO
   final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
-  final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 0);
+  final LoggedTunableNumber elevatorIntake = new LoggedTunableNumber("Elevator Intake", 0.04);
   final LoggedTunableNumber wristIntake = new LoggedTunableNumber("Wrist Intake", -.0038);
   final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
   final LoggedTunableNumber wristIntakeDescending =
