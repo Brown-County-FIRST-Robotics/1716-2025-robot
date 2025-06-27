@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.utils.Alert;
 import frc.robot.utils.CustomAlerts;
 import frc.robot.utils.PeriodicRunnable;
@@ -107,16 +106,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    Commands.sequence(
-        Commands.runOnce(() -> robotContainer.climber.setServo(false), robotContainer.climber),
-        Commands.waitSeconds(1),
-        Commands.runEnd(
-                () -> robotContainer.climber.setSpeed(-0.05),
-                () -> robotContainer.climber.setSpeed(0),
-                robotContainer.climber)
-            .raceWith(Commands.waitSeconds(10)),
-        Commands.runOnce(() -> robotContainer.climber.zero()));
-
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
