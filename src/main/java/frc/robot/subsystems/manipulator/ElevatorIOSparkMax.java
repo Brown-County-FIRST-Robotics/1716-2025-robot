@@ -30,8 +30,8 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     elevatorConfig
         .closedLoop
         .smartMotion
-        .maxAcceleration(6000)
-        .maxVelocity(6000)
+        .maxAcceleration(6100)
+        .maxVelocity(1000)
         .minOutputVelocity(0);
     elevatorConfig
         .closedLoop
