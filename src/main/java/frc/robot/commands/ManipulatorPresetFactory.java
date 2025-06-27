@@ -21,20 +21,17 @@ public class ManipulatorPresetFactory {
   final ManipulatorPanel manipulatorPanel;
   final LEDs leds;
 
-  final LoggedTunableNumber elevatorRetracted =
-      new LoggedTunableNumber("Elevator Retracted", 0.0); // TODO:DO
+  final LoggedTunableNumber elevatorRetracted = new LoggedTunableNumber("Elevator Retracted", 0.0);
   final LoggedTunableNumber wristRetracted = new LoggedTunableNumber("Wrist Retracted", -.4);
   final LoggedTunableNumber elevatorTrough = new LoggedTunableNumber("Elevator Trough", 0.2);
   final LoggedTunableNumber wristTrough = new LoggedTunableNumber("Wrist Trough", -.34);
-  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 0.5);
+  final LoggedTunableNumber elevatorLevel2 = new LoggedTunableNumber("Elevator Level 2", 0.52);
   final LoggedTunableNumber wristLevel2 = new LoggedTunableNumber("Wrist Level 2", -.38);
-  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 0.9);
-  final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.4);
-  final LoggedTunableNumber elevatorAlgaeLow =
-      new LoggedTunableNumber("Elevator Algae Low", 0); // TODO:DO
-  final LoggedTunableNumber elevatorAlgaeHigh =
-      new LoggedTunableNumber("Elevator Algae High", 0); // TODO:DO
-  final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.41);
+  final LoggedTunableNumber elevatorLevel3 = new LoggedTunableNumber("Elevator Level 3", 0.92);
+  final LoggedTunableNumber wristLevel3 = new LoggedTunableNumber("Wrist Level 3", -.38);
+  final LoggedTunableNumber elevatorAlgaeLow = new LoggedTunableNumber("Elevator Algae Low", 0.5);
+  final LoggedTunableNumber elevatorAlgaeHigh = new LoggedTunableNumber("Elevator Algae High", 0.9);
+  final LoggedTunableNumber wristAlgae = new LoggedTunableNumber("Wrist Algae", -.3);
   final LoggedTunableNumber elevatorProcessor =
       new LoggedTunableNumber("Elevator Processor", 0); // TODO:DO
   final LoggedTunableNumber wristProcessor = new LoggedTunableNumber("Wrist Processor", -.3);
@@ -43,6 +40,8 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
   final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
+  final LoggedTunableNumber elevatorIntakeSafeRange =
+      new LoggedTunableNumber("Safe elevator range", 0.05);
 
   public ManipulatorPresetFactory(
       Manipulator manipulator_,
@@ -192,7 +191,8 @@ public class ManipulatorPresetFactory {
             () -> {
               manipulator.setElevatorReference(elevatorIntake.get());
 
-              if (manipulator.getElevator() <= elevatorIntake.get() + 10) {
+              if (manipulator.getElevator()
+                  <= elevatorIntake.get() + elevatorIntakeSafeRange.get()) {
                 manipulator.setWristReference(wristIntake.get());
                 gripper.setGripper(3000);
               } else {

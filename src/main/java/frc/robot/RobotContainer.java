@@ -370,18 +370,6 @@ public class RobotContainer {
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
-
-    // Climber
-    driverController
-        .a()
-        .or(driverController.povDown())
-        .or(driverController.povDownLeft())
-        .or(driverController.povDownRight())
-        .onTrue(
-            Commands.runOnce(() -> climber.setServo(true), climber)
-                .andThen(
-                    Commands.waitSeconds(.5)
-                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
     driverController
         .y()
         .or(driverController.povUp())
