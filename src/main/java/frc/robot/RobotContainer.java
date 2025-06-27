@@ -85,8 +85,8 @@ public class RobotContainer {
               new FusedVision(
                   driveSys,
                   new Transform3d(
-                      new Translation3d(0.095, 0.025, 0),
-                      new Rotation3d(00.0 * Math.PI / 180.0, 0, 00.0 * Math.PI / 180.0)),
+                      new Translation3d(-0.15, -0.17, 0),
+                      new Rotation3d(00.0 * Math.PI / 180.0, 0, 180.0 * Math.PI / 180.0)),
                   new VisionSLAMIOQuest(),
                   new VisionIOPhotonVision(
                       "TH_CAM0",
