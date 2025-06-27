@@ -334,7 +334,7 @@ public class RobotContainer {
 
   private void configureCompBindings() {
     // Manipulator Presets
-    manipulator.setDefaultCommand(presetFactory.retracted());
+    //    manipulator.setDefaultCommand(presetFactory.retracted());
     manipulatorPanel
         .leftPole()
         .whileTrue(new GoToPoseQM(driveSys, () -> presetFactory.targetPole().orElse(new Pose2d())));
@@ -370,18 +370,29 @@ public class RobotContainer {
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() + 0.1)));
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(() -> manipulator.setElevatorReference(manipulator.getElevator() - 0.1)));
+
+    // TEMP CODE
+    driverController.a().whileTrue(presetFactory.intake());
 
     // Climber
-    driverController
-        .a()
-        .or(driverController.povDown())
-        .or(driverController.povDownLeft())
-        .or(driverController.povDownRight())
-        .onTrue(
-            Commands.runOnce(() -> climber.setServo(true), climber)
-                .andThen(
-                    Commands.waitSeconds(.5)
-                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
+    //    driverController
+    //        .a()
+    //        .or(driverController.povDown())
+    //        .or(driverController.povDownLeft())
+    //        .or(driverController.povDownRight())
+    //        .onTrue(
+    //            Commands.runOnce(() -> climber.setServo(true), climber)
+    //                .andThen(
+    //                    Commands.waitSeconds(.5)
+    //                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
     driverController
         .y()
         .or(driverController.povUp())

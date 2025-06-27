@@ -43,6 +43,8 @@ public class ManipulatorPresetFactory {
   final LoggedTunableNumber safeWrist = new LoggedTunableNumber("Safe Wrist Place", -0.22);
   final LoggedTunableNumber wristIntakeDescending =
       new LoggedTunableNumber("Wrist Intake on Descent", -.4);
+  final LoggedTunableNumber elevatorIntakeSafeRange =
+      new LoggedTunableNumber("Safe elevator range", 0.05);
 
   public ManipulatorPresetFactory(
       Manipulator manipulator_,
@@ -192,7 +194,8 @@ public class ManipulatorPresetFactory {
             () -> {
               manipulator.setElevatorReference(elevatorIntake.get());
 
-              if (manipulator.getElevator() <= elevatorIntake.get() + 10) {
+              if (manipulator.getElevator()
+                  <= elevatorIntake.get() + elevatorIntakeSafeRange.get()) {
                 manipulator.setWristReference(wristIntake.get());
                 gripper.setGripper(3000);
               } else {
