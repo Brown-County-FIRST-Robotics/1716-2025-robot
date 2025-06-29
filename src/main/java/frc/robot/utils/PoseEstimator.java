@@ -19,12 +19,17 @@ public class PoseEstimator {
   boolean usedVis = false;
 
   public Pose2d getPose() {
-    if (pt.isPresent()) return pt.get().getSlamPose();
-    else return Pose2d.kZero;
+    return current;
+  }
+
+  public void setDelta(double delta) {
+    current =
+        new Pose2d(
+            current.getTranslation(), new Rotation2d(current.getRotation().getRadians() + delta));
   }
 
   public void setPose(Pose2d pz) {
-    pt.ifPresent(fusedVision -> fusedVision.setpos(pz));
+    current = pz;
   }
 
   public void feed() {
