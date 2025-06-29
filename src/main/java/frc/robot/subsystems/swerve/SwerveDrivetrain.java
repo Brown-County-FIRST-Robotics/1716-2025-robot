@@ -6,7 +6,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.numbers.N3;
+import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.utils.Overrides;
 import frc.robot.utils.PoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
@@ -25,7 +27,22 @@ public class SwerveDrivetrain implements Drivetrain {
   final Module bl;
   final Module br;
 
+  Rotation3d lastIMU;
+  SwerveModulePosition[] lastPositions;
   final PoseEstimator poseEstimator;
+
+  final IMUIO imu;
+  final IMUIOInputsAutoLogged imuInputs = new IMUIOInputsAutoLogged();
+
+  private SwerveModulePosition[] getPositions() {
+
+    return new SwerveModulePosition[] {
+      fl.getChassisRelativePosition(),
+      fr.getChassisRelativePosition(),
+      bl.getChassisRelativePosition(),
+      br.getChassisRelativePosition()
+    };
+  }
 
   /**
    * Creates a SwerveDrivetrain from IO
@@ -34,25 +51,47 @@ public class SwerveDrivetrain implements Drivetrain {
    * @param fr Front right module IO
    * @param bl Back left module IO
    * @param br Back right module IO
+   * @param imu IMU IO
    */
-  public SwerveDrivetrain(Module fl, Module fr, Module bl, Module br) {
+  public SwerveDrivetrain(Module fl, Module fr, Module bl, Module br, IMUIO imu) {
+    this.imu = imu;
     this.fl = fl;
     this.fr = fr;
     this.bl = bl;
     this.br = br;
     poseEstimator = new PoseEstimator();
     //    poseEstimator.setPose(Constants.INIT_POSE);
+    lastIMU = getGyro();
+    lastPositions = getPositions();
   }
 
   @Override
   public void periodic() {
+    imu.updateInputs(imuInputs);
+    Logger.processInputs("Drive/IMU", imuInputs);
     fl.periodic();
     fr.periodic();
     bl.periodic();
     br.periodic();
 
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
+    Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());
+    if (!Overrides.disableIMU.get()) {
+      getGyro().minus(lastIMU).getX();
+    }
+    lastPositions = getPositions();
+    lastIMU = getGyro();
     Logger.recordOutput("Drive/Pose", getPosition());
+
+    checkForYawReset();
+  }
+
+  private void checkForYawReset() {
+    if (Overrides.resetYaw.get()) {
+      poseEstimator.setPose(
+          new Pose2d(getPosition().getTranslation(), Constants.INIT_POSE.getRotation()));
+      Overrides.resetYaw.set(false);
+    }
   }
 
   private SwerveModuleState[] getWheelSpeeds() {
@@ -90,6 +129,16 @@ public class SwerveDrivetrain implements Drivetrain {
   public void humanDrive(ChassisSpeeds cmd) {
     SwerveModuleState[] states = KINEMATICS.toSwerveModuleStates(cmd);
     setModuleStates(states);
+  }
+
+  @Override
+  public Rotation3d getGyro() {
+    return imuInputs.rotation;
+  }
+
+  @Override
+  public double[] getAcceleration() {
+    return new double[] {imuInputs.xAccelMPS, imuInputs.yAccelMPS, imuInputs.zAccelMPS};
   }
 
   @Override

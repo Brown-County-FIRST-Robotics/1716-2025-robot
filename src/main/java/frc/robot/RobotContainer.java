@@ -24,6 +24,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IMUIO;
 import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
+import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
@@ -72,7 +73,8 @@ public class RobotContainer {
                   new Module(new ModuleIOSim(0), 0),
                   new Module(new ModuleIOSim(1), 1),
                   new Module(new ModuleIOSim(2), 2),
-                  new Module(new ModuleIOSim(3), 3));
+                  new Module(new ModuleIOSim(3), 3),
+                  new IMUIOSim());
           break;
         case SWERVEBASE:
           driveSys =
@@ -80,7 +82,8 @@ public class RobotContainer {
                   new Module(new ModuleIOSparkFX(24, 29, "FL"), 0),
                   new Module(new ModuleIOSparkFX(23, 19, "FR"), 1),
                   new Module(new ModuleIOSparkFX(20, 40, "BL"), 2),
-                  new Module(new ModuleIOSparkFX(22, 9, "BR"), 3));
+                  new Module(new ModuleIOSparkFX(22, 9, "BR"), 3),
+                  new IMUIONavx());
           var vision =
               new FusedVision(
                   driveSys,
@@ -117,7 +120,8 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 0),
                   new Module(new ModuleIO() {}, 1),
                   new Module(new ModuleIO() {}, 2),
-                  new Module(new ModuleIO() {}, 3));
+                  new Module(new ModuleIO() {}, 3),
+                  new IMUIO() {});
           break;
         case SWERVEBASE:
           driveSys =
@@ -125,7 +129,8 @@ public class RobotContainer {
                   new Module(new ModuleIO() {}, 0),
                   new Module(new ModuleIO() {}, 1),
                   new Module(new ModuleIO() {}, 2),
-                  new Module(new ModuleIO() {}, 3));
+                  new Module(new ModuleIO() {}, 3),
+                  new IMUIO() {});
           // TODO: this is a bad way of doing this
           var vision =
               new FusedVision(
