@@ -77,7 +77,8 @@ public class SwerveDrivetrain implements Drivetrain {
     Logger.recordOutput("Drive/RealStates", getWheelSpeeds());
     Twist2d odoTwist = KINEMATICS.toTwist2d(lastPositions, getPositions());
     if (!Overrides.disableIMU.get()) {
-      getGyro().minus(lastIMU).getX();
+      var omega = -getGyro().minus(lastIMU).getX();
+      poseEstimator.setDelta(omega);
     }
     lastPositions = getPositions();
     lastIMU = getGyro();
