@@ -10,7 +10,7 @@ public final class WhoAmI {
   public static final RobotType bot = RobotType.SWERVEBASE;
   /** The appendages to the robot */
   public static final Appendages[] appendages = {
-    Appendages.ELEVATOR, Appendages.WRIST, Appendages.GRIPPER // , Appendages.CLIMBER
+    Appendages.ELEVATOR, Appendages.WRIST, Appendages.GRIPPER
   };
 
   public static final boolean isDemoMode = false;
@@ -28,7 +28,6 @@ public final class WhoAmI {
 
   /** The appendages to the robot */
   public enum Appendages {
-    CLIMBER,
     ELEVATOR,
     WRIST,
     GRIPPER,
@@ -55,7 +54,7 @@ public final class WhoAmI {
       }
       for (var appendage : appendages) {
         switch (appendage) {
-          case GRIPPER, ELEVATOR, WRIST, CLIMBER -> throw new IllegalArgumentException(
+          case GRIPPER, ELEVATOR, WRIST -> throw new IllegalArgumentException(
               "You are currently deploying code meant for a real robot to a simulator");
         }
       }

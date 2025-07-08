@@ -26,9 +26,6 @@ import frc.robot.subsystems.IMUIONavx;
 import frc.robot.subsystems.IMUIOPigeon;
 import frc.robot.subsystems.IMUIOSim;
 import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOSparkMaxes;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperIO;
 import frc.robot.subsystems.gripper.GripperIOSparkMax;
@@ -57,7 +54,6 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
   private final Manipulator manipulator;
   private final Gripper gripper;
-  public final Climber climber;
 
   private final ManipulatorPresetFactory presetFactory;
 
@@ -65,7 +61,6 @@ public class RobotContainer {
     ElevatorIO elevatorIO = null;
     GripperIO gripperIO = null;
     WristIO wristIO = null;
-    ClimberIO climberIO = null;
     autoChooser = new LoggedDashboardChooser<>("Auto chooser");
     if (WhoAmI.mode != WhoAmI.Mode.REPLAY) {
       switch (WhoAmI.bot) {
@@ -93,8 +88,8 @@ public class RobotContainer {
               new FusedVision(
                   driveSys,
                   new Transform3d(
-                      new Translation3d(0.095, 0.025, 0),
-                      new Rotation3d(00.0 * Math.PI / 180.0, 0, 00.0 * Math.PI / 180.0)),
+                      new Translation3d(-0.15, -0.17, 0),
+                      new Rotation3d(00.0 * Math.PI / 180.0, 0, 180.0 * Math.PI / 180.0)),
                   new VisionSLAMIOQuest(),
                   new VisionIOPhotonVision(
                       "TH_CAM0",
@@ -111,10 +106,7 @@ public class RobotContainer {
           gripperIO = new GripperIOSparkMax(3, 1, 0);
         }
         if (appendage == WhoAmI.Appendages.ELEVATOR) {
-          elevatorIO = new ElevatorIOSparkMax(53);
-        }
-        if (appendage == WhoAmI.Appendages.CLIMBER) {
-          climberIO = new ClimberIOSparkMaxes(54, 2);
+          elevatorIO = new ElevatorIOSparkMax(53, 54, 2);
         }
         if (appendage == WhoAmI.Appendages.WRIST) {
           wristIO = new WristIOSparkFlex(55);
@@ -163,13 +155,9 @@ public class RobotContainer {
     if (elevatorIO == null) {
       elevatorIO = new ElevatorIO() {};
     }
-    if (climberIO == null) {
-      climberIO = new ClimberIO() {};
-    }
 
     manipulator = new Manipulator(elevatorIO, wristIO);
     gripper = new Gripper(gripperIO);
-    climber = new Climber(climberIO);
 
     TeleopDrive teleopDrive = configureSharedBindings();
     LEDs leds = new LEDs();
@@ -375,28 +363,6 @@ public class RobotContainer {
             Commands.runEnd(() -> gripper.setGripper(-3000), () -> gripper.setGripper(0), gripper));
 
     driverController.back().onTrue(Commands.runOnce(() -> driveSys.setPosition(Pose2d.kZero)));
-
-    // Climber
-    driverController
-        .a()
-        .or(driverController.povDown())
-        .or(driverController.povDownLeft())
-        .or(driverController.povDownRight())
-        .onTrue(
-            Commands.runOnce(() -> climber.setServo(true), climber)
-                .andThen(
-                    Commands.waitSeconds(.5)
-                        .andThen(Commands.run(() -> climber.setPosition(true), climber))));
-    driverController
-        .y()
-        .or(driverController.povUp())
-        .or(driverController.povUpLeft())
-        .or(driverController.povUpRight())
-        .onTrue(
-            Commands.runOnce(() -> climber.setServo(false), climber)
-                .andThen(
-                    Commands.waitSeconds(.5)
-                        .andThen(Commands.runOnce(() -> climber.setPosition(false), climber))));
   }
 
   private TeleopDrive configureSharedBindings() {

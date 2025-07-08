@@ -19,26 +19,43 @@ public class PoseEstimator {
   boolean usedVis = false;
 
   public Pose2d getPose() {
-    if (pt.isPresent()) return pt.get().getSlamPose();
-    else return Pose2d.kZero;
+    return current;
+  }
+
+  public void setDelta(double delta) {
+    current =
+        new Pose2d(
+            current.getTranslation(), new Rotation2d(current.getRotation().getRadians() + delta));
   }
 
   public void setPose(Pose2d pz) {
-    pt.ifPresent(fusedVision -> fusedVision.setpos(pz));
+    current = pz;
   }
 
   public void feed() {
-    if (new XboxController(0).getXButtonPressed()) {
+    if (new XboxController(0).getXButton()) {
       Pose2d face = FieldConstants.getFace(0);
       Pose2d plus =
           face.plus(new Transform2d(0, -19.0 * 0.0254, new Rotation2d()))
               .plus(new Transform2d(16.0 * 0.0254, 16.0 * 0.0254, Rotation2d.kZero));
       setPose(plus);
     }
-    usedVis = true;
+    if (new XboxController(0).getYButton()) {
+      Pose2d face = FieldConstants.flip(FieldConstants.getFace(0));
+      Pose2d plus =
+          face.plus(new Transform2d(0, -19.0 * 0.0254, new Rotation2d()))
+              .plus(new Transform2d(16.0 * 0.0254, 16.0 * 0.0254, Rotation2d.kZero));
+      setPose(plus);
+    }
+    if (new XboxController(0).getAButton()) {
+      usedVis = false;
+    }
     if (pt.isPresent()) {
-      if (!usedVis) {
-        pt.get().isActive();
+      if (!usedVis && pt.get().isActive()) {
+        if (pt.get().inputs.pose.isPresent()) {
+          pt.get().setpos(pt.get().inputs.pose.get().toPose2d());
+          usedVis = true;
+        }
       }
     }
   }

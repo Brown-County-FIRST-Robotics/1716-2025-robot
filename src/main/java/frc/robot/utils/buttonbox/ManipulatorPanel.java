@@ -3,68 +3,57 @@ package frc.robot.utils.buttonbox;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class ManipulatorPanel extends ButtonBoxPanel {
-  // Digital Input IDs, assuming that level2 is TROUGH_ID + 1, etc.
-  private static final int TROUGH_ID = 0;
-  private static final int ALGAE_LOW_ID = 4;
-  private static final int LEFT_POLE_ID = 6;
-  private static final int INTAKE_ID = 8;
-  private static final int EJECT_ID = 9;
-  private static final int PROCESSOR_ID = 3;
-
   public ManipulatorPanel(ButtonBox bb) {
     super(bb);
   }
 
   public Trigger trough() { // level 1 coral
-    return new Trigger(() -> getButton(TROUGH_ID));
+    return new Trigger(() -> getButton(0));
   }
 
   public Trigger level2() {
-    return new Trigger(() -> getButton(TROUGH_ID + 1));
+    return new Trigger(() -> getButton(1));
   }
 
   public Trigger level3() {
-    return new Trigger(() -> getButton(TROUGH_ID + 2));
+    return new Trigger(() -> getButton(2));
   }
 
   public Trigger level4() {
-    return new Trigger(() -> getButton(TROUGH_ID + 3));
+    return new Trigger(() -> getButton(3));
   }
 
   public Trigger algaeLow() {
-    return new Trigger(() -> getButton(ALGAE_LOW_ID));
+    return new Trigger(() -> getButton(4));
   }
 
   public Trigger algaeHigh() {
-    return new Trigger(() -> getButton(ALGAE_LOW_ID + 1));
+    return new Trigger(() -> getButton(5));
   }
 
   public Trigger leftPole() {
-    return new Trigger(() -> getButton(LEFT_POLE_ID));
+    return new Trigger(() -> getButton(6));
   }
 
   public Trigger rightPole() {
-    return new Trigger(() -> getButton(LEFT_POLE_ID + 1));
+    return new Trigger(() -> getButton(6 + 1));
   }
 
   // checks if both or neither pole buttons are pressed
   public Trigger noPole() {
-    return new Trigger(
-        () ->
-            (!getButton(LEFT_POLE_ID) && !getButton(LEFT_POLE_ID + 1))
-                || (getButton(LEFT_POLE_ID) && getButton(LEFT_POLE_ID + 1)));
+    return new Trigger(() -> (!getButton(6) && !getButton(7)) || (getButton(6) && getButton(7)));
   }
 
   public Trigger processor() {
-    return new Trigger(() -> getButton(PROCESSOR_ID));
+    return new Trigger(() -> getButton(3));
   }
 
   public Trigger intake() { // coral station
-    return new Trigger(() -> getButton(INTAKE_ID));
+    return new Trigger(() -> getButton(8));
   }
 
   public Trigger eject() {
-    return new Trigger(() -> getButton(EJECT_ID));
+    return new Trigger(() -> getButton(9));
   }
 
   @Override
