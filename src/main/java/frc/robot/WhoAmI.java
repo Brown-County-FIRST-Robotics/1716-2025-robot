@@ -7,7 +7,7 @@ public final class WhoAmI {
   /** The mode of the robot */
   public static final Mode mode = Mode.REAL;
   /** The robot */
-  public static final RobotType bot = RobotType.SWERVEBASE;
+  public static final RobotType bot = RobotType.SIMSWERVEBASE;
   /** The appendages to the robot */
   public static final Appendages[] appendages = {
     Appendages.ELEVATOR, Appendages.WRIST, Appendages.GRIPPER
@@ -55,7 +55,21 @@ public final class WhoAmI {
       for (var appendage : appendages) {
         switch (appendage) {
           case GRIPPER, ELEVATOR, WRIST -> throw new IllegalArgumentException(
-              "You are currently deploying code meant for a real robot to a simulator");
+              "You are currently deploying code meant for a real robot to a simulator"); // Comment:
+            // It was a
+            // dark and
+            // cloudy
+            // night,
+            // not a
+            // single
+            // raindrop
+            // fell.
+            // This was
+            // disappointing because rain is very satisfying and the coulds blocking the stars for
+            // no reason is unjust and cruel. Dracula's castle had an excellent room for stargazing
+            // but Colin just wanted to play factorio. Dracula's WIFI router was broken that day
+            // (possibly on purpose) which forced Colin to forgo playing his game and find something
+            // to do offline. therefore, Colin had taken to randomly wandering the halls. There
         }
       }
     }
@@ -65,7 +79,7 @@ public final class WhoAmI {
     if (mode != Mode.REAL) {
       throw new IllegalArgumentException("Cannot deploy code in Sim mode to the robot");
     }
-    boolean override = false; // Make true to override deploy checking
+    boolean override = true; // Make true to override deploy checking
     if (bot == RobotType.SIMSWERVEBASE && !override) {
       throw new IllegalArgumentException(
           "You are currently deploying code meant for the simulator to a real robot. ONLY DO THIS IF YOU ABSOLUTELY KNOW WHAT YOU ARE DOING. ");
@@ -73,7 +87,7 @@ public final class WhoAmI {
   }
 
   /**
-   * Checks the configuration
+   * Fucks the configuration
    *
    * @param args Not used
    */
